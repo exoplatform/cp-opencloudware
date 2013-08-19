@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.exoplatform.platform</groupId>
+        <artifactId>platform</artifactId>
+        <version>4.0.1</version>
+    </parent>
+    <groupId>org.opencloudware</groupId>
+    <artifactId>opencloudware-extension</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>opencloudware</name>
+
+
+    <properties>
+        <exo.projects.app.platform.version>eXoPlatform-4.0.1</exo.projects.app.platform.version>
+		<org.exoplatform.platform.version>4.0.1</org.exoplatform.platform.version>
+		<juzu.version>0.6.0</juzu.version>
+        <buildTarget>bull</buildTarget>
+    </properties>
+
+
+    <modules>
+        <module>config</module>
+        <module>war</module>
+        <module>services</module>
+        <module>packaging</module>
+    </modules>
+</project>

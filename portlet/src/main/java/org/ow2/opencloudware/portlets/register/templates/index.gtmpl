@@ -1,0 +1,119 @@
+<div style="margin-right:20%;margin-left:20%">
+
+<h3 class="opencloudwareTitle">New Account</h3>
+
+
+	<form id="newUserForm" class="form-horizontal" action="@{createUser()}" method="post">
+
+		<div id="messageBlock">
+			<% if (flash.getError() != "") { %>
+				<div class="control-group">
+					<div class="well well-small span6 alert-error">
+						${flash.getError()}
+					</div>
+				</div>
+
+			<% } %>
+			<% if (flash.getSuccess() != "") { %>
+				<div class="control-group">
+					<div class="well well-small span6 alert-success">
+						<strong>${flash.getSuccess()}</strong>
+					</div>
+				</div>
+
+			<% } %>
+		</div>
+		<div class="control-group">
+				<label for="inputUserName" class="control-label">User Name (*) : </label>
+				<div class="controls">
+					<input type="text" name="inputUserName" id="inputUserName" placeholder="User Name">
+				</div>
+			</div>
+
+		<div class="control-group">
+			<label for="inputPassword" class="control-label">Password (*) : </label>
+			<div class="controls">
+				<input type="password" id="inputPassword" name="inputPassword" placeholder="Password">
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="inputConfirmPassword" class="control-label">Confirm Password (*) : </label>
+			<div class="controls">
+				<input type="password" id="inputConfirmPassword" name="inputConfirmPassword" placeholder="Confirm Password">
+			</div>
+		</div>
+
+		<div class="control-group">
+			<label for="inputFirstName" class="control-label">First Name (*) : </label>
+			<div class="controls">
+				<input type="text" name="inputFirstName" id="inputFirstName" placeholder="First Name">
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="inputLastName" class="control-label">Last Name (*) : </label>
+			<div class="controls">
+				<input type="text" name="inputLastName" id="inputLastName" placeholder="Last Name">
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="inputEmail" class="control-label">Email (*) : </label>
+			<div class="controls">
+				<input type="email" name="inputEmail" id="inputEmail" placeholder="Email">
+			</div>
+		</div>
+
+
+		<div class="control-group controls-row">
+			<label for="inputRadio" class="span4" style="padding-top:4px;width:310px;">Do you want to create account for your organization ? </label>
+			<div class="span2">
+				<span id="spanNo" onclick="$('#organizationInformation').show();">
+					<label class="radio inline">
+						<input type="radio" name="inputRadio" id="radioYes" value="Yes"> Yes
+					</label>
+				</span>
+				<span id="spanYes" onclick="$('#organizationInformation').hide();">
+					<label class="radio inline">
+						<input type="radio" name="inputRadio" id="radioNo" value="No" checked>No
+					</label>
+				</span>
+			</div>
+
+		</div>
+
+
+		<div id="organizationInformation" class="collapse">
+			<div class="control-group">
+				<label for="inputOrganizationName" class="control-label">Organization Name (*) : </label>
+				<div class="controls">
+					<input type="text" id="inputOrganizationName" name="inputOrganizationName" placeholder="Organization Name">
+				</div>
+			</div>
+			<div class="control-group">
+				<label for="inputOrganizationAddress" class="control-label">Organization Address (*) : </label>
+				<div class="controls">
+					<input type="text" id="inputOrganizationAddress" name="inputOrganizationAddress" placeholder="Organization Address">
+				</div>
+			</div>
+			<div class="control-group">
+				<label for="inputCreditCardNumber" class="control-label">Credit Card Number (*) (working one 446-667-651): </label>
+				<div class="controls">
+					<input type="text" id="inputCreditCardNumber" name="inputCreditCardNumber" placeholder="Credit Card Number">
+				</div>
+			</div>
+
+		</div>
+
+		<div class="control-group">
+			<div class="controls">
+				<span> (*) are required fields.</span>
+			</div>
+		</div>
+
+		<div class="control-group">
+			<div class="controls">
+				<button type="submit" class="btn btn-primary" id="register">Register</button>
+				<button type="reset" class="btn btn-default" id="reset" onclick="$('#organizationInformation').hide();">Reset</button>
+			</div>
+		</div>
+	</form>
+</div>

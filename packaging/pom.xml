@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>opencloudware-extension</artifactId>
+        <groupId>org.opencloudware</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>opencloudware-extension-packaging</artifactId>
+    <build>
+        <finalName>eXo-Platform-${project.version}-opencloudware</finalName>
+        <plugins>
+            <!-- Ensure your environment is correctly setup -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>check-environment-ready</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireProperty>
+                                    <property>exo.projects.directory.dependencies</property>
+                                    <message>You must define the property
+                                        exo.projects.directory.dependencies to
+                                        give the path to
+                                        the
+                                        directory where you store your applications servers
+                                    </message>
+                                </requireProperty>
+                                <requireProperty>
+                                    <property>exo.projects.app.platform.version</property>
+                                    <message>You must define the property
+                                        exo.projects.app.platform.version to
+                                        give the name of the
+                                        directory where is stored eXoPlatform
+                                    </message>
+                                </requireProperty>
+                                <requireFilesExist>
+                                    <files>
+                                        <file>${exo.projects.directory.dependencies}/${exo.projects.app.tomcat.version}/
+                                        </file>
+                                    </files>
+                                    <message>The following Tomcat directory doesn't exist :
+                                        ${exo.projects.directory.dependencies}/${exo.projects.app.tomcat.version}
+                                    </message>
+                                </requireFilesExist>
+                            </rules>
+                            <fail>true</fail>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>run-ant-rename-war</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <copy file="src/main/resources/gatein/conf/configuration.${buildTarget}.properties"
+                                      tofile="src/main/resources/gatein/conf/configuration.properties" overwrite="true" />
+                                <copy file="src/main/resources/conf/server.${buildTarget}.xml"
+                                      tofile="src/main/resources/conf/server.xml" overwrite="true" />
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Unpack portal.war from repository -->
+            <!--plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifact>org.exoplatform.portal:exo.portal.web.portal:${org.exoplatform.portal.version}:war</artifact>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin-->
+
+            <!-- Replace web.xml with the one we want -->
+            <!--plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <id>build-war</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>war</goal>
+                        </goals>
+                        <configuration>
+                            <warSourceDirectory>${project.build.directory}/dependency
+                            </warSourceDirectory>
+                            <webXml>${basedir}/src/main/resources/webapps/portal/WEB-INF/web.xml
+                            </webXml>
+                            <warName>portal</warName>
+                            <packagingExcludes>WEB-INF/lib/</packagingExcludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin-->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>package-tomcat</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/tomcat-archive.xml</descriptor>
+                            </descriptors>
+                            <appendAssemblyId>false</appendAssemblyId>
+							<finalName>eXo-Platform-${project.version}-opencloudware-${buildTarget}</finalName>
+
+						</configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.20</version>
+        </dependency>
+    </dependencies>
+
+</project>
