@@ -1,0 +1,141 @@
+
+<div class="paginationNb">
+
+	<%
+		int firstResult = (currentPage-1) * pageSize + 1;
+		int lastResult = currentPage * pageSize;
+		if (currentPage == nbPages) { lastResult = nbResults;}
+	%>
+      Results ${firstResult} - ${lastResult} on ${nbResults}.
+</div>
+
+<div id="pagination">
+   <%
+		if (nbPages > 1) {
+
+			int previousPage = currentPage-1;
+			int nextPage = currentPage+1;
+   %>
+
+	<div class="pagination pagination-right">
+		<ul>
+    			<li><a href="#" id="gotoPageLink" onclick="javascript:changePage($('#inputGotoPage').val());return false;">Go to page</a><input id="inputGotoPage" class="input-mini" style="margin-left:5px;margin-bottom:0px;" placeholder="Page" /></li>
+    	</ul>
+    	<br/>
+		<ul>
+			<%
+				if (currentPage != 1) {
+			%>
+					<li><a href="#" onclick="javascript:changePage(1);return false;">First</a></li>
+					<li><a href="#" onclick="javascript:changePage(${previousPage});return false;">Previous</a></li>
+			<% }
+
+			for (i=1;i<=nbPages;i++) {
+
+				if (i<currentPage - 3) {
+				 	//dislay nothing
+				} else if (i == currentPage - 3) {
+					int bigJumpPage = currentPage - 5
+					if (currentPage<=5) bigJumpPage = 1;
+
+				%>
+					<li><a href="#" onclick="javascript:changePage(${bigJumpPage});return false;">...</a></li>
+				<%
+                } else if (i>currentPage + 3) {
+                	//dislay nothing
+                } else if (i == currentPage + 3) {
+
+					int bigJumpPage = currentPage + 5
+					if (currentPage>=(nbPages-5)) bigJumpPage = nbPages;
+
+                %>
+					<li><a href="#" onclick="javascript:changePage(${bigJumpPage});return false;">...</a></li>
+                <%
+                } else if (currentPage == i) {
+				%>
+					<li class="active"><a href="#">${i}</a></li>
+				<% } else { %>
+					<li><a href="#" onclick="javascript:changePage(${i});return false;">${i}</a></li>
+				<% }
+
+
+			}
+			   if (currentPage != nbPages) {
+				int
+			   %>
+			    <li><a href="#" onclick="javascript:changePage(${nextPage});return false;">Next</a></li>
+				<li><a href="#" onclick="javascript:changePage(${nbPages});return false;">Last</a></li>
+			<% }  %>
+
+		</ul>
+
+	</div>
+
+   <%
+	}
+	   %>
+	</div>
+</div>
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<th>User Id</th>
+			<th>User FirstName</th>
+			<th>User LastName</th>
+			<th>Roles</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		<%currentList.each { current ->
+			String userName= current.getUserName();
+			%>
+            <tr>
+            	<th>${current.getUserName()}</th>
+            	<th>${current.getFirstName()}</th>
+            	<th>${current.getLastName()}</th>
+            	<th id="${userName}Roles"></th>
+            	<th>
+            		<div class="actionCell">
+						<a class="btn" title="Edit" href="@{UsersManagement.displayEditForm(userName = userName)}">
+							<i class="icon-edit"></i>
+						</a>
+						<!--a class="btn" title="Edit Roles" href="@{UsersManagement.displayEditRolesForm(userName = userName)}">
+                        	<i class="icon-user"></i>
+                        </a-->
+
+						<a class="btn" title="Delete" href="@{UsersManagement.removeUser(userName = userName)}" onclick="if (confirm('Are you sure to remove user ${userName} from your organization ?')) return true; else return false;">
+							<i class="icon-trash"></i>
+						</a>
+					</div>
+
+            	</th>
+            	<script>
+            		$("#${userName}Roles").jzLoad("UsersManagement.getRolesOfUserInCurrentOrganization()",{"userName":"${userName}"});
+            	</script>
+            </tr>
+
+        <%}%>
+	</tbody>
+
+
+<script>
+
+$("#inputGotoPage").keyup(function(e){
+	var code = e.which;
+	var val = $(this).val();
+	if(code==13 && val) changePage($('#inputGotoPage').val());
+	else {
+		if(isNaN(val) || val.indexOf('.')!=-1) {
+			val = val.replace(/[^0-9]/g,'');
+		}
+		$(this).val(val);
+	}
+});
+
+function changePage(wantedPage) {
+	$("#usersPage").jzLoad("UsersManagement.getPage()",{"pageToDisplay":wantedPage});
+}
+
+
+</script>

@@ -1,0 +1,43 @@
+
+.infoDiv {
+    width: 47%;
+	border: 2px solid #ddd;
+	border-radius: 4px;
+	padding: 8px;
+	margin-bottom:10px;
+    min-height:100px;
+    display: inline-block;
+    vertical-align: top;
+
+}
+
+.ocwSelect {
+    width: 100%;
+}
+
+
+.special-controls {
+    margin-left:auto !important;
+    margin-right: auto;
+    width: 200px;
+}
+
+
+.roleButton {
+    margin-bottom:5px;
+}
+
+
+.span-left,  .span-right {
+    width:35%;
+
+}
+
+.span-center {
+    margin-top:25px;
+    width: 18%;
+    text-align: center;
+
+}
+
+

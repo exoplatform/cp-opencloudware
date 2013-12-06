@@ -18,6 +18,8 @@
               <exclude>gatein/conf/configuration.properties</exclude>
 			  <exclude>lib/platform-sample-acme-intranet-config-${org.exoplatform.platform.version}.jar</exclude>
 			  <exclude>webapps/acme-intranet.war</exclude>
+			  <exclude>webapps/trial.war</exclude>
+
 
 		  </excludes>
 	 
@@ -39,6 +41,7 @@
         	<include>conf/server.xml</include>
             <include>lib/**</include>
              <include>gatein/conf/configuration.properties</include>
+			 <include>bin/setenv-customize.sh</include>
 
       </includes>
       </fileSet>

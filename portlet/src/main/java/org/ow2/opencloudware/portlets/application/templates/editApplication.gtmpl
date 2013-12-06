@@ -1,0 +1,148 @@
+<div style="margin-right:20%;margin-left:20%">
+
+	<h3 class="opencloudwareTitle">Edit Application</h3>
+
+	<form id="editApplicationForm" class="form-horizontal" action="@{editApplication()}" method="post">
+		<div class="control-group">
+        			<div class="controls">
+						<input type="hidden" id="inputApplicationId" name="inputApplicationId" value="${application.getId()}">
+        			</div>
+        		</div>
+		<div class="control-group">
+			<label for="inputApplicationName" class="control-label">Application Name (*) : </label>
+			<div class="controls">
+				<input type="text" id="inputApplicationName" name="inputApplicationName" value="${application.getApplicationName()}">
+			</div>
+		</div>
+		<div class="control-group">
+                			<label for="inputApplicationDescription" class="control-label">Application Description (*) : </label>
+                			<div class="controls">
+                				<textarea row="3" id="inputApplicationDescription" name="inputApplicationDescription" value="${application.getDescription()}">${application.getDescription()}</textarea>
+                			</div>
+                		</div>
+
+
+        <div class="control-group">
+            <span class="pull-left span-left">
+                <%
+
+                    String applicationId = application.getId();
+
+                    def selectSize = usersNames.size();
+                    if (managersNames.size() > selectSize) {
+                        selectSize=managersNames.size();
+                    }
+                    if (selectSize < 5) selectSize = 5;
+                    if (selectSize > 10) selectSize = 10;
+
+
+                %>
+                 Organization Users
+                <select class="ocwSelect" size="${selectSize}" name="usersNames" id="usersNames" multiple="multiple" style="width:100%;">
+                    <%
+
+                        usersNames.keySet().each { current ->
+                    %>
+                    <option value="${current}">${usersNames.get(current)}</option>
+                    <%
+                        }
+
+
+                    %>
+                </select>
+                <input type="hidden" name="inputUsersNames" id="inputUsersNames">
+            </span>
+            <span class="span-center">
+
+                <button type="button" class="btn btn-default roleButton" id="addRole">Add &gt;</button>
+                <button type="button" class="btn btn-default roleButton" id="removeRole">&lt; Remove</button>
+            </span>
+            <span class="pull-right span-right">
+                Application Managers
+                <select name="managersNames" class="ocwSelect"  size="${selectSize}" id="managersNames" multiple="multiple">
+                    <%
+
+                        managersNames.keySet().each { current ->
+                    %>
+                    <option value="${current}">${managersNames.get(current)}</option>
+                    <%
+                        }
+
+
+                    %>
+                </select>
+
+                <input type="hidden" name="inputManagersNames" id="inputManagersNames">
+
+            </span>
+        </div>
+		<div class="control-group">
+			<div class="controls">
+				<span> (*) are required fields.</span>
+			</div>
+		</div>
+
+		<div class="control-group">
+			<div class="controls">
+				<button type="submit" class="btn btn-primary" id="register">Save modification</button>
+				<button type="button" class="btn btn-default" id="cancel" onclick="javascript:window.location='@{ApplicationManagement.index()}'">Cancel</button>
+				<button type="reset" class="btn btn-default" id="reset" onclick="javascript:window.location='@{ApplicationManagement.displayEditForm(inputApplicationId = applicationId)}'">Reset</button>
+			</div>
+		</div>
+
+
+	</form>
+    <script>
+        $("#addRole").click(function() {
+            $("#usersNames option:selected" ).each(function() {
+                var currentVal = $(this).val();
+                var currentText = $(this).text();
+
+                $("#managersNames").append('<option value="'+currentVal+'">'+currentText+'</option>');
+            });
+
+            $("#usersNames option:selected").remove();
+
+            changeSelect("#usersNames","#inputUsersNames");
+            changeSelect("#managersNames","#inputManagersNames");
+
+
+        });
+
+        function changeSelect(selectName, inputName){
+
+            var inputString = "";
+            var select = selectName + " option";
+
+            $(select).each(function() {
+                var currentVal = $(this).val();
+                inputString+= currentVal+",";
+            });
+
+            $(inputName).val(inputString.substring(0,inputString.length-1));
+
+
+        }
+
+
+        $("#removeRole").click(function() {
+            $("#managersNames option:selected" ).each(function() {
+                var currentVal = $(this).val();
+                var currentText = $(this).text();
+                $("#usersNames").append('<option value="'+currentVal+'">'+currentText+'</option>');
+            });
+            $("#managersNames option:selected").remove();
+
+            changeSelect("#usersNames","#inputUsersNames");
+            changeSelect("#managersNames","#inputManagersNames");
+
+
+
+        });
+
+        $(function () {
+            changeSelect("#usersNames","#inputUsersNames");
+            changeSelect("#managersNames","#inputManagersNames");
+        });
+    </script>
+</div>

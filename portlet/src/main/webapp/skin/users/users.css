@@ -1,0 +1,31 @@
+
+.topBanner {
+	height:70px;
+}
+
+.span-left, .span-center, .span-right {
+    width:30%;
+
+}
+
+.span-center {
+    text-align: center;
+    margin: 5px;
+}
+
+.ocwSelect {
+    width: 100%;
+}
+
+.special-controls {
+    margin-left:auto !important;
+    margin-right: auto;
+    width: 200px;
+}
+
+
+.roleButton {
+    margin-bottom:5px;
+}
+
+

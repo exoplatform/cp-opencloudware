@@ -1,0 +1,13 @@
+<span>Name : ${organization.getOrganizationName()}</span></br>
+<span>Address : ${organization.getAddress()}</span>      </br>
+
+<span>Organization Managers : ${managersString}</span>
+<div class="uiAction">
+	<span class="btn btn-primary" id="editInformationButton">Edit Information</span>
+</div>
+
+	<script>
+		$("#editInformationButton").click(function() {
+              	$("#organization").jzLoad("MyOrganization.getOrganizationEditFragment()");
+       	});
+	</script>

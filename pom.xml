@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.exoplatform.platform</groupId>
         <artifactId>platform</artifactId>
-        <version>4.0.1</version>
+        <version>4.0.2-CP01</version>
     </parent>
     <groupId>org.opencloudware</groupId>
     <artifactId>opencloudware-extension</artifactId>
@@ -16,8 +16,8 @@
 
 
     <properties>
-        <exo.projects.app.platform.version>eXoPlatform-4.0.1</exo.projects.app.platform.version>
-		<org.exoplatform.platform.version>4.0.1</org.exoplatform.platform.version>
+        <exo.projects.app.platform.version>eXoPlatform-4.0.2-CP01</exo.projects.app.platform.version>
+		<org.exoplatform.platform.version>4.0.2-CP01</org.exoplatform.platform.version>
 		<juzu.version>0.6.0</juzu.version>
         <buildTarget>bull</buildTarget>
     </properties>

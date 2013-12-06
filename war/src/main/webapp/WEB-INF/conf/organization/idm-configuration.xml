@@ -295,7 +295,7 @@
                 <values-param>
                     <name>hibernate.mapping</name>
                     <value>picketlink-idm/mappings/HibernateRealm.hbm.xml</value>
-                    <value>picketlink-idm/mappings/HibernateIdentityObjectCredentialBinaryValue.hbm.xml</value>
+					<value>picketlink-idm/mappings/HibernateIdentityObjectCredentialBinaryValue.hbm.xml</value>
                     <value>picketlink-idm/mappings/HibernateIdentityObjectAttributeBinaryValue.hbm.xml</value>
                     <value>picketlink-idm/mappings/HibernateIdentityObject.hbm.xml</value>
                     <value>picketlink-idm/mappings/HibernateIdentityObjectCredential.hbm.xml</value>

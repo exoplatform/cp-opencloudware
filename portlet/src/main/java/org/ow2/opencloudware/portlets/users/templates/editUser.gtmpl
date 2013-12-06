@@ -1,0 +1,167 @@
+
+<div id="global">
+    <div style="margin-right:20%;margin-left:20%">
+
+        <% if (user != null) {%>
+        <h3 class="opencloudwareTitle">Edit User</h3>
+        <% } else { %>
+        <h3 class="opencloudwareTitle">Add User</h3>
+        <% } %>
+
+
+        <form id="editUserForm" class="form-horizontal" action="@{editUser()}" method="post">
+            <div class="control-group">
+                <label for="inputUserName" class="control-label">User Name (*) : </label>
+                <div class="controls">
+                    <% if (user != null) { %>
+                    <input type="text" 	name="inputUserName" id="inputUserName" disabled="disabled" value="${user.getUserName()}">
+                    <input type="hidden" 	name="inputUserNameHidden" id="inputUserNameHidden" value="${user.getUserName()}">
+                    <% } else { %>
+                    <input type="text" 	name="inputUserName" id="inputUserName" placeholder="User Name">
+                    <% } %>
+                </div>
+            </div>
+
+            <% if (user == null) { %>
+            <div class="control-group">
+                <label for="inputPassword" class="control-label">Password (*) : </label>
+                <div class="controls">
+                    <input type="password" id="inputPassword" name="inputPassword" placeholder="Password">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label for="inputConfirmPassword" class="control-label">Confirm Password (*) : </label>
+                <div class="controls">
+                    <input type="password" id="inputConfirmPassword" name="inputConfirmPassword" placeholder="Confirm Password">
+                </div>
+            </div>
+            <% } %>
+
+            <div class="control-group">
+                <label for="inputFirstName" class="control-label">First Name (*) : </label>
+                <div class="controls">
+                    <% if (user != null) { %>
+                    <input type="text" 	name="inputFirstName" id="inputFirstName" value="${user.getFirstName()}" >
+                    <% } else { %>
+                    <input type="text" name="inputFirstName" id="inputFirstName" placeholder="First Name">
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label for="inputLastName" class="control-label">Last Name (*) : </label>
+                <div class="controls">
+                    <% if (user != null) { %>
+                    <input type="text" 	name="inputLastName" id="inputLastName" value="${user.getLastName()}" >
+                    <% } else { %>
+                    <input type="text" name="inputLastName" id="inputLastName" placeholder="Last Name">
+                    <% } %>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="inputEmail" class="control-label">Email (*) : </label>
+                <div class="controls">
+                    <% if (user != null) { %>
+                    <input type="text" 	name="inputEmail" id="inputEmail" value="${user.getEmail()}" >
+                    <% } else { %>
+                    <input type="text" name="inputEmail" id="inputEmail" placeholder="Email">
+                    <% } %>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="inputIsManager" class="control-label">Is Organization Manager ? : </label>
+                <div class="controls">
+                    <% if (isManager) { %>
+                        <input type="checkbox" 	name="inputIsManager" id="inputIsManager" checked>
+                    <% } else { %>
+                        <input type="checkbox" 	name="inputIsManager" id="inputIsManager">
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn btn-primary" id="register">Save</button>
+                    <button type="button" class="btn btn-default" id="cancelUser" onclick="javascript:window.location='@{UsersManagement.index(renderContext = context)}'">Cancel</button>
+                    <button type="reset" class="btn btn-default" id="resetUser">Reset</button>
+                </div>
+            </div>
+
+
+        </form>
+
+    </div>
+
+    <script>
+
+        $("#resetUser").click(function() {
+            if (validatorEdit) {
+                validatorEdit.resetForm();
+            }
+            $('.control-group').removeClass('success');
+            $('.control-group').removeClass('error');
+        });
+
+        $("#cancelUser").click(function() {
+
+        });
+        $.validator.addMethod("customRemote", function(value, element) {
+            if (!$("#inputUserName").is(":disabled")) {
+                return $.validator.methods.remote.apply(this, arguments);
+            } else {
+                return true;
+            }
+        }, $.validator.messages.remote);
+
+        validatorEdit = $("#editUserForm").validate({
+            rules: {
+                inputUserName: {
+                    customRemote: "/opencloudware-portlet/usersmanagement/isValidUserName",
+                    minlength: 2
+                },
+                inputFirstName: {
+                    minlength: 2,
+                    required: true
+                },
+                inputLastName: {
+                    required: true,
+                    minlength: 2
+                },
+                inputEmail: {
+                    email: true,
+                    maxlength: 255,
+                    minlength: 2,
+                    customRemote: "/opencloudware-portlet/usersmanagement/isValidEmail",
+                    required: true
+                },
+                inputPassword: {
+                    required: '#inputUserName:enabled',
+                    minlength: 5
+                },
+                inputConfirmPassword: {
+                    required: '#inputUserName:enabled',
+                    minlength: 5,
+                    equalTo: "#inputPassword"
+                },
+
+
+            },
+            messages: {
+                inputUserName: { remote: "This user name already exists." },
+                inputEmail: { remote: "This email already exists." },
+            },
+            highlight: function(element) {
+                $(element).closest('.control-group').removeClass('success').addClass('error');
+            },
+            success: function(element) {
+                element.text("OK !").addClass('valid').closest('.control-group').removeClass('error').addClass('success');
+            }
+        });
+
+
+
+
+    </script>
+
+</div>

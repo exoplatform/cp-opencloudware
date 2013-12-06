@@ -292,11 +292,13 @@
 		  </container>
 		    <container id="OCWBody" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
 			  <access-permissions>Everyone</access-permissions>
-
+				<container template="system:/groovy/opencloudware/webui/container/UIRoundedContainer.gtmpl">
+					<access-permissions>Everyone</access-permissions>
     <page-body>
     </page-body>
+				</container>
 
-		  </container>
+			</container>
 
 	  </container>
 

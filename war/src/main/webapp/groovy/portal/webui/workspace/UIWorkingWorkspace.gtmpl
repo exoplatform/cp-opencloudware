@@ -28,7 +28,10 @@
 		String country = rcontext.getLocale().getCountry();
 		if (country != null && country.length() > 0) {
     language += "_" + country;
-  }   
+  }
+
+  boolean isOrganizationManager = NavigationUtils.isOrganizationManager(userName);
+
 %>
 <script type="text/javascript">
   eXo.env.portal.userName='<%= userName %>';
@@ -37,6 +40,7 @@
   eXo.env.portal.wcmContentTitle = '<%= _ctx.getRequestContext().getRequest().getAttribute("WCM.Content.Title") %>';
   eXo.env.portal.previousURI = '<%= previousURI %>';
   eXo.env.portal.rest = '<%= PortalContainer.getCurrentRestContextName() %>';
+  eXo.env.portal.isOrganizationManager = '<%= isOrganizationManager %>';
 </script>
     
 <div id="UIWorkingWorkspace" class="UIWorkingWorkspace" style="position: relative; z-index: 0;">

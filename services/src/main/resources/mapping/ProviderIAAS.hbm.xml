@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+  <class name="org.opencloudware.hibernate.model.ProviderIAAS"
+         table="ocw_providerIAAS">
+    <cache usage="transactional"/>
+    <id name="id"
+        type="java.lang.Long"
+        access="field">
+      <column name="ID"/>
+      <generator class="native"/>
+    </id>
+
+    <property name="providerIAASName"
+              type="java.lang.String"
+              access="field"
+              lazy="false">
+      <column name="PROVIDERIAAS_PROVIDER" />
+    </property>
+
+	  <property name="providerIAASLogin"
+				type="java.lang.String"
+				access="field"
+				lazy="false"
+				not-null="true">
+		  <column name="PROVIDERIAAS_LOGIN"/>
+	  </property>
+	  <property name="providerIAASPassword"
+				type="java.lang.String"
+				access="field"
+				lazy="false"
+				not-null="true">
+		  <column name="PROVIDERIAAS_PASSWORD"/>
+	  </property>
+	  <property name="providerIAASVendor"
+				type="java.lang.String"
+				access="field"
+				lazy="false"
+				not-null="true">
+		  <column name="PROVIDERIAAS_VENDOR"/>
+	  </property>
+
+	  <many-to-one name="organization" class="org.opencloudware.hibernate.model.Organization" fetch="select">
+		  <column name="ORGANIZATION_ID" not-null="true" />
+	  </many-to-one>
+  </class>
+</hibernate-mapping>

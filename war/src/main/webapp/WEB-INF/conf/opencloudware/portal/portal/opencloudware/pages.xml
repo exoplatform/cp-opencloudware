@@ -22,13 +22,13 @@
 
             
 <page-set>
+
   <page>
     <name>homepage</name>
     <title>Homepage</title>
     <access-permissions>Everyone</access-permissions>
-    <edit-permission>editor:/platform/web-contributors</edit-permission>
-	  <container template="system:/groovy/opencloudware/webui/container/UIRoundedContainer.gtmpl">
-	  <access-permissions>Everyone</access-permissions>
+    <edit-permission>*:/platform/administrators</edit-permission>
+
 	  <portlet-application>
 		  <portlet>
 			  <application-ref>presentation</application-ref>
@@ -87,16 +87,77 @@
 		  <show-application-state>false</show-application-state>
 		  <show-application-mode>false</show-application-mode>
 	  </portlet-application>
-	  </container>
   </page>
+	<page>
+		<name>serviceAccess</name>
+		<title>Services</title>
+		<access-permissions>Everyone</access-permissions>
+		<edit-permission>*:/platform/administrators</edit-permission>
+			<portlet-application>
+				<portlet>
+					<application-ref>presentation</application-ref>
+					<portlet-ref>SingleContentViewer</portlet-ref>
+					<preferences>
+						<preference>
+							<name>repository</name>
+							<value>repository</value>
+							<read-only>false</read-only>
+						</preference>
+						<preference>
+							<name>workspace</name>
+							<value>collaboration</value>
+							<read-only>false</read-only>
+						</preference>
+						<preference>
+							<name>nodeIdentifier</name>
+							<value>/sites/opencloudware/web contents/ServiceAccess</value>
+							<read-only>false</read-only>
+						</preference>
+						<preference>
+							<name>ShowQuickEdit</name>
+							<value>true</value>
+							<read-only>false</read-only>
+						</preference>
+						<preference>
+							<name>ShowPrintAction</name>
+							<value>false</value>
+							<read-only>false</read-only>
+						</preference>
+						<preference>
+							<name>ShowTOC</name>
+							<value>false</value>
+							<read-only>false</read-only>
+						</preference>
+						<preference>
+							<name>ShowTags</name>
+							<value>false</value>
+							<read-only>false</read-only>
+						</preference>
+						<preference>
+							<name>ShowCategories</name>
+							<value>false</value>
+							<read-only>false</read-only>
+						</preference>
+						<preference>
+							<name>ShowTitle</name>
+							<value>false</value>
+							<read-only>false</read-only>
+						</preference>
+					</preferences>
+				</portlet>
+				<title>Services Access</title>
+				<access-permissions>Everyone</access-permissions>
+				<show-info-bar>false</show-info-bar>
+				<show-application-state>false</show-application-state>
+				<show-application-mode>false</show-application-mode>
+			</portlet-application>
+	</page>
 
-  <page>
+	<page>
     <name>register</name>
     <title>Register</title>
     <access-permissions>Everyone</access-permissions>
-    <edit-permission>editor:/platform/web-contributors</edit-permission>
-	  <container template="system:/groovy/opencloudware/webui/container/UIRoundedContainer.gtmpl">
-	  <access-permissions>Everyone</access-permissions>
+	<edit-permission>*:/platform/administrators</edit-permission>
 		<portlet-application>
 			<portlet>
 				<application-ref>opencloudware-portlet</application-ref>
@@ -108,16 +169,34 @@
 			<show-application-state>false</show-application-state>
 			<show-application-mode>false</show-application-mode>
 		</portlet-application>
-	  </container>
   </page>
+	<page>
+		<name>join</name>
+		<title>Join Organization</title>
+		<access-permissions>*:/platform/users</access-permissions>
+		<edit-permission>*:/platform/administrators</edit-permission>
+		<portlet-application>
+			<portlet>
+				<application-ref>opencloudware-portlet</application-ref>
+				<portlet-ref>join</portlet-ref>
+			</portlet>
+			<title>Join Organization</title>
+			<access-permissions>Everyone</access-permissions>
+			<show-info-bar>false</show-info-bar>
+			<show-application-state>false</show-application-state>
+			<show-application-mode>false</show-application-mode>
+		</portlet-application>
+	</page>
 
 
 
-  <page>
+
+
+	<page>
     <name>searchResult</name>
     <title>SearchResult</title>
     <access-permissions>Everyone</access-permissions>
-    <edit-permission>editor:/platform/web-contributors</edit-permission>
+	<edit-permission>*:/platform/administrators</edit-permission>
     <portlet-application>
       <portlet>
         <application-ref>searches</application-ref>
@@ -187,8 +266,7 @@
     <name>search</name>
     <title>Search</title>
     <access-permissions>*:/platform/users</access-permissions>
-    <edit-permission>manager:/platform/administrators</edit-permission>
-    <portlet-application>
+	<edit-permission>*:/platform/administrators</edit-permission><portlet-application>
       <portlet>
         <application-ref>unified-search</application-ref>
         <portlet-ref>UnifiedsearchPortlet</portlet-ref>
@@ -396,5 +474,7 @@
       <show-application-mode>false</show-application-mode>
     </portlet-application>
   </page>
+
+
 
 </page-set>

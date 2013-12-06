@@ -1,0 +1,8 @@
+<h4 class="opencloudwareTitle">${currentOrganizationName}</h4>
+<div id="projectTable">
+
+</div>
+
+<script type="text/javascript">
+	$("#projectTable").jzLoad("ProjectManagement.getPage()",{"pageToDisplay":"1"});
+</script>

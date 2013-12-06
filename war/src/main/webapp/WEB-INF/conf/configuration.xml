@@ -27,5 +27,6 @@
 	<import>war:/conf/opencloudware/portal/portal-configuration.xml</import>
 	<import>war:/conf/opencloudware/application-registry-configuration.xml</import>
 	<import>war:/conf/opencloudware/wcm/opencloudware-deployment-configuration.xml</import>
+	<import>war:/conf/opencloudware/platform/menuConfigurator-configuration.xml</import>
 
 </configuration>

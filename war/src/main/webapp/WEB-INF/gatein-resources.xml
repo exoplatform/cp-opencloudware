@@ -41,4 +41,16 @@
         </module>
     </portal>
 
+
+	<portlet>
+		<name>UIGroupsNavigationPortlet</name>
+		<module>
+			<depends>
+				<module>bts_dropdown</module>
+			</depends>
+			<depends>
+				<module>bts_hover_dropdown</module>
+			</depends>
+		</module>
+	</portlet>
 </gatein-resources>

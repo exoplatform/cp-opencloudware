@@ -1,0 +1,183 @@
+<div style="margin-right:10%;margin-left:10%">
+
+<form id="editOrganizationForm" class="form-horizontal" action="@{editOrganization()}" method="post">
+		<div class="control-group">
+        			<div class="controls">
+        				<input type="hidden" id="inputOrganizationId" name="inputOrganizationId" value="${organization.getId()}">
+        				<input type="hidden" id="oldOrganizationName" name="oldOrganizationName" value="${organization.getOrganizationName()}">
+        			</div>
+        		</div>
+		<div class="control-group">
+			<label for="inputOrganizationName" class="control-label">Organization Name (*) : </label>
+			<div class="controls">
+				<input class="input-medium" type="text" id="inputOrganizationName" name="inputOrganizationName" value="${organization.getOrganizationName()}">
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="inputOrganizationAddress" class="control-label">Organization Address (*) : </label>
+			<div class="controls">
+				<input type="text" class="input-medium" id="inputOrganizationAddress" name="inputOrganizationAddress" value="${organization.getAddress()}">
+			</div>
+		</div>
+
+
+    <div class="control-group">
+        <span class="pull-left span-left">
+            <%
+
+                def selectSize = usersNames.size();
+                if (managersNames.size() > selectSize) {
+                    selectSize=managersNames.size();
+                }
+                if (selectSize < 5) selectSize = 5;
+                if (selectSize > 10) selectSize = 10;
+
+
+            %>
+
+            <select class="ocwSelect" size="${selectSize}" name="usersNames" id="usersNames" multiple="multiple" style="width:100%;">
+                <%
+
+                    usersNames.keySet().each { current ->
+                %>
+                <option value="${current}">${usersNames.get(current)}</option>
+                <%
+                    }
+
+
+                %>
+            </select>
+            <input type="hidden" name="inputUsersNames" id="inputUsersNames">
+        </span>
+        <span class="span-center">
+
+            <button type="button" class="btn btn-default roleButton" id="addRole">Add &gt;</button>
+            <button type="button" class="btn btn-default roleButton" id="removeRole">&lt; Remove</button>
+        </span>
+        <span class="pull-right span-right">
+
+            <select name="managersNames" class="ocwSelect"  size="${selectSize}" id="managersNames" multiple="multiple">
+                <%
+
+                    managersNames.keySet().each { current ->
+                %>
+                <option value="${current}">${managersNames.get(current)}</option>
+                <%
+                    }
+
+
+                %>
+            </select>
+
+            <input type="hidden" name="inputManagersNames" id="inputManagersNames">
+
+        </span>
+    </div>
+
+		<div class="control-group">
+			<div class="controls">
+				<span> (*) are required fields.</span>
+			</div>
+		</div>
+
+		<div class="uiAction">
+				<button type="submit" class="btn btn-primary" id="register">Save</button>
+				<button type="button" class="btn btn-default" id="cancel">Cancel</button>
+				<button type="reset" class="btn btn-default" id="reset">Reset</button>
+		</div>
+
+
+	</form>
+	<script>
+		$("#cancel").click(function() {
+            $("#organization").jzLoad("MyOrganization.getOrganizationFragment()",{"organizationId":$( "#inputOrganizationId").val()});
+       	});
+
+		$("#reset").click(function() {
+            $("#organization").jzLoad("MyOrganization.getOrganizationEditFragment()");
+        });
+
+
+       	$.validator.addMethod("customRemote", function(value, element) {
+			if (!($("#inputOrganizationName").val() == $("#oldOrganizationName").val())) {
+				return $.validator.methods.remote.apply(this, arguments);
+			} else {
+				return true;
+			}
+		}, $.validator.messages.remote);
+
+        validatorEdit = $("#editOrganizationForm").validate({
+        	rules: {
+        		inputOrganizationName: {
+        			customRemote: "/opencloudware-portlet/myorganization/isValidOrganizationName",
+        			minlength: 2
+        		},
+        		inputOrganizationAddress: {
+        			minlength: 2
+        		}
+        	},
+        	messages: {
+        		inputOrganizationName: { remote: "This organization name already exists." }
+        	},
+        	highlight: function(element) {
+        		$(element).closest('.control-group').removeClass('success').addClass('error');
+        	},
+        	success: function(element) {
+        		element.text("OK !").addClass('valid').closest('.control-group').removeClass('error').addClass('success');
+        	}
+        });
+
+        $("#addRole").click(function() {
+            $("#usersNames option:selected" ).each(function() {
+                var currentVal = $(this).val();
+                var currentText = $(this).text();
+
+                $("#managersNames").append('<option value="'+currentVal+'">'+currentText+'</option>');
+            });
+
+            $("#usersNames option:selected").remove();
+
+            changeSelect("#usersNames","#inputUsersNames");
+            changeSelect("#managersNames","#inputManagersNames");
+
+
+        });
+
+        function changeSelect(selectName, inputName){
+
+            var inputString = "";
+            var select = selectName + " option";
+
+            $(select).each(function() {
+                var currentVal = $(this).val();
+                inputString+= currentVal+",";
+            });
+
+            $(inputName).val(inputString.substring(0,inputString.length-1));
+
+
+        }
+
+
+        $("#removeRole").click(function() {
+            $("#managersNames option:selected" ).each(function() {
+                var currentVal = $(this).val();
+                var currentText = $(this).text();
+                $("#usersNames").append('<option value="'+currentVal+'">'+currentText+'</option>');
+            });
+            $("#managersNames option:selected").remove();
+
+            changeSelect("#usersNames","#inputUsersNames");
+            changeSelect("#managersNames","#inputManagersNames");
+
+
+
+        });
+
+        $(function () {
+            changeSelect("#usersNames","#inputUsersNames");
+            changeSelect("#managersNames","#inputManagersNames");
+        });
+    </script>
+
+</div>

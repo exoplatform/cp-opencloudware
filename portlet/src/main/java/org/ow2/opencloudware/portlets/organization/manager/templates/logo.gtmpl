@@ -1,0 +1,26 @@
+<%
+	  if (!logoPath.equals("")) {
+	%>
+		<div class="logo">
+			<img src="${logoPath}" alt="Logo" />
+		</div>
+		<div class="uiAction">
+			<a class="btn btn-primary" href="#" id="editButton">Edit Logo</a>
+
+		</dvi>
+	<%
+
+	  } else {
+	%>
+        <div class="uiAction">
+			<a class="btn btn-primary" href="#" id="editButton">Add Logo</a>
+		</dvi>
+
+	<%}%>
+	<script>
+
+    	$("#editButton").click(function() {
+          		$("#organizationLogo").jzLoad("MyOrganization.getUploadLogoFragment()");
+
+        	});
+    </script>

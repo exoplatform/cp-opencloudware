@@ -1,0 +1,36 @@
+<div style="margin-right:20%;margin-left:20%">
+
+	<h3 class="opencloudwareTitle">New Organization</h3>
+
+	<form id="newOrganizationForm" class="form-horizontal" action="@{createOrganization()}" method="post">
+		<div class="control-group">
+			<label for="inputOrganizationName" class="control-label">Organization Name (*) : </label>
+			<div class="controls">
+				<input type="text" id="inputOrganizationName" name="inputOrganizationName" placeholder="Organization Name">
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="inputOrganizationAddress" class="control-label">Organization Address (*) : </label>
+			<div class="controls">
+				<input type="text" id="inputOrganizationAddress" name="inputOrganizationAddress" placeholder="Organization Address">
+			</div>
+		</div>
+
+		<div class="control-group">
+			<div class="controls">
+				<span> (*) are required fields.</span>
+			</div>
+		</div>
+
+		<div class="control-group">
+			<div class="controls">
+				<button type="submit" class="btn btn-primary" id="register">Add Organization</button>
+				<button type="button" class="btn btn-default" id="cancel" onclick="javascript:window.location='@{OrganizationManagment.index()}'">Cancel</button>
+				<button type="reset" class="btn btn-default" id="reset" onclick="clearValidation();">Reset</button>
+			</div>
+		</div>
+
+
+	</form>
+
+</div>

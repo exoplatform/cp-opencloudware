@@ -1,0 +1,71 @@
+<div id="global">
+    <div style="margin-right:10%;margin-left:10%">
+
+        <h3 class="opencloudwareTitle">Configure user's roles</h3>
+
+        <h4 class="opencloudwareTitle">Configure roles for ${user.getFirstName()} ${user.getLastName()} in your organization.</h4>
+
+        <form id="editUserRoles" class="form-horizontal" action="" method="post">
+        <div class="control-group">
+
+            <input type="hidden" id="username" name="username" value="${user.getUserName()}">
+
+            <span class="pull-left span-left">
+<%
+                String userName= user.getUserName();
+                def selectSize = possibleMembershipsType.size();
+                if (actualMembershipsType.size() > selectSize) {
+                    selectSize=actualMembershipsType.size();
+                }
+                if (selectSize < 5) selectSize = 5;
+
+
+
+%>
+
+                <select class="ocwSelect" size="${selectSize}" name="possibleRoles" id="possibleRoles" multiple="multiple" style="width:100%;">
+<%
+
+                    possibleMembershipsType.each { current ->
+%>
+                    <option name="${current}">${current}</option>
+<%
+                    }
+
+
+%>
+                </select>
+            </span>
+            <span class="span-center">
+
+                <button type="button" class="btn btn-default roleButton" id="addRole">Add Role &gt;</button>
+                <button type="button" class="btn btn-default roleButton" id="removeRole">&lt; Remove Role</button>
+            </span>
+            <span class="pull-right span-right">
+
+                <select name="actualRoles" class="ocwSelect"  size="${selectSize}" id="actualRoles" multiple="multiple">
+<%
+
+                    actualMembershipsType.each { current ->
+%>
+                        <option name="${current}">${current}</option>
+<%
+                    }
+
+
+%>
+                </select>
+            </span>
+        </div>
+
+        <div class="control-group">
+            <div class="controls special-controls">
+                <button type="submit" class="btn btn-primary" id="register">Save</button>
+                <button type="button" class="btn btn-default" id="cancel" onclick="javascript:window.location='@{UsersManagement.index(renderContext = context)}'">Cancel</button>
+                <button type="reset" class="btn btn-default" id="reset"  onclick="javascript:window.location='@{UsersManagement.displayEditRolesForm(userName = userName)}'">Reset</button>
+            </div>
+        </div>
+        </form>
+
+    </div>
+</div>

@@ -1,0 +1,75 @@
+<form id="usersRequests" class="form-horizontal" action="@{applyUsersModification()}" method="post">
+    <table class="table table-bordered">
+
+        <thead>
+        <tr>
+            <th>User name</th>
+            <th>User FistName</th>
+            <th>User Last Name</th>
+            <th>User Email</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+            <%usersRequests.each { current ->
+
+            %>
+              <tr id="${current}" class="trUserLine">
+
+              </tr>
+
+
+            <%
+              }
+            %>
+        </tbody>
+    </table>
+
+    <input type="hidden" id="inputAcceptedUsers" name="inputAcceptedUsers"  value="">
+    <input type="hidden" id="inputRejectedUsers" name="inputRejectedUsers" value="">
+
+
+
+    <div class="center">
+            <button type="button" class="btn btn-primary" id="register">Apply</button>
+            <button type="button" class="btn btn-default" id="cancelUser" onclick="javascript:window.location='@{MyOrganization.index()}'">Cancel</button>
+            <button type="reset" class="btn btn-default" id="resetUser">Reset</button>
+
+    </div>
+
+    <script type="text/javascript">
+        $(".trUserLine").each(function() {
+            var line = $(this);
+            line.jzLoad("MyOrganization.getUserLine()",{"userName":line.attr("id")});
+        });
+
+        $("#register").click(function() {
+            var acceptedString = "";
+            var rejectedString = "";
+
+            $(".userRadioButtonAccepted:checked").each(function() {
+                var input=$(this);
+                acceptedString += input.attr("id").substring(7)+";";
+            });
+            $(".userRadioButtonRejected:checked").each(function() {
+                var input=$(this);
+                rejectedString += input.attr("id").substring(7)+";";
+
+            });
+
+            acceptedString=acceptedString.substring(0,acceptedString.length-1);
+            rejectedString=rejectedString.substring(0,rejectedString.length-1);
+
+            $("#inputAcceptedUsers").val(acceptedString);
+            $("#inputRejectedUsers").val(rejectedString);
+
+
+            $("#usersRequests").submit();
+
+
+
+        });
+
+    </script>
+
+</form>

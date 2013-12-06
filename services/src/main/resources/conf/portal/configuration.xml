@@ -5,6 +5,11 @@
    xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
 
+	<component>
+		<key>org.opencloudware.hibernate.OcwDataService</key>
+		<type>org.opencloudware.hibernate.OcwDataService</type>
+	</component>
+
 
 	<external-component-plugins>
 		<!-- The full qualified name of the ExtensibleFilter -->
@@ -35,6 +40,24 @@
 						</field>
 					</object>
 				</object-param>
+			</init-params>
+		</component-plugin>
+	</external-component-plugins>
+
+	<external-component-plugins>
+		<target-component>org.exoplatform.services.database.HibernateService</target-component>
+		<component-plugin>
+			<name>add.mapping</name>
+			<set-method>addPlugin</set-method>
+			<type>org.exoplatform.services.database.impl.AddHibernateMappingPlugin</type>
+			<init-params>
+				<values-param>
+					<name>hibernate.mapping</name>
+					<value>mapping/Organization.hbm.xml</value>
+					<value>mapping/Application.hbm.xml</value>
+					<value>mapping/ProviderIAAS.hbm.xml</value>
+					<value>mapping/Project.hbm.xml</value>
+				</values-param>
 			</init-params>
 		</component-plugin>
 	</external-component-plugins>

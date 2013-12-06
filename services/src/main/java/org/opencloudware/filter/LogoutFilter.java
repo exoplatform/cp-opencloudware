@@ -19,7 +19,7 @@ public class LogoutFilter implements Filter {
         ServletContainerFactory.getServletContainer().logout((HttpServletRequest)request, (HttpServletResponse)response);
 
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-		httpResponse.sendRedirect(httpResponse.encodeRedirectURL("/portal"));
+		httpResponse.sendRedirect(httpResponse.encodeRedirectURL("/logout"));
 
 	}
 

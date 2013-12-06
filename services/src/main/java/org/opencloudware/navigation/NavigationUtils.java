@@ -28,6 +28,9 @@ import org.exoplatform.portal.mop.navigation.Scope;
 import org.exoplatform.portal.mop.user.*;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.Membership;
+
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.wcm.utils.WCMCoreUtils;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -37,6 +40,7 @@ import javax.portlet.ResourceURL;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -50,161 +54,182 @@ import java.util.Map;
  */
 public class NavigationUtils {
 
-  public static final Scope ECMS_NAVIGATION_SCOPE = Scope.GRANDCHILDREN;
-  
-  private static ThreadLocal<Map<String, String>> gotNavigationKeeper = new ThreadLocal<Map<String, String>>();
-  
-  private static Constructor<UserNavigation> userNavigationCtor = null;
-  
-  private static final Log LOG = ExoLogger.getLogger(NavigationUtils.class.getName());
-  static {
-    try {
-      //reflection here to get UserNavigation to avoid for using such as:
-      //spaceNav = userPortal.getNavigation(SiteKey.group(groupId));
-      userNavigationCtor = UserNavigation.class.getDeclaredConstructor(
-                                          new Class[] {UserPortalImpl.class, NavigationContext.class, boolean.class});
-      userNavigationCtor.setAccessible(true);
-    }catch (Exception e) {
-      if (LOG.isErrorEnabled()) {
-        LOG.error(e);
-      }
-    }
-  } //of static reflection
-  
-  public static boolean gotNavigation(String portal, String user) { 
-    Map<String, String> navigations = gotNavigationKeeper.get();
-    if (navigations == null) return false;
-    String navigation = navigations.get(portal + " " + user);
-    return (navigation != null);
-  }
-  
-  public static UserNavigation getUserNavigationOfPortal(UserPortal userPortal, String portalName) throws Exception {
-    UserACL userACL = WCMCoreUtils.getService(UserACL.class);
-    UserPortalConfigService userPortalConfigService = WCMCoreUtils.getService(UserPortalConfigService.class);
-    NavigationContext portalNav = userPortalConfigService.getNavigationService().
-                                        loadNavigation(new SiteKey(SiteType.PORTAL, portalName));
-    if (portalNav ==null) {
-      return null;
-    } 
-    UserPortalConfig userPortalCfg = userPortalConfigService.getUserPortalConfig(portalName,
-            ConversationState.getCurrent().getIdentity().getUserId(),
-            PortalRequestContext.USER_PORTAL_CONTEXT);
-    return userNavigationCtor.newInstance(
-            userPortal, portalNav, 
-            userACL.hasEditPermission(userPortalCfg.getPortalConfig()));
-  }
-  
-  /**
-   * Get UserNavigation of a specified element
-   * @param userPortal
-   * @param siteKey Key
-   * @return UserNavigation of group  
-   */
-  public static UserNavigation getUserNavigation(UserPortal userPortal, SiteKey siteKey) throws Exception {
-	    UserACL userACL = WCMCoreUtils.getService(UserACL.class);
-	    UserPortalConfigService userPortalConfigService = WCMCoreUtils.getService(UserPortalConfigService.class);
-	    //userPortalConfigService.get
-	    NavigationContext portalNav = userPortalConfigService.getNavigationService().
-	                                                          loadNavigation(siteKey);
-	    if (portalNav == null) {
-	      return null;
-	    } else {
-	      UserPortalConfig userPortalCfg = userPortalConfigService.getUserPortalConfig(userPortalConfigService.getDefaultPortal(), ConversationState.getCurrent().getIdentity().getUserId(), PortalRequestContext.USER_PORTAL_CONTEXT);
-              return userNavigationCtor.newInstance(userPortal, portalNav, userACL.hasEditPermission(userPortalCfg.getPortalConfig()));
-	    }
-	  }
-  
-  public static void removeNavigationAsJson (String portalName, String username) throws Exception
-  {
-    String key = portalName + " " + username;
-    Map<String, String> navigations = gotNavigationKeeper.get();
-    if (navigations != null) {
-      navigations.remove(key);
-      gotNavigationKeeper.set(navigations);
-    }
-  }
-  
-  public static String getNavigationAsJSON(String portalName, String username) throws Exception {
+	public static final Scope ECMS_NAVIGATION_SCOPE = Scope.GRANDCHILDREN;
 
-    String key = portalName + " " + username;
-    Map<String, String> navigations = gotNavigationKeeper.get();
-    if (navigations == null) {
-      navigations = new Hashtable<String, String>();
-    } else {
-      String navigationData = navigations.get(key);
-      if (navigationData != null) {
-        return navigationData;
-      }
-    }
-    UserPortalConfigService userPortalConfigService = WCMCoreUtils.getService(UserPortalConfigService.class);
-    UserPortalConfig userPortalCfg = userPortalConfigService.getUserPortalConfig(portalName,
-                                                                                 username,
-                                                                                 PortalRequestContext.USER_PORTAL_CONTEXT);
-    UserPortal userPortal = userPortalCfg.getUserPortal();
-    
-    //filter nodes
-    UserNodeFilterConfig.Builder filterConfigBuilder = UserNodeFilterConfig.builder();
-    filterConfigBuilder.withReadWriteCheck().withVisibility(Visibility.DISPLAYED, Visibility.TEMPORAL);
-    filterConfigBuilder.withTemporalCheck();
-    UserNodeFilterConfig filterConfig = filterConfigBuilder.build();
-    
-    //get nodes
-    UserNavigation navigation = getUserNavigationOfPortal(userPortal, portalName);
-    UserNode root = userPortal.getNode(navigation, ECMS_NAVIGATION_SCOPE, filterConfig, null);
+	private static ThreadLocal<Map<String, String>> gotNavigationKeeper = new ThreadLocal<Map<String, String>>();
 
-    String ret = createJsonTree(navigation, root);
-    navigations.put(key, ret);
-    gotNavigationKeeper.set(navigations);
-    return ret;
-  }
-  
-  private static String createJsonTree(UserNavigation navigation, UserNode rootNode) throws Exception {
-    StringBuffer sbJsonTree = new StringBuffer();
-    sbJsonTree.append("[");
-    sbJsonTree.append("{");
-    sbJsonTree.append("\"ownerId\":\"").append(navigation.getKey().getName()).append("\",");
-    sbJsonTree.append("\"ownerType\":\"").append(navigation.getKey().getTypeName()).append("\",");
-    sbJsonTree.append("\"priority\":\"").append(navigation.getPriority()).append("\",");
-    sbJsonTree.append("\"nodes\":").append(addJsonNodes(rootNode.getChildren().iterator()));
-    sbJsonTree.append("}");
-    sbJsonTree.append("]");
-    return sbJsonTree.toString();
-  }
-  
-  private static StringBuffer addJsonNodes(Iterator<UserNode> children) throws Exception {
-    StringBuffer sbJsonTree = new StringBuffer();
-    sbJsonTree.append("[");
-    boolean first = true;
+	private static Constructor<UserNavigation> userNavigationCtor = null;
 
-    while (children.hasNext()) {
-      UserNode child = children.next();
-      if (!first) {
-        sbJsonTree.append(",");
-      }
-      first = false;
-      sbJsonTree.append("{");
-      sbJsonTree.append("\"icon\":").append(child.getIcon() != null ? "\"" + child.getIcon() + "\""
-                                                                   : "null").append(",");
-      sbJsonTree.append("\"label\":\"").append(child.getLabel()).append("\",");
-      sbJsonTree.append("\"name\":\"").append(child.getName()).append("\",");
-      sbJsonTree.append("\"resolvedLabel\":\"").append(child.getResolvedLabel()).append("\",");
-      String childURI = "";
-      if (child.getPageRef() != null){
-        childURI = child.getURI();
-      }
-      sbJsonTree.append("\"uri\":\"").append(childURI).append("\",");
+	private static final Log LOG = ExoLogger.getLogger(NavigationUtils.class.getName());
+	static {
+		try {
+			//reflection here to get UserNavigation to avoid for using such as:
+			//spaceNav = userPortal.getNavigation(SiteKey.group(groupId));
+			userNavigationCtor = UserNavigation.class.getDeclaredConstructor(
+					new Class[] {UserPortalImpl.class, NavigationContext.class, boolean.class});
+			userNavigationCtor.setAccessible(true);
+		}catch (Exception e) {
+			if (LOG.isErrorEnabled()) {
+				LOG.error(e);
+			}
+		}
+	} //of static reflection
 
-      WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
-      MimeResponse res = context.getResponse();
-      ResourceURL resourceURL = res.createResourceURL();
-      resourceURL.setResourceID(res.encodeURL(child.getURI()));
-      Writer w = new StringWriter();
-      resourceURL.write(w, true);      
-      sbJsonTree.append("\"getNodeURL\":\"").append(w.toString()).append("\",");
-      sbJsonTree.append("\"nodes\":").append(addJsonNodes(child.getChildren().iterator()));
-      sbJsonTree.append("}");
-    }
-    sbJsonTree.append("]");
-    return sbJsonTree;
-  }
+	public static boolean gotNavigation(String portal, String user) {
+		Map<String, String> navigations = gotNavigationKeeper.get();
+		if (navigations == null) return false;
+		String navigation = navigations.get(portal + " " + user);
+		return (navigation != null);
+	}
+
+	public static UserNavigation getUserNavigationOfPortal(UserPortal userPortal, String portalName) throws Exception {
+		UserACL userACL = WCMCoreUtils.getService(UserACL.class);
+		UserPortalConfigService userPortalConfigService = WCMCoreUtils.getService(UserPortalConfigService.class);
+		NavigationContext portalNav = userPortalConfigService.getNavigationService().
+				loadNavigation(new SiteKey(SiteType.PORTAL, portalName));
+		if (portalNav ==null) {
+			return null;
+		}
+		UserPortalConfig userPortalCfg = userPortalConfigService.getUserPortalConfig(portalName,
+				ConversationState.getCurrent().getIdentity().getUserId(),
+				PortalRequestContext.USER_PORTAL_CONTEXT);
+		return userNavigationCtor.newInstance(
+				userPortal, portalNav,
+				userACL.hasEditPermission(userPortalCfg.getPortalConfig()));
+	}
+
+	/**
+	 * Get UserNavigation of a specified element
+	 * @param userPortal
+	 * @param siteKey Key
+	 * @return UserNavigation of group
+	 */
+	public static UserNavigation getUserNavigation(UserPortal userPortal, SiteKey siteKey) throws Exception {
+		UserACL userACL = WCMCoreUtils.getService(UserACL.class);
+		UserPortalConfigService userPortalConfigService = WCMCoreUtils.getService(UserPortalConfigService.class);
+		//userPortalConfigService.get
+		NavigationContext portalNav = userPortalConfigService.getNavigationService().
+				loadNavigation(siteKey);
+		if (portalNav == null) {
+			return null;
+		} else {
+			UserPortalConfig userPortalCfg = userPortalConfigService.getUserPortalConfig(userPortalConfigService.getDefaultPortal(), ConversationState.getCurrent().getIdentity().getUserId(), PortalRequestContext.USER_PORTAL_CONTEXT);
+			return userNavigationCtor.newInstance(userPortal, portalNav, userACL.hasEditPermission(userPortalCfg.getPortalConfig()));
+		}
+	}
+
+	public static void removeNavigationAsJson (String portalName, String username) throws Exception
+	{
+		String key = portalName + " " + username;
+		Map<String, String> navigations = gotNavigationKeeper.get();
+		if (navigations != null) {
+			navigations.remove(key);
+			gotNavigationKeeper.set(navigations);
+		}
+	}
+
+	public static String getNavigationAsJSON(String portalName, String username) throws Exception {
+
+		String key = portalName + " " + username;
+		Map<String, String> navigations = gotNavigationKeeper.get();
+		if (navigations == null) {
+			navigations = new Hashtable<String, String>();
+		} else {
+			String navigationData = navigations.get(key);
+			if (navigationData != null) {
+				return navigationData;
+			}
+		}
+		UserPortalConfigService userPortalConfigService = WCMCoreUtils.getService(UserPortalConfigService.class);
+		UserPortalConfig userPortalCfg = userPortalConfigService.getUserPortalConfig(portalName,
+				username,
+				PortalRequestContext.USER_PORTAL_CONTEXT);
+		UserPortal userPortal = userPortalCfg.getUserPortal();
+
+		//filter nodes
+		UserNodeFilterConfig.Builder filterConfigBuilder = UserNodeFilterConfig.builder();
+		filterConfigBuilder.withReadWriteCheck().withVisibility(Visibility.DISPLAYED, Visibility.TEMPORAL);
+		filterConfigBuilder.withTemporalCheck();
+		UserNodeFilterConfig filterConfig = filterConfigBuilder.build();
+
+		//get nodes
+		UserNavigation navigation = getUserNavigationOfPortal(userPortal, portalName);
+		UserNode root = userPortal.getNode(navigation, ECMS_NAVIGATION_SCOPE, filterConfig, null);
+
+		String ret = createJsonTree(navigation, root);
+		navigations.put(key, ret);
+		gotNavigationKeeper.set(navigations);
+		return ret;
+	}
+
+	private static String createJsonTree(UserNavigation navigation, UserNode rootNode) throws Exception {
+		StringBuffer sbJsonTree = new StringBuffer();
+		sbJsonTree.append("[");
+		sbJsonTree.append("{");
+		sbJsonTree.append("\"ownerId\":\"").append(navigation.getKey().getName()).append("\",");
+		sbJsonTree.append("\"ownerType\":\"").append(navigation.getKey().getTypeName()).append("\",");
+		sbJsonTree.append("\"priority\":\"").append(navigation.getPriority()).append("\",");
+		sbJsonTree.append("\"nodes\":").append(addJsonNodes(rootNode.getChildren().iterator()));
+		sbJsonTree.append("}");
+		sbJsonTree.append("]");
+		return sbJsonTree.toString();
+	}
+
+	private static StringBuffer addJsonNodes(Iterator<UserNode> children) throws Exception {
+		StringBuffer sbJsonTree = new StringBuffer();
+		sbJsonTree.append("[");
+		boolean first = true;
+
+		while (children.hasNext()) {
+			UserNode child = children.next();
+			if (!first) {
+				sbJsonTree.append(",");
+			}
+			first = false;
+			sbJsonTree.append("{");
+			sbJsonTree.append("\"icon\":").append(child.getIcon() != null ? "\"" + child.getIcon() + "\""
+					: "null").append(",");
+			sbJsonTree.append("\"label\":\"").append(child.getLabel()).append("\",");
+			sbJsonTree.append("\"name\":\"").append(child.getName()).append("\",");
+			sbJsonTree.append("\"resolvedLabel\":\"").append(child.getResolvedLabel()).append("\",");
+			String childURI = "";
+			if (child.getPageRef() != null){
+				childURI = child.getURI();
+			}
+			sbJsonTree.append("\"uri\":\"").append(childURI).append("\",");
+
+			WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+			MimeResponse res = context.getResponse();
+			ResourceURL resourceURL = res.createResourceURL();
+			resourceURL.setResourceID(res.encodeURL(child.getURI()));
+			Writer w = new StringWriter();
+			resourceURL.write(w, true);
+			sbJsonTree.append("\"getNodeURL\":\"").append(w.toString()).append("\",");
+			sbJsonTree.append("\"nodes\":").append(addJsonNodes(child.getChildren().iterator()));
+			sbJsonTree.append("}");
+		}
+		sbJsonTree.append("]");
+		return sbJsonTree;
+	}
+
+	public static boolean isOrganizationManager(String userName) {
+
+		if (userName == null) return false;
+		OrganizationService organizationService= WCMCoreUtils.getService(OrganizationService.class);
+
+
+		try {
+			Collection userMemberships = organizationService.getMembershipHandler().findMembershipsByUser(userName);
+			for (Object o : userMemberships) {
+				Membership membership = (Membership) o;
+				if (membership.getMembershipType().equals("manager") && membership.getGroupId().startsWith("/opencloudware/")) {
+					return true;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+		return false;
+	}
 }

@@ -38,4 +38,4 @@ import juzu.plugin.asset.Assets;
 import juzu.plugin.binding.Binding;
 import juzu.plugin.binding.Bindings;
 import juzu.plugin.servlet.Servlet;
-import org.ow2.opencloudware.portlets.register.Flash;
+import org.ow2.opencloudware.portlets.common.Flash;

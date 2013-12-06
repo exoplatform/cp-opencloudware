@@ -1,0 +1,12 @@
+<h4 class="opencloudwareTitle">${currentOrganizationName}</h4>
+<div id="usersPage">
+
+
+</div>
+
+
+<script type="text/javascript">
+	$("#usersPage").jzLoad("UsersManagement.getPage()",{"pageToDisplay":"1"});
+</script>
+
+

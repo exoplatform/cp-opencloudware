@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+  <class name="org.opencloudware.hibernate.model.Organization"
+         table="ocw_organization">
+    <cache usage="transactional"/>
+    <id name="id"
+        type="java.lang.Long"
+        access="field">
+      <column name="ID"/>
+      <generator class="native"/>
+    </id>
+
+    <property name="organizationName"
+              type="java.lang.String"
+              access="field"
+              lazy="false">
+      <column name="ORGANIZATION_NAME"
+              not-null="true"
+              unique-key="id"/>
+    </property>
+
+	  <property name="creditCardNumber"
+				type="java.lang.String"
+				access="field"
+				lazy="false"
+				not-null="true">
+		  <column name="CREDIT_CARD_NUMBER"/>
+	  </property>
+	  <property name="groupId"
+				type="java.lang.String"
+				access="field"
+				lazy="false"
+				not-null="true">
+		  <column name="GROUP_ID"/>
+	  </property>
+	  <property name="address"
+				type="java.lang.String"
+				access="field"
+				lazy="false"
+				not-null="true">
+		  <column name="ADDRESS"/>
+	  </property>
+
+	  <set name="providerIAASes" table="ocw_providerIAAS"
+		   inverse="true" lazy="true" fetch="select">
+		  <key>
+			  <column name="ORGANIZATION_ID" not-null="true" />
+		  </key>
+		  <one-to-many class="org.opencloudware.hibernate.model.ProviderIAAS" />
+	  </set>
+
+	  <set name="projects" table="ocw_project"
+		   inverse="true" lazy="false" fetch="select">
+		  <key>
+			  <column name="ORGANIZATION_ID" not-null="true" />
+		  </key>
+		  <one-to-many class="org.opencloudware.hibernate.model.Project" />
+	  </set>
+
+	  <set name="managers" table="ocw_organization_managers" lazy="false">
+		  <key column="ORGANIZATION_ID"/>
+		  <element type="string"/>
+	  </set>
+
+	  <set name="usersRequest" table="ocw_organization_userRequest" lazy="false">
+		  <key column="ORGANIZATION_ID"/>
+		  <element type="string"/>
+	  </set>
+  </class>
+</hibernate-mapping>

@@ -60,7 +60,7 @@
                       <string>the /opencloudware group</string>
                     </field>
                     <field name="label">
-                      <string>OpenCloudware</string>
+                      <string>openCloudware</string>
                     </field>
                   </object>
                 </value>

@@ -33,7 +33,21 @@
       <visibility>DISPLAYED</visibility>
       <page-reference>portal::opencloudware::homepage</page-reference>
     </node>
-    <node>
+	  <node>
+		  <uri>services</uri>
+		  <name>Services</name>
+		  <label>Services Access</label>
+		  <visibility>DISPLAYED</visibility>
+		  <page-reference>portal::opencloudware::serviceAccess</page-reference>
+	  </node>
+	  <node>
+		  <uri>join</uri>
+		  <name>join</name>
+		  <label>Join Organization</label>
+		  <visibility>DISPLAYED</visibility>
+		  <page-reference>portal::opencloudware::join</page-reference>
+	  </node>
+	  <node>
       <uri>detail</uri>
       <name>detail</name>
       <label>Detail</label>

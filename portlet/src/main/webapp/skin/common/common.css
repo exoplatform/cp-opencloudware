@@ -1,0 +1,43 @@
+label.valid {
+    width: 24px;
+    height: 24px;
+    background: url(img/valid.png) center center no-repeat;
+    display: inline-block;
+    text-indent:-9999px;
+}
+label.error {
+    font-weight: bold;
+    color: red;
+    margin-left: 4px;
+    display: inline-block;
+}
+#organizationSelector {
+    margin:11px 0;
+}
+
+#flashMessage {
+    margin:14px;
+}
+
+.paginationNb {
+
+    float : left;
+    margin-top:60px;
+    padding-left:5px;
+}
+.uiAction {
+    width: 100%;
+    margin: 10px auto;
+    text-align: center;
+}
+
+h3.opencloudwareTitle, h4.opencloudwareTitle {
+    margin:10px;
+}
+
+
+.actionCell {
+    text-align:center;
+
+}
+

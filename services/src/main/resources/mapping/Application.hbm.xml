@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+  <class name="org.opencloudware.hibernate.model.Application"
+         table="ocw_application">
+    <cache usage="transactional"/>
+    <id name="id"
+        type="java.lang.Long"
+        access="field">
+      <column name="ID"/>
+      <generator class="native"/>
+    </id>
+
+    <property name="applicationName"
+              type="java.lang.String"
+              access="field"
+              lazy="false">
+      <column name="APPLICATION_NAME"/>
+    </property>
+
+	  <property name="description"
+				type="java.lang.String"
+				access="field"
+				lazy="false"
+				not-null="true">
+		  <column name="DESCRIPTION"/>
+	  </property>
+
+	  <many-to-one name="project" class="org.opencloudware.hibernate.model.Project" fetch="select">
+		  <column name="PROJECT_ID" not-null="true" />
+	  </many-to-one>
+
+	  <set name="managers" table="ocw_application_managers" lazy="false">
+		  <key column="PROJECT_ID"/>
+		  <element type="string"/>
+	  </set>
+  </class>
+</hibernate-mapping>

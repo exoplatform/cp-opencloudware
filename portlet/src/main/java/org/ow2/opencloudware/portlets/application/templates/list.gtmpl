@@ -1,0 +1,42 @@
+<h4 class="opencloudwareTitle">${currentOrganizationName}</h4>
+
+<%
+	if (projects.size()>1) {
+%>
+        <select id="projectSelector">
+<%
+		projects.each { current ->
+			String projectId = current.getId();
+			String projectName = current.getProjectName();
+			if (projectId.equals(currentProjectId)) {
+%>
+				<option value="${projectId}" selected="selected">${projectName}</option>
+<%
+			} else {
+%>
+				<option value="${projectId}">${projectName}</option>
+<%
+			}
+		}
+%>
+		</select>
+<%
+	}
+
+%>
+
+
+
+<div id="applicationTable">
+
+</div>
+
+<script type="text/javascript">
+	$("#applicationTable").jzLoad("ApplicationManagement.getPage()",{"pageToDisplay":"1"});
+
+	$("#projectSelector").change(function() {
+      $("#applicationList").jzLoad("ApplicationManagement.changeProject()",{"projectId":$('#projectSelector option:selected').val()});
+    });
+
+
+</script>

@@ -68,6 +68,17 @@
 			<version>${org.exoplatform.ecms.version}</version>
 			<scope>provided</scope>
 	</dependency>
+		<dependency>
+			<groupId>org.opencloudware</groupId>
+			<artifactId>opencloudware-extension-services</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.exoplatform.kernel</groupId>
+			<artifactId>exo.kernel.commons</artifactId>
+			<version>2.4.6-GA-SNAPSHOT</version>
+		</dependency>
 
 	</dependencies>
 

@@ -1,0 +1,32 @@
+<div style="margin-right:20px;margin-left:20px">
+
+
+	<div class="topBanner">
+		<div class="pull-left">
+			<h3 class="opencloudwareTitle">Organizations</h3>
+		</div>
+		<% if (flash.getError() != "") { %>
+			<div id="flashMessage" class="alert-error pull-left flash">
+				${flash.getError()}
+			</div><br/>
+		<% } %>
+		<% if (flash.getSuccess() != "") { %>
+			<div id="flashMessage" class="alert-success pull-left flash">
+				<strong>${flash.getSuccess()}</strong>
+			</div><br/>
+		<% } %>
+		<div class="pull-right">
+			<h3>
+
+
+			<a class="btn" href="@{OrganizationManagment.displayAddForm()}">
+            			<i class="icon-plus"></i>Add Organization
+            		</a>
+
+
+			</h3>
+		</div>
+	</div>
+	<div id="organizationTable">
+	</div>
+</div>

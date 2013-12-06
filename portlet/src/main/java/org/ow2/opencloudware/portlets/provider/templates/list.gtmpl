@@ -1,0 +1,8 @@
+<h4 class="opencloudwareTitle">${currentOrganizationName}</h4>
+<div id="providerTable">
+
+</div>
+
+<script type="text/javascript">
+	$("#providerTable").jzLoad("ProviderManagement.getPage()",{"pageToDisplay":"1"});
+</script>

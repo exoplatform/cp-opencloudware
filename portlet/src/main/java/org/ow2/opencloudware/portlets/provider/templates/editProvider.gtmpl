@@ -1,0 +1,66 @@
+<div style="margin-right:20%;margin-left:20%">
+
+	<h3 class="opencloudwareTitle">Edit Provider</h3>
+
+	<form id="editProviderForm" class="form-horizontal" action="@{editProvider()}" method="post">
+		<div class="control-group">
+        			<div class="controls">
+        				<input type="hidden" id="oldProviderName" name="oldProviderName" value="${provider.getProviderIAASName()}">
+						<input type="hidden" id="inputProviderId" name="inputProviderId" value="${provider.getId()}">
+        			</div>
+        		</div>
+		<div class="control-group">
+			<label for="inputProviderName" class="control-label">Provider Name (*) : </label>
+			<div class="controls">
+				<input type="text" id="inputProviderName" name="inputProviderName" value="${provider.getProviderIAASName()}">
+			</div>
+		</div>
+		<div class="control-group">
+                			<label for="inputProviderVendor" class="control-label">Provider Vendor (*) : </label>
+                			<div class="controls">
+                				<input type="text" id="inputProviderVendor" name="inputProviderVendor" value="${provider.getProviderIAASVendor()}">
+                			</div>
+                		</div>
+		<div class="control-group">
+			<label for="inputProviderLogin" class="control-label">Provider Login (*) : </label>
+			<div class="controls">
+				<input type="text" id="inputProviderLogin" name="inputProviderLogin" value="${provider.getProviderIAASLogin()}">
+			</div>
+		</div>
+
+		<div class="control-group">
+        			<label for="inputProviderPassword" class="control-label">Provider password : </label>
+                    <div class="controls">
+                    	<input type="password" id="inputProviderPassword" name="inputProviderPassword" placeholder="Provider password"><br/>
+                    	Don't fill if you don't want to change password.
+                    </div>
+
+
+                </div>
+                <div class="control-group">
+                			<label for="inputConfirmPassword" class="control-label">Confirm Password : </label>
+                			<div class="controls">
+                				<input type="password" id="inputConfirmPassword" name="inputConfirmPassword" placeholder="Confirm Password">
+                			</div>
+                		</div>
+
+
+
+		<div class="control-group">
+			<div class="controls">
+				<span> (*) are required fields.</span>
+			</div>
+		</div>
+
+		<div class="control-group">
+			<div class="controls">
+				<button type="submit" class="btn btn-primary" id="register">Save modification</button>
+				<button type="button" class="btn btn-default" id="cancel" onclick="javascript:window.location='@{ProviderManagement.index()}'">Cancel</button>
+				<button type="reset" class="btn btn-default" id="reset" onclick="clearValidation();">Reset</button>
+			</div>
+		</div>
+
+
+	</form>
+
+</div>

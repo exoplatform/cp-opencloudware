@@ -20,4 +20,122 @@
        <keywords></keywords>
      </portlet-info>
    </portlet>
+	<portlet>
+		<portlet-name>join</portlet-name>
+		<display-name xml:lang="EN">OpenCloudware Join Organization Portlet</display-name>
+		<portlet-class>org.ow2.opencloudware.portlets.join.JoinPortlet</portlet-class>
+		<init-param>
+			<name>juzu.run_mode</name>
+			<value>prod</value>
+		</init-param>
+		<supports>
+			<mime-type>text/html</mime-type>
+		</supports>
+		<portlet-info>
+			<title>OpenCloudware Join Organization Portlet</title>
+			<keywords></keywords>
+		</portlet-info>
+	</portlet>
+	<portlet>
+		<portlet-name>usersPortlet</portlet-name>
+		<display-name xml:lang="EN">OpenCloudware Manage UsersPortlet</display-name>
+		<portlet-class>org.ow2.opencloudware.portlets.users.UsersPortlet</portlet-class>
+		<init-param>
+			<name>juzu.run_mode</name>
+			<value>prod</value>
+		</init-param>
+		<supports>
+			<mime-type>text/html</mime-type>
+		</supports>
+		<portlet-info>
+			<title>OpenCloudware Manage Users Portlet</title>
+			<keywords></keywords>
+		</portlet-info>
+	</portlet>
+	<portlet>
+		<portlet-name>OrganizationManagmentPortlet</portlet-name>
+		<display-name xml:lang="EN">OpenCloudware Organization Managment Portlet</display-name>
+		<portlet-class>org.ow2.opencloudware.portlets.organization.administrators.AdministratorsPortlet</portlet-class>
+
+		<init-param>
+			<name>juzu.run_mode</name>
+			<value>prod</value>
+		</init-param>
+		<supports>
+			<mime-type>text/html</mime-type>
+		</supports>
+		<portlet-info>
+			<title>OpenCloudware Organization Managment Portlet</title>
+			<keywords></keywords>
+		</portlet-info>
+	</portlet>
+	<portlet>
+		<portlet-name>ProviderManagementPortlet</portlet-name>
+		<display-name xml:lang="EN">OpenCloudware Provider Management Portlet</display-name>
+		<portlet-class>org.ow2.opencloudware.portlets.provider.ProviderPortlet</portlet-class>
+
+		<init-param>
+			<name>juzu.run_mode</name>
+			<value>prod</value>
+		</init-param>
+		<supports>
+			<mime-type>text/html</mime-type>
+		</supports>
+		<portlet-info>
+			<title>OpenCloudware Provider Management Portlet</title>
+			<keywords></keywords>
+		</portlet-info>
+	</portlet>
+	<portlet>
+		<portlet-name>MyOrganizationPortlet</portlet-name>
+		<display-name xml:lang="EN">OpenCloudware My Organization Portlet</display-name>
+		<portlet-class>org.ow2.opencloudware.portlets.organization.manager.ManagerPortlet</portlet-class>
+		<init-param>
+			<name>juzu.run_mode</name>
+			<value>prod</value>
+		</init-param>
+		<supports>
+			<mime-type>text/html</mime-type>
+		</supports>
+		<portlet-info>
+			<title>OpenCloudware My Organization Portlet</title>
+			<keywords></keywords>
+		</portlet-info>
+	</portlet>
+
+	<portlet>
+		<portlet-name>ProjectManagementPortlet</portlet-name>
+		<display-name xml:lang="EN">OpenCloudware Project Management Portlet</display-name>
+		<portlet-class>org.ow2.opencloudware.portlets.project.ProjectPortlet</portlet-class>
+
+		<init-param>
+			<name>juzu.run_mode</name>
+			<value>prod</value>
+		</init-param>
+		<supports>
+			<mime-type>text/html</mime-type>
+		</supports>
+		<portlet-info>
+			<title>OpenCloudware Project Management Portlet</title>
+			<keywords></keywords>
+		</portlet-info>
+	</portlet>
+
+	<portlet>
+		<portlet-name>ApplicationManagementPortlet</portlet-name>
+		<display-name xml:lang="EN">OpenCloudware Application Management Portlet</display-name>
+		<portlet-class>org.ow2.opencloudware.portlets.application.ApplicationPortlet</portlet-class>
+
+		<init-param>
+			<name>juzu.run_mode</name>
+			<value>prod</value>
+		</init-param>
+		<supports>
+			<mime-type>text/html</mime-type>
+		</supports>
+		<portlet-info>
+			<title>OpenCloudware Application Management Portlet</title>
+			<keywords></keywords>
+		</portlet-info>
+	</portlet>
 </portlet-app>

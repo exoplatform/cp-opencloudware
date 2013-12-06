@@ -35,6 +35,14 @@
           <name>cache.providerRegistryName</name>
           <value>apiCacheProvider</value>
         </option>
+		  <option>
+			  <name>credentialEncoder.class</name>
+			  <value>org.picketlink.idm.impl.credential.HashingEncoder</value>
+		  </option>
+		  <option>
+			  <name>credentialEncoder.hashAlgorithm</name>
+			  <value>MD5</value>
+		  </option>
       </options>
     </realm>
     <realm>
@@ -52,6 +60,15 @@
           <name>cache.providerRegistryName</name>
           <value>apiCacheProvider</value>
         </option>
+
+		  <option>
+			  <name>credentialEncoder.class</name>
+			  <value>org.picketlink.idm.impl.credential.HashingEncoder</value>
+		  </option>
+		  <option>
+			  <name>credentialEncoder.hashAlgorithm</name>
+			  <value>MD5</value>
+		  </option>
       </options>
     </realm>
   </realms>
@@ -389,7 +406,7 @@
           </option>
           <option>
             <name>adminPassword</name>
-            <value>${opencloudware.ldap.password}</value>
+            <value>secret</value>
           </option>
           <option>
             <name>searchTimeLimit</name>

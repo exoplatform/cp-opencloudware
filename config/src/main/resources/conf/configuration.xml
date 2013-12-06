@@ -45,6 +45,12 @@
 						<field name="dependencies">
 							<collection type="java.util.ArrayList">
 								<value>
+									<string>platform-extension</string>
+								</value>
+								<value>
+									<string>trial</string>
+								</value>
+								<value>
 									<string>opencloudware-extension</string>
 								</value>
 							</collection>

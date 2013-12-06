@@ -1,0 +1,22 @@
+<th>
+    ${user.getUserName()}
+</th>
+<th>
+    ${user.getFirstName()}
+</th>
+<th>
+    ${user.getLastName()}
+</th>
+<th>
+    ${user.getEmail()}
+</th>
+<th>
+    <input type="radio" id="stateA-${user.getUserName()}" name="state-${user.getUserName()}" class="userRadioButtonAccepted" value="accept">Accept<br/>
+    <input type="radio" id="stateN-${user.getUserName()}" name="state-${user.getUserName()}" value="donothing" checked="checked">Do Nothing<br/>
+    <input type="radio" id="stateR-${user.getUserName()}" name="state-${user.getUserName()}" class="userRadioButtonRejected" value="deny">Deny
+
+
+</th>
+
+
+

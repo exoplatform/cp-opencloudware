@@ -1,0 +1,43 @@
+<div style="margin-right:20%;margin-left:20%">
+
+	<h3 class="opencloudwareTitle">Edit Organization</h3>
+
+	<form id="editOrganizationForm" class="form-horizontal" action="@{editOrganization()}" method="post">
+		<div class="control-group">
+        			<div class="controls">
+        				<input type="hidden" id="organizationId" name="organizationId" value="${organization.getId()}">
+        				<input type="hidden" id="oldOrganizationName" name="oldOrganizationName" value="${organization.getOrganizationName()}">
+
+        			</div>
+        		</div>
+		<div class="control-group">
+			<label for="inputOrganizationName" class="control-label">Organization Name (*) : </label>
+			<div class="controls">
+				<input type="text" id="inputOrganizationName" name="inputOrganizationName" value="${organization.getOrganizationName()}">
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="inputOrganizationAddress" class="control-label">Organization Address (*) : </label>
+			<div class="controls">
+				<input type="text" id="inputOrganizationAddress" name="inputOrganizationAddress" value="${organization.getAddress()}">
+			</div>
+		</div>
+
+		<div class="control-group">
+			<div class="controls">
+				<span> (*) are required fields.</span>
+			</div>
+		</div>
+
+		<div class="control-group">
+			<div class="controls">
+				<button type="submit" class="btn btn-primary" id="register">Save modification</button>
+				<button type="button" class="btn btn-default" id="cancel" onclick="javascript:window.location='@{OrganizationManagment.index()}'">Cancel</button>
+				<button type="reset" class="btn btn-default" id="reset" onclick="clearValidation();">Reset</button>
+			</div>
+		</div>
+
+
+	</form>
+
+</div>

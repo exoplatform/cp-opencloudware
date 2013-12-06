@@ -21,6 +21,5 @@
 	<context-param>
 		<param-name>juzu.inject</param-name>
 		<param-value>guice</param-value>
-			<!--param-value>spring</param-value-->
 	</context-param>
 </web-app>

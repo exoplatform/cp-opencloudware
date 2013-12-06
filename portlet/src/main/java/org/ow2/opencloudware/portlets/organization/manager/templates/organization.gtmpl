@@ -1,0 +1,63 @@
+<% if (flash.getError() != "") { %>
+<div id="flashMessage" class="alert-error pull-left flash">
+    ${flash.getError()}
+</div>
+<% } %>
+<% if (flash.getSuccess() != "") { %>
+<div id="flashMessage" class="alert-success pull-left flash">
+    <strong>${flash.getSuccess()}</strong>
+</div>
+<% } %>
+
+
+
+<div id="organizationInformation" class="infoDiv">
+</div>
+<script>
+	$("#organizationInformation").jzLoad("MyOrganization.getOrganizationInformationFragment()");
+</script>
+
+
+<div id="organizationLogo" class="infoDiv">
+
+</div>
+<script>
+$("#organizationLogo").jzLoad("MyOrganization.getUploadLogoFragment()");
+
+</script>
+
+
+<div id="organizationLinks" class="infoDiv">
+	<a id="linkUsers" class="btn" href="#">Manage Users</a>
+	<a id="linkProviders" class="btn" href="#">Manage Provider IAAS</a>
+	<a id="linkProjects" class="btn" href="#">Manage Projects</a>
+    <a id="linkApps" class="btn" href="#">Manage Applications</a>
+
+</div>
+
+<div id="organizationUsersRequests" class="infoDiv">
+    <a class="btn" href="#" id="usersRequests"> ${organization.getUsersRequest().size()} Users Requests to validate</a>
+
+</div>
+<script type="text/javascript">
+	var currentSplittedUrl = location.pathname.split("/");
+
+    var userLink = "/"+currentSplittedUrl[1]+"/"+currentSplittedUrl[2]+"/"+currentSplittedUrl[3]+"/users";
+    var providerLink="/"+currentSplittedUrl[1]+"/"+currentSplittedUrl[2]+"/"+currentSplittedUrl[3]+"/providers";
+    var appsLink="/"+currentSplittedUrl[1]+"/"+currentSplittedUrl[2]+"/"+currentSplittedUrl[3]+"/applications";
+    var projectsLink="/"+currentSplittedUrl[1]+"/"+currentSplittedUrl[2]+"/"+currentSplittedUrl[3]+"/projects";
+
+    $("#linkUsers").attr("href", userLink);
+    $("#linkProviders").attr("href", providerLink);
+    $("#linkApps").attr("href", appsLink);
+    $("#linkProjects").attr("href", projectsLink);
+
+
+    $("#usersRequests").click(function() {
+        $("#organization").jzLoad("MyOrganization.getUsersRequestsFragment()");
+    });
+</script>
+
+
+
+

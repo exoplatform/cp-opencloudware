@@ -11,13 +11,18 @@ package org.ow2.opencloudware.portlets.register;
 import juzu.*;
 import juzu.plugin.ajax.Ajax;
 import juzu.template.Template;
-import org.exoplatform.services.organization.*;
 import org.exoplatform.services.cms.impl.Utils;
-
+import org.exoplatform.services.organization.*;
+import org.opencloudware.hibernate.OcwDataService;
+import org.opencloudware.hibernate.dao.OrganizationDAO;
+import org.opencloudware.hibernate.model.Organization;
+import org.ow2.opencloudware.portlets.common.Flash;
 
 import javax.inject.Inject;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 @SessionScoped
@@ -31,10 +36,12 @@ public class Register {
 	Flash flash;
 
 	OrganizationService organizationService_;
+	OcwDataService ocwDataService_;
 
 	@Inject
-	public void Register(OrganizationService organizationService) {
+	public void Register(OrganizationService organizationService, OcwDataService ocwDataService) {
 		organizationService_=organizationService;
+		ocwDataService_=ocwDataService;
 	}
 
 
@@ -91,7 +98,7 @@ public class Register {
 	public Response.Content isValidOrganizationName(String inputOrganizationName) {
 		GroupHandler groupHandler=organizationService_.getGroupHandler();
 
-		String sanitizedOrganizationName = "/opencloudware/"+sanitizeGroupName(inputOrganizationName);
+		String sanitizedOrganizationName = "/opencloudware/"+Utils.cleanString(inputOrganizationName);
 		try {
 
 			if (groupHandler.findGroupById(sanitizedOrganizationName) == null) {
@@ -176,7 +183,7 @@ public class Register {
 		if (inputRadio.equals("Yes")) {
 			GroupHandler groupHandler = organizationService_.getGroupHandler();
 
-			String sanitizedOrganizationName = "/opencloudware/"+sanitizeGroupName(inputOrganizationName);
+			String sanitizedOrganizationName = "/opencloudware/"+Utils.cleanString(inputOrganizationName);
 			try {
 				Group newGroup = groupHandler.findGroupById(sanitizedOrganizationName);
 				if (newGroup != null) {
@@ -187,17 +194,29 @@ public class Register {
 
 
 				newGroup = groupHandler.createGroupInstance();
-				newGroup.setGroupName(sanitizeGroupName(inputOrganizationName));
+				newGroup.setGroupName(Utils.cleanString(inputOrganizationName));
 				newGroup.setLabel(inputOrganizationName);
 
 				Group opencloudareGroup = groupHandler.findGroupById("/opencloudware");
 				groupHandler.addChild(opencloudareGroup,newGroup,true);
 
-				MembershipType membershipTypeManager = organizationService_.getMembershipTypeHandler().findMembershipType("manager");
-				organizationService_.getMembershipHandler().linkMembership(user, newGroup, membershipTypeManager, true);
+				//todo this is no more necessary, because manager are managed by PDP. remove it ?
+				//MembershipType membershipTypeManager = organizationService_.getMembershipTypeHandler().findMembershipType("manager");
+				//organizationService_.getMembershipHandler().linkMembership(user, newGroup, membershipTypeManager, true);
 
 				MembershipType membershipTypeMember = organizationService_.getMembershipTypeHandler().findMembershipType("member");
 				organizationService_.getMembershipHandler().linkMembership(user, newGroup, membershipTypeMember, true);
+
+				OrganizationDAO organizationDAO = ocwDataService_.getOrganizationDAO();
+				Organization organization = organizationDAO.createOrganizationInstance(inputOrganizationName);
+				organization.setCreditCardNumber(inputCreditCardNumber);
+				organization.setGroupId(newGroup.getId());
+				organization.setAddress(inputOrganizationAddress);
+				Set<String> managers = new HashSet<String>();
+				managers.add(user.getUserName());
+				organization.setManagers(managers);
+				organizationDAO.createOrganization(organization);
+
 
 				flash.setSuccess("User "+inputUserName+" and organization "+inputOrganizationName+" added");
 			} catch (Exception e) {
@@ -210,9 +229,5 @@ public class Register {
 	}
 
 
-	private String sanitizeGroupName(String inputOrganizationName) {
-		return Utils.cleanString(inputOrganizationName);
-
-	}
 }
 

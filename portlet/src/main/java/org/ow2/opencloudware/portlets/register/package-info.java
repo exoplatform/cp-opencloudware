@@ -17,7 +17,8 @@
 @Application
 @Bindings(
 		{
-				@Binding(value = org.exoplatform.services.organization.OrganizationService.class)
+				@Binding(value = org.exoplatform.services.organization.OrganizationService.class),
+				@Binding(value = org.opencloudware.hibernate.OcwDataService.class)
 		}
 )
 
@@ -26,15 +27,17 @@
 
 @Assets(
 		scripts = {
-				@Script(id = "jquery", src = "js/register/jquery-1.8.3.min.js", location = AssetLocation.SERVER),
-				@Script(id = "jqueryValidate", src = "js/register/jquery.validate.min.js", depends = "jquery", location = AssetLocation.SERVER),
+				@Script(id = "jquery", src = "js/common/jquery-1.8.3.min.js", location = AssetLocation.SERVER),
+				@Script(id = "jqueryValidate", src = "js/common/jquery.validate.min.js", depends = "jquery", location = AssetLocation.SERVER),
 				@Script(id = "transition", src = "js/register/bootstrap-transition.js", depends = "jquery", location = AssetLocation.SERVER),
 				@Script(id = "collapse", src = "js/register/bootstrap-collapse.js", depends = {"jquery", "transition"}, location = AssetLocation.SERVER),
 				@Script(src = "js/register/register.js", depends = {"jquery", "collapse"}, location = AssetLocation.SERVER)
 
 		},
 		stylesheets = {
-				@Stylesheet(src = "skin/register/register.css", location = AssetLocation.SERVER)
+				@Stylesheet(id = "common", src = "skin/common/common.css", location = AssetLocation.SERVER),
+				@Stylesheet(src = "skin/register/register.css", depends = "common", location = AssetLocation.SERVER)
+
 		}
 
 

@@ -36,6 +36,11 @@
 			<artifactId>ecms-core-services</artifactId>
 			<version>${org.exoplatform.ecms.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.exoplatform.kernel</groupId>
+			<artifactId>exo.kernel.component.cache</artifactId>
+			<version>${org.exoplatform.kernel.version}</version>
+		</dependency>
 	</dependencies>
 
 

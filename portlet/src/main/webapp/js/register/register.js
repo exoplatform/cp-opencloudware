@@ -5,7 +5,7 @@ $(function () {
 	$("#organizationInformation").hide();
 
 
-	$("#newUserForm").validate({
+	validator = $("#newUserForm").validate({
     	rules: {
         	inputUserName: {
 				minlength: 2,
@@ -52,6 +52,7 @@ $(function () {
         },
         messages: {
             inputUserName: { remote: "This username already exists." },
+            inputOrganizationName: { remote: "This organization name already exists." },
             inputEmail: { remote: "This mail address already exists." }
          },
         highlight: function(element) {
@@ -60,6 +61,7 @@ $(function () {
         success: function(element) {
         	element.text("OK !").addClass('valid').closest('.control-group').removeClass('error').addClass('success');
         }/*,
+        }
         errorPlacement: function(error,element) {
             element.addClass('error').closest('.control-group').removeClass('success').addClass('error');
             error.appendTo(element.parent().next());
@@ -69,3 +71,12 @@ $(function () {
 
 
 });
+
+
+function clearValidation (){
+
+	validator.resetForm();
+    $('.control-group').removeClass('success');
+    $('.control-group').removeClass('error');
+
+}

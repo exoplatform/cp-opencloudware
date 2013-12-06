@@ -1,0 +1,59 @@
+<div style="margin-right:20%;margin-left:20%">
+
+    <h3 class="opencloudwareTitle">Join Organization</h3>
+
+
+    <% if (flash.getError() != "") { %>
+    <div id="flashMessage" class="alert-error pull-left flash">
+        ${flash.getError()}
+    </div>
+    <% } %>
+    <% if (flash.getSuccess() != "") { %>
+    <div id="flashMessage" class="alert-success pull-left flash">
+        <strong>${flash.getSuccess()}</strong>
+    </div>
+    <% } %>
+
+
+        <form id="joinForm" class="form-horizontal" action="@{joinOrganization()}" method="post">
+
+
+        <div class="control-group">
+            <label for="inputOrganizationName" class="control-label">Which organization do you want to join (*) : </label>
+            <div class="controls">
+                <input type="text" id="inputOrganizationName" name="inputOrganizationName" placeholder="Organization Name">
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-primary" id="register">Send Request</button>
+                <button type="reset" class="btn btn-default" id="reset" onclick="javascript:window.location='@{JoinOrganizationPortlet.index()}'">Reset</button>
+            </div>
+        </div>
+
+
+
+    </form>
+
+
+    <script type="text/javascript">
+        validator = $("#joinForm").validate({
+            rules: {
+                inputOrganizationName: {
+                    required: true,
+                    minlength: 2
+                }
+            },
+            highlight: function(element) {
+                $(element).closest('.control-group').removeClass('success').addClass('error');
+            },
+            success: function(element) {
+                element.text("OK !").addClass('valid').closest('.control-group').removeClass('error').addClass('success');
+            }
+        });
+
+    </script>
+
+
+
+</div>
