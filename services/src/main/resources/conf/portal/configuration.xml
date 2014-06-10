@@ -1,64 +1,171 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <configuration
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
-   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
+        xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
 
-	<component>
-		<key>org.opencloudware.hibernate.OcwDataService</key>
-		<type>org.opencloudware.hibernate.OcwDataService</type>
-	</component>
+    <component>
+        <key>org.opencloudware.hibernate.OcwDataService</key>
+        <type>org.opencloudware.hibernate.OcwDataService</type>
+    </component>
+
+    <component>
+    <key>org.opencloudware.rest.providers.RESTAPIProviders</key>
+    <type>org.opencloudware.rest.providers.RESTAPIProviders</type>
+    </component>
+
+    <component>
+        <key>org.opencloudware.rest.users.RESTAPIUsers</key>
+        <type>org.opencloudware.rest.users.RESTAPIUsers</type>
+    </component>
 
 
-	<external-component-plugins>
-		<!-- The full qualified name of the ExtensibleFilter -->
-		<target-component>org.exoplatform.web.filter.ExtensibleFilter</target-component>
-		<component-plugin>
-			<!-- The name of the plugin -->
-			<name>Logout Filter</name>
-			<!-- The name of the method to call on the ExtensibleFilter in order to register the FilterDefinitions -->
-			<set-method>addFilterDefinitions</set-method>
-			<!-- The full qualified name of the FilterDefinitionPlugin -->
-			<type>org.exoplatform.web.filter.FilterDefinitionPlugin</type>
-			<init-params>
-				<object-param>
-					<name>Logout Filter Definition</name>
-					<object type="org.exoplatform.web.filter.FilterDefinition">
-						<!-- The filter instance -->
-						<field name="filter">
-								<object type="org.opencloudware.filter.LogoutFilter"/>
-						</field>
-						<!-- The mapping to use -->
-						<!-- WARNING: the mapping is expressed with regular expressions -->
-						<field name="patterns">
-							<collection type="java.util.ArrayList" item-type="java.lang.String">
-								<value>
-									<string>/logout</string>
-								</value>
-							</collection>
-						</field>
-					</object>
-				</object-param>
-			</init-params>
-		</component-plugin>
-	</external-component-plugins>
+    <component>
+        <key>org.opencloudware.rest.applicationInstances.RESTAPIApplicationInstance</key>
+        <type>org.opencloudware.rest.applicationInstances.RESTAPIApplicationInstance</type>
+    </component>
 
-	<external-component-plugins>
-		<target-component>org.exoplatform.services.database.HibernateService</target-component>
-		<component-plugin>
-			<name>add.mapping</name>
-			<set-method>addPlugin</set-method>
-			<type>org.exoplatform.services.database.impl.AddHibernateMappingPlugin</type>
-			<init-params>
-				<values-param>
-					<name>hibernate.mapping</name>
-					<value>mapping/Organization.hbm.xml</value>
-					<value>mapping/Application.hbm.xml</value>
-					<value>mapping/ProviderIAAS.hbm.xml</value>
-					<value>mapping/Project.hbm.xml</value>
-				</values-param>
-			</init-params>
-		</component-plugin>
-	</external-component-plugins>
+
+    <component>
+        <key>org.opencloudware.rest.applicationTemplate.RESTAPIApplicationTemplate</key>
+        <type>org.opencloudware.rest.applicationTemplate.RESTAPIApplicationTemplate</type>
+    </component>
+    <component>
+        <key>org.opencloudware.rest.resources.RESTAPIResources</key>
+        <type>org.opencloudware.rest.resources.RESTAPIResources</type>
+        <init-params>
+            <object-param>
+                <name>initialResource.configuration</name>
+                <object type="org.opencloudware.rest.resources.ResourcesDefinition">
+                    <field name="resources">
+                        <collection type="java.util.ArrayList">
+                            <value>
+                                <object type="org.opencloudware.rest.resources.OCWResource">
+                                    <field name="resourceType">
+                                        <string>bdd</string>
+                                    </field>
+                                    <field name="resourceImplType">
+                                        <string>exoplatform</string>
+                                    </field>
+                                    <field name="resourceEndpoint">
+                                        <string>http://portail.ocw-portail.bull.net/portal/rest/opencloudware</string>
+                                    </field>
+                                    <field name="resourceDescription">
+                                        <string>Service de base de données centrale</string>
+                                    </field>
+                                    <field name="resourceLogin">
+                                        <string>wsadminocw</string>
+                                    </field>
+                                    <field name="resourcePassword">
+                                        <string>!wsadminocw!</string>
+                                    </field>
+                                </object>
+                            </value>
+                            <value>
+                                <object type="org.opencloudware.rest.resources.OCWResource">
+                                    <field name="resourceType">
+                                        <string>multi-cloud-iaas</string>
+                                    </field>
+                                    <field name="resourceImplType">
+                                        <string>sirocco</string>
+                                    </field>
+                                    <field name="resourceEndpoint">
+                                        <string>http://10.197.180.211/cimi</string>
+                                    </field>
+                                    <field name="resourceDescription">
+                                        <string>Manager multi-cloud OW2 Sirocco</string>
+                                    </field>
+                                </object>
+                            </value>
+                            <value>
+                                <object type="org.opencloudware.rest.resources.OCWResource">
+                                    <field name="resourceType">
+                                        <string>deployment</string>
+                                    </field>
+                                    <field name="resourceImplType">
+                                        <string>vamp</string>
+                                    </field>
+                                    <field name="resourceEndpoint">
+                                        <string>http://10.197.176.82:8080/vampmgrws</string>
+                                    </field>
+                                    <field name="resourceDescription">
+                                        <string>Service de déploiement OW2 Sirocco VAMP</string>
+                                    </field>
+                                </object>
+                            </value>
+ 			    <value>
+                                <object type="org.opencloudware.rest.resources.OCWResource">
+                                    <field name="resourceType">
+                                        <string>forging</string>
+                                    </field>
+                                    <field name="resourceImplType">
+                                        <string>uforge</string>
+                                    </field>
+                                    <field name="resourceEndpoint">
+                                        <string>http://10.197.180.215:9090/opencloudware</string>
+                                    </field>
+                                    <field name="resourceDescription">
+                                        <string>Service de generation/publication SP2 </string>
+                                    </field>
+                                </object>
+                            </value>
+                        </collection>
+                    </field>
+                </object>
+            </object-param>
+        </init-params>
+    </component>
+
+    <external-component-plugins>
+        <!-- The full qualified name of the ExtensibleFilter -->
+        <target-component>org.exoplatform.web.filter.ExtensibleFilter</target-component>
+        <component-plugin>
+            <!-- The name of the plugin -->
+            <name>Logout Filter</name>
+            <!-- The name of the method to call on the ExtensibleFilter in order to register the FilterDefinitions -->
+            <set-method>addFilterDefinitions</set-method>
+            <!-- The full qualified name of the FilterDefinitionPlugin -->
+            <type>org.exoplatform.web.filter.FilterDefinitionPlugin</type>
+            <init-params>
+                <object-param>
+                    <name>Logout Filter Definition</name>
+                    <object type="org.exoplatform.web.filter.FilterDefinition">
+                        <!-- The filter instance -->
+                        <field name="filter">
+                            <object type="org.opencloudware.filter.LogoutFilter"/>
+                        </field>
+                        <!-- The mapping to use -->
+                        <!-- WARNING: the mapping is expressed with regular expressions -->
+                        <field name="patterns">
+                            <collection type="java.util.ArrayList" item-type="java.lang.String">
+                                <value>
+                                    <string>/logout</string>
+                                </value>
+                            </collection>
+                        </field>
+                    </object>
+                </object-param>
+            </init-params>
+        </component-plugin>
+    </external-component-plugins>
+
+    <external-component-plugins>
+        <target-component>org.exoplatform.services.database.HibernateService</target-component>
+        <component-plugin>
+            <name>add.mapping</name>
+            <set-method>addPlugin</set-method>
+            <type>org.exoplatform.services.database.impl.AddHibernateMappingPlugin</type>
+            <init-params>
+                <values-param>
+                    <name>hibernate.mapping</name>
+                    <value>mapping/Organization.hbm.xml</value>
+                    <value>mapping/Application.hbm.xml</value>
+                    <value>mapping/ApplicationInstance.hbm.xml</value>
+                    <value>mapping/ProviderIAAS.hbm.xml</value>
+                    <value>mapping/Project.hbm.xml</value>
+                </values-param>
+            </init-params>
+        </component-plugin>
+    </external-component-plugins>
 </configuration>

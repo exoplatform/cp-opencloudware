@@ -2,10 +2,7 @@ package org.opencloudware.hibernate;
 
 import org.exoplatform.services.cache.CacheService;
 import org.exoplatform.services.database.HibernateService;
-import org.opencloudware.hibernate.dao.ApplicationDAO;
-import org.opencloudware.hibernate.dao.OrganizationDAO;
-import org.opencloudware.hibernate.dao.ProjectDAO;
-import org.opencloudware.hibernate.dao.ProviderIAASDAO;
+import org.opencloudware.hibernate.dao.*;
 import org.picocontainer.Startable;
 
 /**
@@ -21,7 +18,8 @@ public class OcwDataService  implements Startable {
 	private OrganizationDAO organizationDAO;
 	private ProviderIAASDAO providerIAASDAO;
 	private ProjectDAO projectDAO;
-	private ApplicationDAO applicationDAO;
+	private ApplicationInstanceDAO applicationInstanceDAO;
+    private ApplicationDAO applicationDAO;
 
 	public OcwDataService(HibernateService hibernateService, CacheService cacheService) {
 
@@ -29,6 +27,7 @@ public class OcwDataService  implements Startable {
 		providerIAASDAO = new ProviderIAASDAO(hibernateService, cacheService);
 		applicationDAO = new ApplicationDAO(hibernateService, cacheService);
 		projectDAO = new ProjectDAO(hibernateService,cacheService);
+        applicationInstanceDAO = new ApplicationInstanceDAO(hibernateService,cacheService);
 
 	}
 
@@ -59,4 +58,11 @@ public class OcwDataService  implements Startable {
 		return projectDAO;
 	}
 
+    public ApplicationInstanceDAO getApplicationInstanceDAO() {
+        return applicationInstanceDAO;
+    }
+
+    public void setApplicationInstanceDAO(ApplicationInstanceDAO applicationInstanceDAO) {
+        this.applicationInstanceDAO = applicationInstanceDAO;
+    }
 }

@@ -36,5 +36,13 @@
 		  <key column="PROJECT_ID"/>
 		  <element type="string"/>
 	  </set>
+
+      <set name="applicationsInstance" table="ocw_applicationInstance"
+           inverse="true" lazy="true" fetch="select">
+          <key>
+              <column name="APPLICATION_ID" not-null="true" />
+          </key>
+          <one-to-many class="org.opencloudware.hibernate.model.ApplicationInstance" />
+      </set>
   </class>
 </hibernate-mapping>

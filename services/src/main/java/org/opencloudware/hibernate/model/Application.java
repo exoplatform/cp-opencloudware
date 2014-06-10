@@ -24,6 +24,9 @@ public class Application extends DBObject {
 	private Set<String> managers = new HashSet<String>(0);
 	private Long id;
 
+    private Set<ApplicationInstance> applicationsInstance =
+            new HashSet<ApplicationInstance>(0);
+
 
 	public Application() {
 	}
@@ -60,7 +63,8 @@ public class Application extends DBObject {
 				"applicationName='" + applicationName + '\'' +
 				", author='" + description + '\'' +
 				", project='" + project + '\'' +
-				", id=" + id +
+                ", applicationsInstance='" + applicationsInstance + '\'' +
+                ", id=" + id +
 				'}';
 	}
 
@@ -79,6 +83,14 @@ public class Application extends DBObject {
 	public void setManagers(Set<String> managers) {
 		this.managers = managers;
 	}
+
+    public Set<ApplicationInstance> getApplicationsInstance() {
+        return applicationsInstance;
+    }
+
+    public void setApplicationsInstance(Set<ApplicationInstance> applicationsInstance) {
+        this.applicationsInstance = applicationsInstance;
+    }
 }
 
 

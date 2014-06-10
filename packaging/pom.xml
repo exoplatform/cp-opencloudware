@@ -44,11 +44,11 @@
                                 </requireProperty>
                                 <requireFilesExist>
                                     <files>
-                                        <file>${exo.projects.directory.dependencies}/${exo.projects.app.tomcat.version}/
+                                        <file>${exo.projects.directory.dependencies}/${exo.projects.app.platform.version}/
                                         </file>
                                     </files>
                                     <message>The following Tomcat directory doesn't exist :
-                                        ${exo.projects.directory.dependencies}/${exo.projects.app.tomcat.version}
+                                        ${exo.projects.directory.dependencies}/${exo.projects.app.platform.version}
                                     </message>
                                 </requireFilesExist>
                             </rules>
