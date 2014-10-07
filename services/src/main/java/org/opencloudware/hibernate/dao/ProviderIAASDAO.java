@@ -25,7 +25,13 @@ import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.database.HibernateService;
 import org.exoplatform.services.organization.hibernate.HibernateListAccess;
 import org.hibernate.Session;
+import org.json.JSONObject;
+import org.opencloudware.hibernate.OcwDataService;
 import org.opencloudware.hibernate.model.ProviderIAAS;
+import org.opencloudware.rest.OCWUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProviderIAASDAO {
 
@@ -35,12 +41,15 @@ public class ProviderIAASDAO {
 
    private HibernateService service_;
 
-   private ExoCache<Long, ProviderIAAS> cache_;
+   private ExoCache<String, ProviderIAAS> cache_;
 
-   public ProviderIAASDAO(HibernateService service, CacheService cservice)
+    private OcwDataService ocwDataService_;
+
+   public ProviderIAASDAO(HibernateService service, CacheService cservice, OcwDataService ocwDataService)
    {
       service_ = service;
       cache_ = cservice.getCacheInstance(ProviderIAAS.class.getName());
+       ocwDataService_=ocwDataService;
    }
 
    /**
@@ -54,11 +63,76 @@ public class ProviderIAASDAO {
    /**
     * {@inheritDoc}
     */
-   public void createProviderIAAS(ProviderIAAS providerIAAS) throws Exception
+   public boolean createProviderIAAS(ProviderIAAS providerIAAS) throws Exception
    {
       final Session session = service_.openSession();
+
+       //1) recuperation de la ressource multi-cloud-iaas
+       JSONObject resource = OCWUtil.getResource("multi-cloud-iaas");
+        if (resource==null) return false;
+       String resourceEndPoint=resource.getString("resourceEndpoint");
+       String endPointURI="/providers/accounts";
+       JsonProviderObject jsonProviderObject = new JsonProviderObject(providerIAAS);
+       String username=resource.getString("resourceLogin").equals("null") ? null : resource.getString("resourceLogin");
+       String password=resource.getString("resourcePassword").equals("null") ? null : resource.getString("resourcePassword");
+       Map<String,String> headers= new HashMap<String,String>();
+       headers.put("tenantName","trial");
+       System.out.println("Will send post data on "+resourceEndPoint+endPointURI+"with username="+username+", data="+jsonProviderObject.toString());
+
+       String responseData = OCWUtil.doPostCreateProvider(resourceEndPoint+endPointURI,username,password,jsonProviderObject.toString(),headers,"application/json; charset=utf8");
+       if (responseData==null) return false;
+       JSONObject result = new JSONObject(responseData);
+       String providerId=result.getString("id");
+       providerIAAS.setId(providerId);
+
+//il faut aller chercher l'id du provider
+//            Provider creation
+//
+//            This operation creates a new IaaS provider account.
+//
+//            Method	Endpoint URI	Description
+//            POST	 /providers/accounts	Provider Account creation
+//                    Request
+//
+//            {
+//                "name": "OW2Stack",
+//                "description": "OW2Stack",
+//                "type": "openstack",
+//                "endpoint": "http://ow2-04.xsalto.net:5000/v2.0",
+//                "location":
+//                {
+//                    "iso3166_1": "FR",
+//                    "countryName": "France"
+//                },
+//
+//                "identity": "sirocco",
+//                "credential": "cregDyk3",
+//                "properties":
+//                {
+//                    "tenantName": "opencloudware"
+//                }
+//            }
+//            Response
+//
+//            {
+//                "id" : "0e177df7-0f51-4c2b-9aee-f20542c2980b",
+//                    "href" : "http://localhost:8080/cimi/providers/9623452f-0888-4ad8-83e6-49c8a14e1654/accounts/0e177df7-0f51-4c2b-9aee-f20542c2980b",
+//                    "properties" : {
+//                "tenantName" : "opencloudware"
+//            },
+//                "providerId" : "9623452f-0888-4ad8-83e6-49c8a14e1654",
+//                    "identity" : "sirocco",
+//                    "credential" : "cregDyk3"
+//            }
+
+
+
+
       session.save(providerIAAS);
-      session.flush();
+      ocwDataService_.getOrganizationDAO().invalidateCache(providerIAAS.getOrganization());
+
+       session.flush();
+       return true;
    }
 
    /**
@@ -68,7 +142,9 @@ public class ProviderIAASDAO {
    {
       Session session = service_.openSession();
       session.merge(providerIAAS);
-      session.flush();
+       ocwDataService_.getOrganizationDAO().invalidateCache(providerIAAS.getOrganization());
+
+       session.flush();
       cache_.put(providerIAAS.getId(), providerIAAS);
    }
 
@@ -147,6 +223,63 @@ public class ProviderIAASDAO {
 		return provider;
 	}
 
+
+    public class JsonProviderObject extends JSONObject {
+//        {
+//                "name": "OW2Stack",
+//                "description": "OW2Stack",
+//                "type": "openstack",
+//                "endpoint": "http://ow2-04.xsalto.net:5000/v2.0",
+//                "location":
+//                {
+//                    "iso3166_1": "FR",
+//                    "countryName": "France"
+//                },
+//
+//                "identity": "sirocco",
+//                "credential": "cregDyk3",
+//                "properties":
+//                {
+//                    "tenantName": "opencloudware"
+//                }
+//            }
+
+
+
+        public JsonProviderObject(ProviderIAAS provider) {
+            try {
+                this.put("name", provider.getProviderIAASName());
+                this.put("description", provider.getProviderIAASName());
+                this.put("type", provider.getProviderIAASVendor());
+                this.put("endpoint",provider.getProviderEndPoint());
+                this.put("identity",provider.getProviderIAASLogin());
+                this.put("credential",provider.getProviderIAASPassword());
+                Map<String,String> properties=new HashMap<String,String>();
+                if (provider.getProviderTenantName() != null) {
+                    properties.put("tenantName", provider.getProviderTenantName());
+                }
+                if (provider.getProviderPublicNetworkName() != null) {
+
+                    properties.put("publicNetworkName", provider.getProviderPublicNetworkName());
+                    properties.put("orgName", provider.getOrganization().getOrganizationName());
+                    properties.put("vdcName",provider.getVdcName());
+
+                }
+
+                Map<String,String> location = new HashMap<String, String>();
+                location.put("iso3166_1","FR");
+                location.put("countryName","France");
+                this.put("location",location);
+
+                this.put("properties",properties);
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
+
+        }
+
+    }
 
 
 }

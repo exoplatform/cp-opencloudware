@@ -39,7 +39,6 @@
          <outputDirectory>/</outputDirectory>
          <includes>
         	<include>conf/server.xml</include>
-            <include>lib/**</include>
              <include>gatein/conf/configuration.properties</include>
 			 <include>bin/setenv-customize.sh</include>
 
@@ -81,6 +80,9 @@
        	<outputDirectory>lib/</outputDirectory>
        	<includes>
         	<include>mysql:mysql-connector-java:jar</include>
+            <include>com.sun.jersey:jersey-client</include>
+
+            <include>com.sun.jersey:jersey-core</include>
       </includes>
 
     </dependencySet>    

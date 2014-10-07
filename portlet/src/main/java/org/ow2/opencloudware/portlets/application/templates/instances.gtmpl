@@ -1,0 +1,42 @@
+<div style="margin-right:20px;margin-left:20px">
+<div class="pull-left"><h3 class="opencloudwareTitle">Instances</h3></div>
+
+
+
+        	<% if (flash.getError() != "") { %>
+            			<div id="flashMessage" class="alert-error pull-left flash">
+            				${flash.getError()}
+            			</div>
+            		<% } %>
+            		<% if (flash.getSuccess() != "") { %>
+            			<div id="flashMessage" class="alert-success pull-left flash">
+            				<strong>${flash.getSuccess()}</strong>
+            			</div>
+            		<% } %>
+            		<div class="pull-right">
+            			<h3>
+
+
+
+
+            			<a class="btn" href="@{ApplicationManagement.index()}">
+                        			<i class="icon-backward"></i>Back to Applications list
+                        		</a>
+
+
+            			</h3>
+            		</div>
+            		<div class="clearfix"></div>
+
+	<div id="applicationInstanceList">
+	</div>
+</div>
+
+ <script>
+
+
+        $(function () {
+            $("#applicationInstanceList").jzLoad("ApplicationManagement.getInstancePageList()");
+
+        });
+    </script>

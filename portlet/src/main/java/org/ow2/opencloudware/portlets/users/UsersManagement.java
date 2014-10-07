@@ -52,7 +52,7 @@ public class UsersManagement {
 	Template editRoles;
 
 
-	static int PAGE_SIZE = 2;
+	static int PAGE_SIZE = 10;
 	private int nbResults;
 	private int nbPages;
 	private int currentPage;

@@ -45,7 +45,7 @@
 	  </property>
 
 	  <set name="providerIAASes" table="ocw_providerIAAS"
-		   inverse="true" lazy="true" fetch="select">
+		   inverse="true" lazy="false" fetch="select">
 		  <key>
 			  <column name="ORGANIZATION_ID" not-null="true" />
 		  </key>

@@ -75,8 +75,8 @@ public class Project extends DBObject {
 		return "Application{" +
 				"projectName='" + projectName + '\'' +
 				", description='" + description + '\'' +
-				", organization=" + organization +
-				", applications=" + applications +
+				//", organization=" + organization.getOrganizationName() +
+				//", applications=" + applications +
 				", id=" + id +
 
 				'}';

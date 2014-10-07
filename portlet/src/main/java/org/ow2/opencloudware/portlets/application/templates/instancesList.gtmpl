@@ -1,0 +1,95 @@
+
+<h4 class="opencloudwareTitle">${currentApplicationName}</h4>
+
+<div id="deployDiv">
+        <%
+            if (!isDeployable) {
+        %>
+                No modele attached to Application. Unable to deploy.
+        <%
+            } else if (providers.size()==0) {
+
+        %>
+                No providers available for this organization. Unable to deploy.
+        <%
+            } else {
+         %>
+                <a class="btn" id="deployButton" href="#">
+                       Deploy
+                   </a>
+
+        <%
+            }
+        %>
+
+    <br/>
+
+        <%
+        	if (providers.size()>1) {
+        %>
+                Deployment Target (if no target selected, application will be deployed in one of the organization's provider) :
+
+                <select id="deploymentTarget">
+                        <option>Automatic</option>
+        <%
+        		providers.each { current ->
+        			String providerId = current.getId();
+        			String providerName = current.getProviderIAASName();
+        			String providerVendor = current.getProviderIAASVendor();
+                    String label = providerName+" ("+providerVendor+")";
+        %>
+        		    <option value="${providerId}">${label}</option>
+        <%
+        		}
+        %>
+        		</select>
+        <%
+        	} else if (providers.size()==1) {
+        %>
+            <select class="hide" id="deploymentTarget">
+        <%
+                providers.each { current ->
+
+                    String providerId = current.getId();
+                    String providerName = current.getProviderIAASName();
+                    String providerVendor = current.getProviderIAASVendor();
+                    String label = providerName+" ("+providerVendor+")";
+            %>
+                    <option value="${providerId}" selected="selected">${label}</option>
+
+            <%}%>
+            </select>
+
+        <% } %>
+</div>
+
+
+
+
+<div id="applicationInstanceTable">
+
+</div>
+
+<script type="text/javascript">
+    $("#deployButton").click(function() {
+
+        if ($("#deploymentTarget option:selected")) {
+            provider = $("#deploymentTarget option:selected").val();
+        } else {
+            provider = null;
+
+        }
+        $("#deployButton").addClass("disabled");
+        $("#applicationInstanceTable").jzLoad("ApplicationManagement.deploy()",{"provider":provider}, function() {
+            $("#deployButton").removeClass("disabled");
+        });
+
+
+
+    });
+
+    $(function () {
+	    $("#applicationInstanceTable").jzLoad("ApplicationManagement.getInstancePage()",{"pageToDisplay":"1"});
+
+    });
+</script>

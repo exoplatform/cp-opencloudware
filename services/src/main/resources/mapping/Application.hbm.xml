@@ -13,6 +13,8 @@
       <generator class="native"/>
     </id>
 
+    <property name="modele" column="MODELE" length="65535"/>
+
     <property name="applicationName"
               type="java.lang.String"
               access="field"
@@ -28,7 +30,7 @@
 		  <column name="DESCRIPTION"/>
 	  </property>
 
-	  <many-to-one name="project" class="org.opencloudware.hibernate.model.Project" fetch="select">
+	  <many-to-one name="project" class="org.opencloudware.hibernate.model.Project" fetch="select" lazy="false">
 		  <column name="PROJECT_ID" not-null="true" />
 	  </many-to-one>
 
@@ -38,7 +40,7 @@
 	  </set>
 
       <set name="applicationsInstance" table="ocw_applicationInstance"
-           inverse="true" lazy="true" fetch="select">
+           inverse="true" lazy="false" fetch="select">
           <key>
               <column name="APPLICATION_ID" not-null="true" />
           </key>

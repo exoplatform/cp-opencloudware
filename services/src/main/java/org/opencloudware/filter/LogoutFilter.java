@@ -17,7 +17,7 @@ public class LogoutFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 
         ServletContainerFactory.getServletContainer().logout((HttpServletRequest)request, (HttpServletResponse)response);
-
+        System.out.println("Redirect to logout");
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 		httpResponse.sendRedirect(httpResponse.encodeRedirectURL("/logout"));
 

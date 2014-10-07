@@ -7,10 +7,9 @@
          table="ocw_providerIAAS">
     <cache usage="transactional"/>
     <id name="id"
-        type="java.lang.Long"
+        type="string"
         access="field">
       <column name="ID"/>
-      <generator class="native"/>
     </id>
 
     <property name="providerIAASName"
@@ -41,8 +40,44 @@
 				not-null="true">
 		  <column name="PROVIDERIAAS_VENDOR"/>
 	  </property>
+      <property name="providerPublicNetworkName"
+                type="java.lang.String"
+                access="field"
+                lazy="false"
+                not-null="true">
+          <column name="PROVIDERIAAS_PUBLICNETWORKNAME"/>
+      </property>
+      <property name="providerEndPoint"
+                type="java.lang.String"
+                access="field"
+                lazy="false"
+                not-null="true">
+          <column name="PROVIDERIAAS_ENDPOINT"/>
+      </property>
 
-	  <many-to-one name="organization" class="org.opencloudware.hibernate.model.Organization" fetch="select">
+      <property name="vdcName"
+                type="java.lang.String"
+                access="field"
+                lazy="false"
+                not-null="true">
+          <column name="PROVIDERIAAS_VDCNAME"/>
+      </property>
+      <property name="providerGlanceUrl"
+                type="java.lang.String"
+                access="field"
+                lazy="false"
+                not-null="true">
+          <column name="PROVIDERIAAS_GLANCEURL"/>
+      </property>
+      <property name="providerTenantName"
+                type="java.lang.String"
+                access="field"
+                lazy="false"
+                not-null="true">
+          <column name="PROVIDERIAAS_TENANTNAME"/>
+      </property>
+
+	  <many-to-one name="organization" class="org.opencloudware.hibernate.model.Organization" fetch="select" lazy="false">
 		  <column name="ORGANIZATION_ID" not-null="true" />
 	  </many-to-one>
   </class>

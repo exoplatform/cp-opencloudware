@@ -51,15 +51,27 @@ public class ProviderManagement {
 	@Path("editProvider.gtmpl")
 	Template editProvider;
 
-	@Inject
+    @Inject
+    @Path("customForm.gtmpl")
+    Template customForm;
+
+
+    @Inject
+    @Path("customEditForm.gtmpl")
+    Template customEditForm;
+
+    @Inject
 	Flash flash;
+
+
+    Map<String,List<String>> providerParameters;
 
 	int currentPage;
 	int nbPages;
 	int nbResults;
 
 
-	static int PAGE_SIZE = 3;
+	static int PAGE_SIZE = 10;
 
 
 	OrganizationService organizationService_;
@@ -78,8 +90,87 @@ public class ProviderManagement {
 			currentOrganizationId = "";
 		}
 
+        providerParameters = new HashMap<String,List<String>>();
 
-	}
+
+        List<String> parameters = new ArrayList<String>();
+        //OpenStack
+//        endpoint	 Keystone API endpoint
+//        identity	 OpenStack user account login
+//        credential	 OpenStack user account password
+//        tenantName	 OpenStack tenant
+        parameters.add("Endpoint");
+        parameters.add("GlanceUrl");
+        parameters.add("Identity");
+        parameters.add("Credential");
+        parameters.add("TenantName");
+
+
+        providerParameters.put("openstack",parameters);
+
+        parameters = new ArrayList<String>();
+        //OpenStack
+        //OpenStackters.clear();
+//        .2 vCloud Director
+//
+//        Parameter 	Description
+//        endpoint	 vCloud URL
+        parameters.add("Endpoint");
+//        identity	 user name
+        parameters.add("Identity");
+//        credential	 password
+        parameters.add("Credential");
+//        orgName	 organization name
+        //pas de parametre, on le connait
+//        vdcName	 vDC name
+        parameters.add("VdcName");
+//        publicNetworkName	 name of public organisation name
+        parameters.add("PublicNetworkName");
+
+
+        providerParameters.put("vcloud",parameters);
+
+
+        parameters = new ArrayList<String>();
+        //OpenStack
+//        2.3 Amazon EC2
+//
+//        Parameter 	Description
+//        identity	AWS Access Key ID
+        parameters.add("Identity");
+//        credential	 AWS Secret Key
+        parameters.add("Credential");
+        providerParameters.put("AmazonEC2",parameters);
+
+        parameters = new ArrayList<String>();
+        //OpenStack
+//        2.4 CloudStack
+//
+//        Parameter 	Description
+//        endpoint	 API endpoint
+        parameters.add("Endpoint");
+//        identity	API Key
+        parameters.add("Identity");
+//        credential	 Secret Key
+        parameters.add("Credential");
+        providerParameters.put("cloudstack",parameters);
+
+        parameters = new ArrayList<String>();
+        //OpenStack
+//        2.1 Microsoft SPF
+//
+//        Parameter 	Description
+//        endpoint	 API endpoint
+        parameters.add("Endpoint");
+//        identity	user name
+        parameters.add("Identity");
+//        credential	 password
+        parameters.add("Credential");
+        providerParameters.put("Microsoft SPF",parameters);
+
+
+
+    }
 
 
 
@@ -141,9 +232,20 @@ public class ProviderManagement {
 	}
 
 
+    @Ajax
+    @Resource
+    public void getCustomForm(String vendorName) {
+        Map<String, Object> parameters = new HashMap<String, Object>();
+
+        parameters.put("providerParameters", providerParameters.get(vendorName));
+        customForm.render(parameters);
+    }
+
 	@View
 	public void displayAddForm() {
-		addProvider.render();
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("providerParameters", providerParameters);
+        addProvider.render(parameters);
 	}
 
 
@@ -229,45 +331,66 @@ public class ProviderManagement {
 			ProviderManagement_.index();
 		} else {
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("provider", provider);
+            parameters.put("providerParameters", providerParameters);
+            parameters.put("provider", provider);
 			editProvider.render(parameters);
 		}
 	}
 
+    @Ajax
+    @Resource
+    public void getCustomEditForm(String vendorName) {
+
+            Map<String, Object> parameters = new HashMap<String, Object>();
+            parameters.put("providerParameters", providerParameters.get(vendorName));
+            customEditForm.render(parameters);
+    }
+
 	@Action
 	@Route("/createProvider")
 	public Response.View createProvider(String inputProviderName,
-											String inputProviderLogin,
-											String inputProviderPassword,
+											String inputProviderIdentity,
+											String inputProviderCredential,
 											String inputProviderVendor,
-											String inputConfirmPassword) {
+											String inputProviderEndpoint,
+                                            String inputProviderGlanceUrl,
+                                            String inputProviderTenantName,
+                                            String inputProviderPublicNetworkName, String inputProviderVdcName) {
 
 
 		try {
 
+
+
 			ProviderIAASDAO providerIAASDAO= ocwDataService_.getProviderIAASDAO();
+            ProviderIAAS provider = providerIAASDAO.createProviderIAASInstance();
+            provider.setProviderIAASLogin(inputProviderIdentity);
+            provider.setProviderIAASName(inputProviderName);
+            provider.setProviderIAASVendor(inputProviderVendor);
+            provider.setProviderIAASPassword(inputProviderCredential);
+            provider.setProviderEndPoint(inputProviderEndpoint);
+            provider.setProviderPublicNetworkName(inputProviderPublicNetworkName);
+            provider.setProviderTenantName(inputProviderTenantName);
+            provider.setProviderGlanceUrl(inputProviderGlanceUrl);
+
+            provider.setVdcName(inputProviderVdcName);
 
 
-			ProviderIAAS provider = providerIAASDAO.createProviderIAASInstance();
-			provider.setProviderIAASLogin(inputProviderLogin);
-			provider.setProviderIAASName(inputProviderName);
-			provider.setProviderIAASVendor(inputProviderVendor);
-			if (!inputProviderPassword.equals(inputConfirmPassword)) {
-				flash.setError("Password and confirm password don't match.");
-				flash.setSuccess("");
-				return ProviderManagement_.index();
-			}
-			provider.setProviderIAASPassword(inputProviderPassword);
+
 
 			Organization organization = ocwDataService_.getOrganizationDAO().findOrganizationById(currentOrganizationId);
 			provider.setOrganization(organization);
-			providerIAASDAO.createProviderIAAS(provider);
+			if (!providerIAASDAO.createProviderIAAS(provider)) {
+                flash.setError("Service provider creation not reachable");
+            } else {
 
-			flash.setSuccess("Provider \""+inputProviderName+"\" added.");
+                flash.setSuccess("Provider \"" + inputProviderName + "\" added.");
+            }
+
 		} catch (Exception e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            flash.setError("Unable to create Provider");
 		}
-
 
 		return ProviderManagement_.index();
 
@@ -277,11 +400,14 @@ public class ProviderManagement {
 	@Action
 	@Route("/editProvider")
 	public Response.View editProvider(String inputProviderId,String oldProviderName,
-										  String inputProviderName,
-										  String inputProviderLogin,
-										  String inputProviderVendor,
-										  String inputProviderPassword,
-										  String inputConfirmPassword) {
+                                      String inputProviderName,
+                                      String inputProviderIdentity,
+                                      String inputProviderCredential,
+                                      String inputProviderVendor,
+                                      String inputProviderEndpoint,
+                                      String inputProviderGlanceUrl,
+                                      String inputProviderTenantName,
+                                      String inputProviderPublicNetworkName, String inputVdcName) {
 
 
 
@@ -297,21 +423,15 @@ public class ProviderManagement {
 			}
 
 
-
-			oldProvider.setProviderIAASName(inputProviderName);
-			oldProvider.setProviderIAASVendor(inputProviderVendor);
-			oldProvider.setProviderIAASLogin(inputProviderLogin);
-
-			if (!inputProviderPassword.equals("")  && !inputProviderPassword.equals(inputConfirmPassword)) {
-				flash.setError("Password and confirm password don't match.");
-				flash.setSuccess("");
-				return ProviderManagement_.index();
-			}
-
-			if (!inputProviderPassword.equals("") && inputProviderPassword.equals(inputConfirmPassword) ) {
-				oldProvider.setProviderIAASPassword(inputProviderPassword);
-			}
-
+            oldProvider.setProviderIAASLogin(inputProviderIdentity);
+            oldProvider.setProviderIAASName(inputProviderName);
+            oldProvider.setProviderIAASVendor(inputProviderVendor);
+            oldProvider.setProviderIAASPassword(inputProviderCredential);
+            oldProvider.setProviderEndPoint(inputProviderEndpoint);
+            oldProvider.setProviderPublicNetworkName(inputProviderPublicNetworkName);
+            oldProvider.setProviderTenantName(inputProviderTenantName);
+            oldProvider.setProviderGlanceUrl(inputProviderGlanceUrl);
+            oldProvider.setVdcName(inputVdcName);
 
 			providerIAASDAO.saveProviderIAAS(oldProvider);
 
@@ -322,5 +442,9 @@ public class ProviderManagement {
 
 		return ProviderManagement_.index();
 	}
+
+
+
+
 
 }

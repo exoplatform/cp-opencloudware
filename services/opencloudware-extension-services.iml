@@ -10,6 +10,25 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///usr/lib/jvm/java-7-openjdk-amd64/lib/tools.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="Maven: org.apache.geronimo.ext.tomcat:catalina:7.0.39.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.geronimo.specs:geronimo-servlet_3.0_spec:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.geronimo.specs:geronimo-annotation_1.1_spec:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.geronimo.specs:geronimo-ejb_3.1_spec:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.geronimo.specs:geronimo-jpa_2.0_spec:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.geronimo.specs:geronimo-javamail_1.4_spec:1.7" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.geronimo.specs:geronimo-jaxws_2.2_spec:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.geronimo.ext.tomcat:juli:7.0.39.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.geronimo.ext.tomcat:shared:7.0.39.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.geronimo.ext.tomcat:util:7.0.39.2" level="project" />
     <orderEntry type="library" name="Maven: org.exoplatform.kernel:exo.kernel.commons:2.4.9-GA" level="project" />
     <orderEntry type="library" name="Maven: eu.medsea.mimeutil:mime-util:2.1.3" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.5" level="project" />
@@ -196,8 +215,7 @@
     <orderEntry type="library" name="Maven: org.apache.ant:ant:1.8.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.ant:ant-launcher:1.8.2" level="project" />
     <orderEntry type="library" name="Maven: com.googlecode.jarjar:jarjar:1.1" level="project" />
-    <orderEntry type="library" name="Maven: junit:junit:4.11" level="project" />
-    <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
     <orderEntry type="library" name="Maven: org.gatein.portal:exo.portal.webui.portlet:3.5.10.Final" level="project" />
     <orderEntry type="library" name="Maven: org.gatein.portal:exo.portal.webui.portal:3.5.10.Final" level="project" />
     <orderEntry type="library" name="Maven: org.gatein.portal:exo.portal.webui.core:3.5.10.Final" level="project" />
@@ -242,6 +260,10 @@
     <orderEntry type="library" name="Maven: com.sun.media:jai-codec:1.1.3" level="project" />
     <orderEntry type="library" name="Maven: javax.media:jai-core:1.1.3" level="project" />
     <orderEntry type="library" name="Maven: org.imgscalr:imgscalr-lib:4.2" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.jersey:jersey-client:1.17.1" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.jersey:jersey-core:1.17.1" level="project" />
+    <orderEntry type="library" name="Maven: javax.json:javax.json-api:1.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.glassfish:javax.json:1.0.4" level="project" />
   </component>
 </module>
 

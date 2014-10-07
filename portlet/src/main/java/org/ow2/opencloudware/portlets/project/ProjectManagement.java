@@ -62,7 +62,7 @@ public class ProjectManagement {
 	int nbResults;
 
 
-	static int PAGE_SIZE = 3;
+	static int PAGE_SIZE = 10;
 
 
 	OrganizationService organizationService_;

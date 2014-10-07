@@ -176,7 +176,7 @@
             <attributes>
               <attribute>
                 <name>firstName</name>
-                <mapping>cn</mapping>
+                <mapping>uid</mapping>
                 <type>text</type>
                 <isRequired>false</isRequired>
                 <isMultivalued>false</isMultivalued>
@@ -203,7 +203,7 @@
             <options>
               <option>
                 <name>idAttributeName</name>
-                <value>uid</value>
+                <value>cn</value>
               </option>
               <option>
                 <name>passwordAttributeName</name>
@@ -222,7 +222,7 @@
                 <value>objectClass=top</value>
                 <value>objectClass=inetOrgPerson</value>
                 <value>sn= </value>
-                <value>cn= </value>
+                <value>uid= </value>
               </option>
             </options>
           </identity-object-type>

@@ -16,51 +16,68 @@
 			</div>
 		</div>
 		<div class="control-group">
-                			<label for="inputProviderVendor" class="control-label">Provider Vendor (*) : </label>
-                			<div class="controls">
-                				<input type="text" id="inputProviderVendor" name="inputProviderVendor" value="${provider.getProviderIAASVendor()}">
-                			</div>
-                		</div>
-		<div class="control-group">
-			<label for="inputProviderLogin" class="control-label">Provider Login (*) : </label>
-			<div class="controls">
-				<input type="text" id="inputProviderLogin" name="inputProviderLogin" value="${provider.getProviderIAASLogin()}">
-			</div>
-		</div>
+            <label for="inputProviderVendor" class="control-label">Provider Vendor (*) : </label>
+            <div class="controls">
+                <select id="inputProviderVendor" name="inputProviderVendor" placeholder="Provider Vendor">
+                    <option></option>
+                    <%
+                        for (String vendorName : providerParameters.keySet()) {
 
-		<div class="control-group">
-        			<label for="inputProviderPassword" class="control-label">Provider password : </label>
-                    <div class="controls">
-                    	<input type="password" id="inputProviderPassword" name="inputProviderPassword" placeholder="Provider password"><br/>
-                    	Don't fill if you don't want to change password.
-                    </div>
+                            if (provider.getProviderIAASVendor().equals(vendorName)) {
+                    %>
+                                <option value="${vendorName}" selected="selected">${vendorName}</option>
+                    <%
+                            } else {
+                    %>
+                                <option value="${vendorName}">${vendorName}</option>
+                    <%
+                            }
+                        }
+                    %>
+                </select>
+            </div>
+        </div>
+        <div id="customEditForm">
 
+        </div>
 
-                </div>
-                <div class="control-group">
-                			<label for="inputConfirmPassword" class="control-label">Confirm Password : </label>
-                			<div class="controls">
-                				<input type="password" id="inputConfirmPassword" name="inputConfirmPassword" placeholder="Confirm Password">
-                			</div>
-                		</div>
+        <div class="control-group">
+            <div class="controls">
+                <span> (*) are required fields.</span>
+            </div>
+        </div>
 
-
-
-		<div class="control-group">
-			<div class="controls">
-				<span> (*) are required fields.</span>
-			</div>
-		</div>
-
-		<div class="control-group">
-			<div class="controls">
-				<button type="submit" class="btn btn-primary" id="register">Save modification</button>
-				<button type="button" class="btn btn-default" id="cancel" onclick="javascript:window.location='@{ProviderManagement.index()}'">Cancel</button>
-				<button type="reset" class="btn btn-default" id="reset" onclick="clearValidation();">Reset</button>
-			</div>
-		</div>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-primary" id="register">Save modification</button>
+                <button type="button" class="btn btn-default" id="cancel" onclick="javascript:window.location='@{ProviderManagement.index()}'">Cancel</button>
+                <button type="reset" class="btn btn-default" id="reset" onclick="clearValidation();">Reset</button>
+            </div>
+        </div>
 
 
-	</form>
+
+    </form>
 
 </div>
+<script type="text/javascript">
+$("#inputProviderVendor").change(function() {
+        $("#customEditForm").jzLoad("ProviderManagement.getCustomForm()",{"vendorName":$( "#inputProviderVendor option:selected" ).val()});
+    });
+
+$(function () {
+    $("#customEditForm").jzLoad("ProviderManagement.getCustomEditForm()",{"vendorName":$( "#inputProviderVendor option:selected" ).val(), "providerId":$("#inputProviderId").val()}, function() {
+        $("#inputProviderEndpoint").val("${provider.getProviderEndPoint()}");
+        $("#inputProviderIdentity").val("${provider.getProviderIAASLogin()}");
+        $("#inputProviderCredential").val("${provider.getProviderIAASPassword()}");
+        $("#inputProviderTenantName").val("${provider.getProviderTenantName()}");
+        $("#inputProviderPublicNetworkName").val("${provider.getProviderPublicNetworkName()}");
+        $("#inputProviderGlanceUrl").val("${provider.getProviderGlanceUrl()}");
+        $("#inputVdcName").val("${provider.getVdcName()}");
+
+
+    });
+
+});
+
+</script>

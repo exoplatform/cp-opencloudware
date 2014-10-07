@@ -25,6 +25,7 @@ import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.database.HibernateService;
 import org.exoplatform.services.organization.hibernate.HibernateListAccess;
 import org.hibernate.Session;
+import org.opencloudware.hibernate.OcwDataService;
 import org.opencloudware.hibernate.model.Application;
 
 public class ApplicationDAO {
@@ -35,10 +36,15 @@ public class ApplicationDAO {
 
    private ExoCache<String, Application> cache_;
 
-   public ApplicationDAO(HibernateService service, CacheService cservice)
+    private OcwDataService ocwDataService_;
+
+
+    public ApplicationDAO(HibernateService service, CacheService cservice,  OcwDataService ocwDataService)
    {
       service_ = service;
       cache_ = cservice.getCacheInstance(Application.class.getName());
+       ocwDataService_=ocwDataService;
+
    }
 
    /**
@@ -64,7 +70,9 @@ public class ApplicationDAO {
    {
       final Session session = service_.openSession();
       session.save(application);
-      session.flush();
+       ocwDataService_.getProjectDAO().invalidateCache(application.getProject());
+
+       session.flush();
    }
 
    /**
@@ -74,7 +82,9 @@ public class ApplicationDAO {
    {
       Session session = service_.openSession();
       session.merge(application);
-      session.flush();
+       ocwDataService_.getProjectDAO().invalidateCache(application.getProject());
+
+       session.flush();
       cache_.put(application.getId().toString(), application);
    }
 
@@ -141,9 +151,9 @@ public class ApplicationDAO {
 	public ListAccess<Application> findApplicationOfAProject(String projectId) throws Exception
 	{
 		String findQuery = "from o in class " + Application.class.getName() +" where PROJECT_ID = '"+projectId+"'";
-		String countQuery = "select count(o) from " + Application.class.getName() + " o where PROJECT_ID = '"+projectId+"'";
+        String countQuery = "select count(o) from " + Application.class.getName() + " o where PROJECT_ID = '"+projectId+"'";
 
-		return new HibernateListAccess<Application>(service_, findQuery, countQuery);
+        return new HibernateListAccess<Application>(service_, findQuery, countQuery);
 	}
 
 	/**
@@ -154,4 +164,7 @@ public class ApplicationDAO {
 		return new LazyPageList<Application>(findApplicationOfAProject(projectId), pageSize);
 	}
 
+    public void invalidateCache(Application application) {
+        cache_.remove(application.getId());
+    }
 }

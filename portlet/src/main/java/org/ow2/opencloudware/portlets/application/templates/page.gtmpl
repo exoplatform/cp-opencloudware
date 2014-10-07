@@ -118,6 +118,9 @@
 
             	<th>
             		<div class="actionCell">
+            		    <a class="btn" title="Deployement" href="@{ApplicationManagement.displayInstances(applicationId = applicationId)}">
+            		        <i class="icon-off"></i>
+            		    </a>
 						<a class="btn" title="Edit" href="@{ApplicationManagement.displayEditForm(inputApplicationId = applicationId)}">
 												<i class="icon-edit"></i>
 						</a>

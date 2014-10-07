@@ -25,6 +25,7 @@ import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.database.HibernateService;
 import org.exoplatform.services.organization.hibernate.HibernateListAccess;
 import org.hibernate.Session;
+import org.opencloudware.hibernate.OcwDataService;
 import org.opencloudware.hibernate.model.Project;
 
 public class ProjectDAO {
@@ -37,10 +38,15 @@ public class ProjectDAO {
 
    private ExoCache<Long, Project> cache_;
 
-   public ProjectDAO(HibernateService service, CacheService cservice)
+    private OcwDataService ocwDataService_;
+
+
+    public ProjectDAO(HibernateService service, CacheService cservice, OcwDataService ocwDataService)
    {
       service_ = service;
       cache_ = cservice.getCacheInstance(Project.class.getName());
+       ocwDataService_=ocwDataService;
+
    }
 
    /**
@@ -66,7 +72,9 @@ public class ProjectDAO {
    {
       final Session session = service_.openSession();
       session.save(project);
-      session.flush();
+       ocwDataService_.getOrganizationDAO().invalidateCache(project.getOrganization());
+
+       session.flush();
    }
 
    /**
@@ -76,7 +84,9 @@ public class ProjectDAO {
    {
       Session session = service_.openSession();
       session.merge(project);
-      session.flush();
+       ocwDataService_.getOrganizationDAO().invalidateCache(project.getOrganization());
+
+       session.flush();
       cache_.put(project.getId(), project);
    }
 
@@ -155,4 +165,7 @@ public class ProjectDAO {
 	}
 
 
+    public void invalidateCache(Project project) {
+        cache_.remove(project.getId());
+    }
 }

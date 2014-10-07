@@ -1,0 +1,136 @@
+
+<div class="paginationNb">
+
+	<%
+		int firstResult = (currentPage-1) * pageSize + 1;
+		int lastResult = currentPage * pageSize;
+		if (currentPage == nbPages) { lastResult = nbResults;}
+		if (nbResults>0) {
+	%>
+
+      Results ${firstResult} - ${lastResult} on ${nbResults}.
+    <%
+
+    	}
+    %>
+</div>
+
+<div id="pagination">
+   <%
+		if (nbPages > 1) {
+
+			int previousPage = currentPage-1;
+			int nextPage = currentPage+1;
+   %>
+
+	<div class="pagination pagination-right">
+		<ul>
+    			<li><a href="#" onclick="javascript:changeInstancePage($('#inputGotoPage').val());return false;">Go to page</a><input id="inputGotoPage" class="input-mini" style="margin-left:5px;margin-bottom:0px;" placeholder="Page" /></li>
+    	</ul>
+    	<br/>
+		<ul>
+			<%
+				if (currentPage != 1) {
+			%>
+					<li><a href="#" onclick="javascript:changeInstancePage(1);return false;">First</a></li>
+					<li><a href="#" onclick="javascript:changeInstancePage(${previousPage});return false;">Previous</a></li>
+			<% }
+
+			for (i=1;i<=nbPages;i++) {
+
+				if (i<currentPage - 3) {
+				 	//dislay nothing
+				} else if (i == currentPage - 3) {
+					int bigJumpPage = currentPage - 5
+					if (currentPage<=5) bigJumpPage = 1;
+
+				%>
+					<li><a href="#" onclick="javascript:changeInstancePage(${bigJumpPage});return false;">...</a></li>
+				<%
+                } else if (i>currentPage + 3) {
+                	//dislay nothing
+                } else if (i == currentPage + 3) {
+
+					int bigJumpPage = currentPage + 5
+					if (currentPage>=(nbPages-5)) bigJumpPage = nbPages;
+
+                %>
+					<li><a href="#" onclick="javascript:changeInstancePage(${bigJumpPage});return false;">...</a></li>
+                <%
+                } else if (currentPage == i) {
+				%>
+					<li class="active"><a href="#">${i}</a></li>
+				<% } else { %>
+					<li><a href="#" onclick="javascript:changeInstancePage(${i});return false;">${i}</a></li>
+				<% }
+
+
+			}
+			   if (currentPage != nbPages) {
+				int
+			   %>
+			    <li><a href="#" onclick="javascript:changeInstancePage(${nextPage});return false;">Next</a></li>
+				<li><a href="#" onclick="javascript:changeInstancePage(${nbPages});return false;">Last</a></li>
+			<% }  %>
+
+		</ul>
+
+	</div>
+
+   <%
+	}
+	   %>
+	   <script type="text/javascript">
+		   $("#inputGotoPage").keyup(function(e){
+		   		var code = e.which;
+		   		var val = $(this).val();
+                if(code==13 && val) changeInstancePage($('#inputGotoPage').val());
+                else {
+					if(isNaN(val) || val.indexOf('.')!=-1) {
+						val = val.replace(/[^0-9]/g,'');
+					}
+					$(this).val(val);
+				}
+			});
+       	</script>
+
+	</div>
+</div>
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<th>Instance Id</th>
+			<th>Instance EndPoint</th>
+			<th>Instance Status</th>
+
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		<%currentList.each { current ->
+			String applicationInstanceId = current.getId();
+			String endPoint="notKnown";
+			String status="Deploying";
+	        %>
+	        <tr>
+                <th>${applicationInstanceId}</th>
+                <th id="endPoint-${applicationInstanceId}">${endPoint}</th>
+                <th id="status-${applicationInstanceId}"><img src="/opencloudware-portlet/skin/common/img/spinner.gif" class="deploymentStatus" />${status}</th>
+                <th>
+                    <div class="actionCell">
+
+                    </div>
+
+                </th>
+            </tr>
+            <script type="text/javascript">
+                    setInterval(function() {
+                        $("#endPoint-${applicationInstanceId}").jzLoad("ApplicationManagement.getEndPointFragment()",{"applicationInstanceId":"${applicationInstanceId}"});
+                        $("#status-${applicationInstanceId}").jzLoad("ApplicationManagement.getStatusFragment()",{"applicationInstanceId":"${applicationInstanceId}"});
+
+
+                    }, 20000);
+            </script>
+        <%}%>
+	</tbody>
+</table>

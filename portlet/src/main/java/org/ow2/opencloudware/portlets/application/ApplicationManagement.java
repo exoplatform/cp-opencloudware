@@ -3,16 +3,22 @@ package org.ow2.opencloudware.portlets.application;
 import juzu.*;
 import juzu.plugin.ajax.Ajax;
 import juzu.template.Template;
+import org.apache.commons.fileupload.FileItem;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.hibernate.Session;
+import org.json.JSONObject;
 import org.opencloudware.hibernate.OcwDataService;
 import org.opencloudware.hibernate.dao.ApplicationDAO;
+import org.opencloudware.hibernate.dao.ApplicationInstanceDAO;
 import org.opencloudware.hibernate.model.Application;
-import org.opencloudware.hibernate.model.Organization;
-import org.opencloudware.hibernate.model.Project;
+import org.opencloudware.hibernate.model.*;
+import org.opencloudware.rest.OCWUtil;
+import org.ow2.opencloudware.commons.vamp.DeploymentManager;
+import org.ow2.opencloudware.commons.vamp.VampManager;
 import org.ow2.opencloudware.portlets.common.Flash;
 
 import javax.inject.Inject;
@@ -53,7 +59,25 @@ public class ApplicationManagement {
 	@Path("managersFragment.gtmpl")
 	Template managersFragment;
 
+    @Inject
+    @Path("instances.gtmpl")
+    Template instances;
 
+    @Inject
+    @Path("instancesList.gtmpl")
+    Template instancesList;
+
+    @Inject
+    @Path("instancesPage.gtmpl")
+    Template instancesPage;
+
+    @Inject
+    @Path("endPointFragment.gtmpl")
+    Template endPointFragment;
+
+    @Inject
+    @Path("statusFragment.gtmpl")
+    Template statusFragment;
 
 	@Inject
 	Flash flash;
@@ -63,13 +87,14 @@ public class ApplicationManagement {
 	int nbResults;
 
 
-	static int PAGE_SIZE = 3;
+	static int PAGE_SIZE = 10;
 
 
 	OrganizationService organizationService_;
 	OcwDataService ocwDataService_;
 	String currentOrganizationId;
 	String currentProjectId;
+    String currentApplicationId;
 
 
 	@Inject
@@ -85,6 +110,9 @@ public class ApplicationManagement {
 		if (currentProjectId == null) {
 			currentProjectId="";
 		}
+        if (currentApplicationId == null) {
+            currentApplicationId="";
+        }
 	}
 
 	@View
@@ -301,7 +329,7 @@ public class ApplicationManagement {
 	public Response.View createApplication(String inputApplicationName,
 										   String inputApplicationDescription,
 										   String inputUsersNames,
-										   String inputManagersNames) {
+										   String inputManagersNames, FileItem inputApplicationModele) {
 
 
 		try {
@@ -313,7 +341,9 @@ public class ApplicationManagement {
 			application.setApplicationName(inputApplicationName);
 			application.setDescription(inputApplicationDescription);
 
-			String[] managers = inputManagersNames.split(",");
+            application.setModele(inputApplicationModele.get());
+            
+            String[] managers = inputManagersNames.split(",");
 
 			Set<String> managersSet = new HashSet<String>();
 
@@ -340,7 +370,7 @@ public class ApplicationManagement {
 	@Route("/editApplication")
 	public Response.View editApplication(String inputApplicationId, String inputApplicationName,
 										 String inputApplicationDescription,String inputUsersNames,
-										 String inputManagersNames) {
+										 String inputManagersNames, FileItem inputApplicationModele) {
 
 
 
@@ -359,6 +389,9 @@ public class ApplicationManagement {
 
 			application.setApplicationName(inputApplicationName);
 			application.setDescription(inputApplicationDescription);
+            if (inputApplicationModele.getSize()!=0) {
+                application.setModele(inputApplicationModele.get());
+            }
 
 			String[] managers = inputManagersNames.split(",");
 
@@ -427,7 +460,10 @@ public class ApplicationManagement {
 					result+=fullName+", ";
 				}
 			}
-			result = result.substring(0,result.length()-2);
+
+            if (!result.equals("")) {
+                result = result.substring(0, result.length() - 2);
+            }
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("managers", result);
 			managersFragment.render(parameters);
@@ -438,5 +474,161 @@ public class ApplicationManagement {
 			index();
 		}
 	}
+
+
+    @View
+    public void displayInstances(String applicationId) {
+        this.currentApplicationId=applicationId;
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("flash", flash);
+        instances.render(parameters);
+        flash.setError("");
+        flash.setSuccess("");
+
+    }
+
+    @Ajax
+    @Resource
+    @Route("/getInstancePageList/")
+    public void getInstancePageList() {
+
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        try {
+            Application application = ocwDataService_.getApplicationDAO().findApplicationById(currentApplicationId);
+            List<ApplicationInstance> instances= new ArrayList<ApplicationInstance>();
+            instances.addAll(application.getApplicationsInstance());
+            parameters.put("instances",instances);
+            parameters.put("currentApplicationName",application.getApplicationName());
+            parameters.put("isDeployable", application.getModele()!=null);
+            Project project = application.getProject();
+            Organization organization = project.getOrganization();
+            Set<ProviderIAAS> providers = organization.getProviderIAASes();
+            parameters.put("providers",providers);
+
+            instancesList.render(parameters);
+            flash.setError("");
+            flash.setSuccess("");
+        } catch (Exception e) {
+            e.printStackTrace();
+            ApplicationManagement_.index();
+        }
+
+
+    }
+
+
+
+    @Ajax
+    @Resource
+    @Route("/instancePage/{pageToDisplay}")
+    public void getInstancePage(String pageToDisplay) {
+        List<ApplicationInstance> currentList = new ArrayList<ApplicationInstance>();
+
+        Integer pageWanted = new Integer(pageToDisplay);
+
+
+
+        try {
+            PageList pageList = ocwDataService_.getApplicationInstanceDAO().getApplicationInstancePageListByApplication(PAGE_SIZE, currentApplicationId);
+            pageList.setPageSize(PAGE_SIZE);
+
+            nbPages = pageList.getAvailablePage();
+            nbResults=pageList.getAvailable();
+            currentPage=pageWanted;
+            if (pageWanted>nbPages) currentPage=nbPages;
+            if (pageWanted<1) currentPage=1;
+            currentList= pageList.getPage(currentPage);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("currentList", currentList);
+        parameters.put("nbResults", nbResults);
+        parameters.put("nbPages", nbPages);
+        parameters.put("currentPage", currentPage);
+        parameters.put("pageSize", PAGE_SIZE);
+        flash.setError("");
+        flash.setSuccess("");
+        parameters.put("flash", flash);
+        instancesPage.render(parameters);
+    }
+
+    @Ajax
+    @Resource
+    @Route("/deploy/{provider}")
+    public void deploy(String provider) {
+        System.out.println("Deploy function : provider="+provider);
+
+        try {
+            ApplicationInstanceDAO applicationInstanceDAO = ocwDataService_.getApplicationInstanceDAO();
+            ApplicationInstance applicationInstance = new ApplicationInstance();
+            applicationInstance.setProviderIAASId(provider);
+            Application application = ocwDataService_.getApplicationDAO().findApplicationById(currentApplicationId);
+            applicationInstance.setApplication(application);
+            if (!applicationInstanceDAO.createInstanceApplication(applicationInstance)) {
+                flash.setError("Unable to deploy application");
+            } else {
+
+                flash.setSuccess("Deployment launched.");
+            }
+        } catch (Exception e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                flash.setError("Unable to create Provider");
+        }
+
+        getInstancePage(""+currentPage);
+    }
+
+    @Ajax
+    @Resource
+    @Route("/getEndPointFragement")
+    public void getEndPointFragment(String applicationInstanceId) {
+        String endPoint = "notKnown";
+        if (isDeployed(applicationInstanceId)) {
+            endPoint="endPointToBeDisplayed";
+        }
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("endPoint",endPoint);
+        endPointFragment.render(parameters);
+
+    }
+
+    @Ajax
+    @Resource
+    @Route("/getStatusFragement")
+    public void getStatusFragment(String applicationInstanceId) {
+
+        boolean deployed = isDeployed(applicationInstanceId);
+        System.out.println(deployed);
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("deployed",deployed);
+        statusFragment.render(parameters);
+
+    }
+
+
+
+    @Ajax
+    @Resource
+    @Route("/isDeployed/{applicationId}")
+    public boolean isDeployed(String applicationInstanceId) {
+        try {
+
+            //1) recuperation de la ressource multi-cloud-iaas
+            JSONObject resource = OCWUtil.getResource("deployment");
+            if (resource==null) return false;
+            String resourceEndPoint=resource.getString("resourceEndpoint");
+            ApplicationInstance applicationInstance = ocwDataService_.getApplicationInstanceDAO().findApplicationInstanceById(applicationInstanceId);
+            VampManager vampManager = new VampManager(resourceEndPoint);
+            DeploymentManager deploymentManager = new DeploymentManager(vampManager, applicationInstance.getApplication().getApplicationName(), applicationInstanceId, null);
+            return deploymentManager.isDeployed();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 }

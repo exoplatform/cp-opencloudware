@@ -28,17 +28,18 @@
 		  <column name="PROJECT_DESCRIPTION"/>
 	  </property>
 
-	  <many-to-one name="organization" class="org.opencloudware.hibernate.model.Organization" fetch="select">
+	  <many-to-one name="organization" class="org.opencloudware.hibernate.model.Organization" fetch="select" lazy="false">
 		  <column name="ORGANIZATION_ID" not-null="true" />
 	  </many-to-one>
 
 	  <set name="applications" table="ocw_application"
-		   inverse="true" lazy="true" fetch="select">
+		   inverse="true" lazy="false" fetch="select">
 		  <key>
 			  <column name="PROJECT_ID" not-null="true" />
 		  </key>
 		  <one-to-many class="org.opencloudware.hibernate.model.Application" />
 	  </set>
+
 	  <set name="managers" table="ocw_project_managers" lazy="false">
 		  <key column="PROJECT_ID"/>
 		  <element type="string"/>

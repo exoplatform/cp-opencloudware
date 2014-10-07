@@ -19,8 +19,8 @@ public class RESTApplicationTemplate {
     private Long id;
 
 
-    private List<Long> applicationsInstanceId =
-            new ArrayList<Long>(0);
+    private List<String> applicationsInstanceId =
+            new ArrayList<String>(0);
 
     public RESTApplicationTemplate(Application applicationTemplate) {
         this.applicationName=applicationTemplate.getApplicationName();
@@ -67,11 +67,11 @@ public class RESTApplicationTemplate {
         this.id = id;
     }
 
-    public List<Long> getApplicationsInstanceId() {
+    public List<String> getApplicationsInstanceId() {
         return applicationsInstanceId;
     }
 
-    public void setApplicationsInstanceId(List<Long> applicationsInstanceId) {
+    public void setApplicationsInstanceId(List<String> applicationsInstanceId) {
         this.applicationsInstanceId = applicationsInstanceId;
     }
 }

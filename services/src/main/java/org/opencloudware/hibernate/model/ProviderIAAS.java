@@ -22,7 +22,19 @@ public class ProviderIAAS extends DBObject {
 	private String providerIAASPassword = null;
 
 	private Organization organization = null;
-	private Long id;
+
+    private String providerPublicNetworkName = null;
+
+    private String providerEndPoint = null;
+
+    private String providerTenantName = null;
+
+    private String providerGlanceUrl = null;
+
+    private String vdcName = null;
+
+
+	private String id;
 
 
 	public ProviderIAAS() {
@@ -60,11 +72,11 @@ public class ProviderIAAS extends DBObject {
 		this.organization = organization;
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -75,7 +87,8 @@ public class ProviderIAAS extends DBObject {
 				", providerIAASLogin='" + providerIAASLogin + '\'' +
 				", providerIAASPassword='******'" +
 				", providerIAASVendor='" + providerIAASVendor + '\'' +
-				", organization=" + organization +
+				//", organization=" + organization.getOrganizationName() +
+                ", publicNetworkName=" + providerPublicNetworkName +
 				", id=" + id +
 				'}';
 	}
@@ -87,4 +100,45 @@ public class ProviderIAAS extends DBObject {
 	public void setProviderIAASVendor(String providerIAASVendor) {
 		this.providerIAASVendor = providerIAASVendor;
 	}
+
+    public String getProviderPublicNetworkName() {
+        return providerPublicNetworkName;
+    }
+
+    public void setProviderPublicNetworkName(String providerPublicNetworkName) {
+        this.providerPublicNetworkName = providerPublicNetworkName;
+    }
+
+    public String getProviderEndPoint() {
+        return providerEndPoint;
+    }
+
+    public void setProviderEndPoint(String providerEndPoint) {
+        this.providerEndPoint = providerEndPoint;
+    }
+
+    public String getProviderTenantName() {
+        return providerTenantName;
+    }
+
+    public void setProviderTenantName(String providerTenantName) {
+        this.providerTenantName = providerTenantName;
+    }
+
+
+    public String getProviderGlanceUrl() {
+        return providerGlanceUrl;
+    }
+
+    public void setProviderGlanceUrl(String providerGlanceUrl) {
+        this.providerGlanceUrl = providerGlanceUrl;
+    }
+
+    public String getVdcName() {
+        return vdcName;
+    }
+
+    public void setVdcName(String vdcName) {
+        this.vdcName = vdcName;
+    }
 }

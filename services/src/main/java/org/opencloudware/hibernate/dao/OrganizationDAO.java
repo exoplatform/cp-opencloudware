@@ -91,10 +91,10 @@ public class OrganizationDAO {
 
       if (foundOrganization == null)
          return null;
+      invalidateCache(foundOrganization);
 
       session.delete(foundOrganization);
       session.flush();
-      cache_.remove(organizationId);
       return foundOrganization;
    }
 
@@ -213,4 +213,8 @@ public class OrganizationDAO {
 
    }
 
+    public void invalidateCache(Organization organization) {
+        cache_.remove(organization.getId());
+        cache_.remove(organization.getOrganizationName());
+    }
 }

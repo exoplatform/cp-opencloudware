@@ -24,10 +24,10 @@ public class OcwDataService  implements Startable {
 	public OcwDataService(HibernateService hibernateService, CacheService cacheService) {
 
 		organizationDAO = new OrganizationDAO(hibernateService, cacheService);
-		providerIAASDAO = new ProviderIAASDAO(hibernateService, cacheService);
-		applicationDAO = new ApplicationDAO(hibernateService, cacheService);
-		projectDAO = new ProjectDAO(hibernateService,cacheService);
-        applicationInstanceDAO = new ApplicationInstanceDAO(hibernateService,cacheService);
+		providerIAASDAO = new ProviderIAASDAO(hibernateService, cacheService, this);
+		applicationDAO = new ApplicationDAO(hibernateService, cacheService, this);
+		projectDAO = new ProjectDAO(hibernateService,cacheService, this);
+        applicationInstanceDAO = new ApplicationInstanceDAO(hibernateService,cacheService, this);
 
 	}
 

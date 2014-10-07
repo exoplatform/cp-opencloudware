@@ -23,8 +23,7 @@ $(function () {
                 minlength: 2
             },
             inputProviderVendor: {
-                required: true,
-                minlength: 2
+                required: true
             },
             inputProviderLogin: {
                 required: true,
@@ -34,11 +33,35 @@ $(function () {
                 required: true,
                 minlength: 5
             },
-            inputConfirmPassword: {
+            inputProviderIdentity: {
                 required: true,
-                minlength: 5,
-                equalTo: "#inputProviderPassword"
+                minlength: 2
+            },
+            inputProviderCredential: {
+                required: true,
+                minlength: 2
+            },
+            inputProviderEndpoint: {
+                required: true,
+                minlength: 2
+            },
+            inputProviderGlanceUrl: {
+                required: true,
+                minlength: 2
+            },
+            inputProviderTenantName: {
+                required: true,
+                minlength: 2
+            },
+            inputProviderPublicNetworkName: {
+                required: true,
+                minlength: 2
+            },
+            inputProviderVdcName: {
+                required: true
             }
+
+
         },
         highlight: function(element) {
             $(element).closest('.control-group').removeClass('success').addClass('error');
@@ -55,15 +78,42 @@ $(function () {
                 minlength: 2
             },
             inputProviderVendor: {
-                required: true,
-                minlength: 2
+                required: true
             },
             inputProviderLogin: {
                 required: true,
                 minlength: 2
             },
-            inputConfirmPassword: {
-                equalTo: "#inputProviderPassword"
+            inputProviderPassword: {
+                required: true,
+                minlength: 5
+            },
+            inputProviderIdentity: {
+                required: true,
+                minlength: 2
+            },
+            inputProviderCredential: {
+                required: true,
+                minlength: 2
+            },
+            inputProviderEndpoint: {
+                required: true,
+                minlength: 2
+            },
+            inputProviderGlanceUrl: {
+                required: true,
+                minlength: 2
+            },
+            inputProviderTenantName: {
+                required: true,
+                minlength: 2
+            },
+            inputProviderPublicNetworkName: {
+                required: true,
+                minlength: 2
+            },
+            inputProviderVdcName: {
+                required: true
             }
         },
         highlight: function(element) {
@@ -73,6 +123,7 @@ $(function () {
             element.text("OK !").addClass('valid').closest('.control-group').removeClass('error').addClass('success');
         }
     });
+
 });
 
 

@@ -60,6 +60,11 @@ function changePage(wantedPage) {
     $("#applicationTable").jzLoad("ApplicationManagement.getPage()",{"pageToDisplay":wantedPage});
 }
 
+function changeInstancePage(wantedPage) {
+    $("#applicationInstanceTable").jzLoad("ApplicationManagement.getInstancePage()",{"pageToDisplay":wantedPage});
+}
+
+
 
 function clearValidation (){
     if (validator) {

@@ -9,7 +9,7 @@ public class RESTApplicationInstance {
 
     private Long applicationTemplateId;
 
-    private Long id;
+    private String id;
 
     public RESTApplicationInstance(ApplicationInstance applicationInstance) {
         this.id=applicationInstance.getId();
@@ -18,11 +18,11 @@ public class RESTApplicationInstance {
     }
 
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -2,7 +2,7 @@
 
 	<h3 class="opencloudwareTitle">New Application</h3>
 
-	<form id="newApplicationForm" class="form-horizontal" action="@{createApplication()}" method="post">
+	<form id="newApplicationForm" class="form-horizontal" action="@{createApplication()}" method="post" enctype="multipart/form-data">
 		<div class="control-group">
 			<label for="inputApplicationName" class="control-label">Application Name (*) : </label>
 			<div class="controls">
@@ -69,6 +69,15 @@
 
             </span>
         </div>
+        
+        <div class="control-group">
+			<label for="inputApplicationModele" class="control-label">Application Modele (*) : </label>
+			<div class="controls">
+				<input type="file" id="inputApplicationModele" name="inputApplicationModele" placeholder="Application Modele">
+			</div>
+		</div>
+
+
 		<div class="control-group">
 			<div class="controls">
 				<span> (*) are required fields.</span>

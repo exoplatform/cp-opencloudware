@@ -5,7 +5,6 @@ import org.exoplatform.services.database.DBObject;
 
 import java.util.HashSet;
 import java.util.Set;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Romain Denarie
@@ -23,6 +22,9 @@ public class Application extends DBObject {
 
 	private Set<String> managers = new HashSet<String>(0);
 	private Long id;
+
+
+    private byte[] modele;
 
     private Set<ApplicationInstance> applicationsInstance =
             new HashSet<ApplicationInstance>(0);
@@ -62,8 +64,8 @@ public class Application extends DBObject {
 		return "Application{" +
 				"applicationName='" + applicationName + '\'' +
 				", author='" + description + '\'' +
-				", project='" + project + '\'' +
-                ", applicationsInstance='" + applicationsInstance + '\'' +
+				//", project='" + project.getProjectName() + '\'' +
+                //", applicationsInstance='" + applicationsInstance + '\'' +
                 ", id=" + id +
 				'}';
 	}
@@ -90,6 +92,14 @@ public class Application extends DBObject {
 
     public void setApplicationsInstance(Set<ApplicationInstance> applicationsInstance) {
         this.applicationsInstance = applicationsInstance;
+    }
+
+    public byte[] getModele() {
+        return modele;
+    }
+
+    public void setModele(byte[] modele) {
+        this.modele = modele;
     }
 }
 

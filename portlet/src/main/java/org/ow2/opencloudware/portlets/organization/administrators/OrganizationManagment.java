@@ -56,7 +56,7 @@ public class OrganizationManagment {
     int nbResults;
 
 
-	static int PAGE_SIZE = 2;
+	static int PAGE_SIZE = 10;
 
 
 	OrganizationService organizationService_;

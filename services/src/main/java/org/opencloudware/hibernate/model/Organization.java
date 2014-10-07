@@ -98,8 +98,8 @@ public class Organization extends DBObject {
 				", groupId='" + groupId + '\'' +
 				", address='" + address + '\'' +
 				", id=" + id +
-				", providerIAASes=" + providerIAASes +
-				", projects=" + projects +
+				//", providerIAASes=" + providerIAASes +
+				//", projects=" + projects +
 				'}';
 	}
 

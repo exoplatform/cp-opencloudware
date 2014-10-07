@@ -14,25 +14,30 @@ import org.exoplatform.services.database.DBObject;
 public class ApplicationInstance extends DBObject {
 
 
-	private Long id;
+	private String id;
 
     private Application application;
+
+    private String providerIAASId;
+
+    private byte[] modeleAtRuntime;
 
 	public ApplicationInstance() {
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
 	public String toString() {
 		return "ApplicationInstance{" +
 				"id='" + id+ '\'' +
-				", applicationTemplate='" + application.getApplicationName()+'}';
+                //", applicationTemplate='" + application.getApplicationName()+
+                "}";
 	}
 
     public Application getApplication() {
@@ -41,6 +46,22 @@ public class ApplicationInstance extends DBObject {
 
     public void setApplication(Application application) {
         this.application = application;
+    }
+
+    public String getProviderIAASId() {
+        return providerIAASId;
+    }
+
+    public void setProviderIAASId(String providerIAASId) {
+        this.providerIAASId = providerIAASId;
+    }
+
+    public byte[] getModeleAtRuntime() {
+        return modeleAtRuntime;
+    }
+
+    public void setModeleAtRuntime(byte[] modeleAtRuntime) {
+        this.modeleAtRuntime = modeleAtRuntime;
     }
 }
 

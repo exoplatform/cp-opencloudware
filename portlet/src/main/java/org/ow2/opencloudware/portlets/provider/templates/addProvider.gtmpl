@@ -12,32 +12,22 @@
 		<div class="control-group">
                 			<label for="inputProviderVendor" class="control-label">Provider Vendor (*) : </label>
                 			<div class="controls">
-                				<input type="text" id="inputProviderVendor" name="inputProviderVendor" placeholder="Provider Vendor">
+                				<select id="inputProviderVendor" name="inputProviderVendor" placeholder="Provider Vendor">
+                				    <option></option>
+                				    <%
+                				        for (String vendorName : providerParameters.keySet()) {
+                				    %>
+                				            <option value="${vendorName}">${vendorName}</option>
+                				    <%
+
+                				        }
+                				    %>
+                				</select>
                 			</div>
                 		</div>
-
-		<div class="control-group">
-        			<label for="inputProviderLogin" class="control-label">Provider Login (*) : </label>
-        			<div class="controls">
-        				<input type="text" id="inputProviderLogin" name="inputProviderLogin" placeholder="Provider Login">
-        			</div>
-        		</div>
-
-       	<div class="control-group">
-			<label for="inputProviderPassword" class="control-label">Provider password (*) : </label>
-            <div class="controls">
-            	<input type="password" id="inputProviderPassword" name="inputProviderPassword" placeholder="Provider password">
-            </div>
-
+        <div id="customForm">
 
         </div>
-        <div class="control-group">
-        			<label for="inputConfirmPassword" class="control-label">Confirm Password (*) : </label>
-        			<div class="controls">
-        				<input type="password" id="inputConfirmPassword" name="inputConfirmPassword" placeholder="Confirm Password">
-        			</div>
-        		</div>
-
 
 		<div class="control-group">
 			<div class="controls">
@@ -57,3 +47,11 @@
 	</form>
 
 </div>
+
+<script type="text/javascript">
+$("#inputProviderVendor").change(function() {
+        $("#customForm").jzLoad("ProviderManagement.getCustomForm()",{"vendorName":$( "#inputProviderVendor option:selected" ).val()});
+    });
+
+
+</script>

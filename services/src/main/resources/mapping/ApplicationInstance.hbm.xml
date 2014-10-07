@@ -6,14 +6,22 @@
   <class name="org.opencloudware.hibernate.model.ApplicationInstance"
          table="ocw_applicationInstance">
     <cache usage="transactional"/>
-    <id name="id"
-        type="java.lang.Long"
-        access="field">
-      <column name="ID"/>
-      <generator class="native"/>
-    </id>
+      <id name="id"
+          type="string"
+          access="field">
+          <column name="ID"/>
+      </id>
 
-	  <many-to-one name="application" class="org.opencloudware.hibernate.model.Application" fetch="select">
+      <property name="modeleAtRuntime" column="MODELE_AT_RUNTIME" length="65535"/>
+
+      <property name="providerIAASId"
+                type="java.lang.String"
+                access="field"
+                lazy="false">
+          <column name="APPLICATION_PROVIDER_IAAS_ID"/>
+      </property>
+
+      <many-to-one name="application" class="org.opencloudware.hibernate.model.Application" fetch="select" lazy="false">
 		  <column name="APPLICATION_ID" not-null="true" />
 	  </many-to-one>
   </class>
