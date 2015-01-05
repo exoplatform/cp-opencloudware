@@ -96,10 +96,12 @@
 
 	</div>
 </div>
+<div class="clearfix"></div>
 <table class="table table-bordered">
 	<thead>
 		<tr>
 			<th>Provider Name</th>
+			<th>Provider Id</th>
 			<th>Provider Login</th>
 			<th>Provider Vendor</th>
 			<th>Actions</th>
@@ -112,6 +114,7 @@
 			%>
             <tr>
             	<th>${current.getProviderIAASName()}</th>
+            	<th>${current.getId()}</th>
             	<th>${current.getProviderIAASLogin()}</th>
             	<th>${current.getProviderIAASVendor()}</th>
 

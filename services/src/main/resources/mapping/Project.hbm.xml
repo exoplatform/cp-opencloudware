@@ -20,7 +20,29 @@
       <column name="PROJECT_NAME" />
     </property>
 
-	  <property name="description"
+      <property name="isDeployedClif"
+                type="java.lang.Boolean"
+                access="field"
+                lazy="false"
+                not-null="true" >
+          <column name="PROJECT_ISDEPLOYEDCLIF" />
+      </property>
+
+      <property name="projectClifApplicationId"
+                type="java.lang.String"
+                access="field"
+                lazy="false">
+          <column name="PROJECT_CLIFFAPPLICATIONID" />
+      </property>
+
+      <property name="projectClifProviderId"
+                type="java.lang.String"
+                access="field"
+                lazy="false">
+          <column name="PROJECT_CLIFFPROVIDERID" />
+      </property>
+
+      <property name="description"
 				type="java.lang.String"
 				access="field"
 				lazy="false"

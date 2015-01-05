@@ -26,6 +26,10 @@
         <type>org.opencloudware.rest.applicationInstances.RESTAPIApplicationInstance</type>
     </component>
 
+    <component>
+        <key>org.opencloudware.rest.monitoring.MonitoringRestService</key>
+        <type>org.opencloudware.rest.monitoring.MonitoringRestService</type>
+    </component>
 
     <component>
         <key>org.opencloudware.rest.applicationTemplate.RESTAPIApplicationTemplate</key>
@@ -130,6 +134,24 @@
                                     </field>
                                     <field name="resourceDescription">
                                         <string>Ocw Orchrestrator</string>
+                                    </field>
+                                </object>
+                            </value>
+
+
+                            <value>
+                                <object type="org.opencloudware.rest.resources.OCWResource">
+                                    <field name="resourceType">
+                                        <string>metering</string>
+                                    </field>
+                                    <field name="resourceImplType">
+                                        <string>proactive-watch</string>
+                                    </field>
+                                    <field name="resourceEndpoint">
+                                        <string>http://10.197.180.205:9998/proactive-watch</string>
+                                    </field>
+                                    <field name="resourceDescription">
+                                        <string>Monitoring and metering service</string>
                                     </field>
                                 </object>
                             </value>

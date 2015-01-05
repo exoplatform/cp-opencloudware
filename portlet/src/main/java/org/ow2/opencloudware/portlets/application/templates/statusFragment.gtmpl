@@ -1,7 +1,5 @@
 <%
 if (deployed) {
-%>
-  Deployed
-  <% } else {%>
+%>Deployed<% } else {%>
 <img src="/opencloudware-portlet/skin/common/img/spinner.gif" class="deploymentStatus" />Deploying
 <%}%>

@@ -100,8 +100,10 @@ public class ApplicationDAO {
          return null;
 
       session.delete(foundApplication);
+
+       ocwDataService_.getProjectDAO().invalidateCache(foundApplication.getProject());
       session.flush();
-      cache_.remove(applicationId);
+       cache_.remove(applicationId);
       return foundApplication;
    }
 

@@ -84,6 +84,18 @@ public class RESTAPIResources implements ResourceContainer {
     }
 
 
+    public OCWResource getResourceByType(String type) {
+        if (type == null || type.equals("")) {
+            return null;
+        }
+
+        for (OCWResource res : resourcesList) {
+            if (res.getResourceType().equals(type)) {
+                return res;
+            }
+        }
+        return null;
+    }
 
 
 }

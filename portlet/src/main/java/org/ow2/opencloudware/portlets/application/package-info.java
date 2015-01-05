@@ -18,7 +18,9 @@
 @Bindings(
 		{
 				@Binding(value = org.exoplatform.services.organization.OrganizationService.class),
-				@Binding(value = org.opencloudware.hibernate.OcwDataService.class)
+				@Binding(value = org.opencloudware.hibernate.OcwDataService.class),
+                @Binding(value = org.ow2.opencloudware.commons.ApplicationDesc.class),
+                @Binding(value = org.ow2.opencloudware.commons.VMDesc.class)
 		}
 )
 

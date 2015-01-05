@@ -77,6 +77,7 @@ public class OrganizationDAO {
       Session session = service_.openSession();
       session.merge(organization);
       session.flush();
+
       cache_.put(organization.getOrganizationName(), organization);
 	  cache_.put(organization.getId(), organization);
    }
@@ -104,8 +105,9 @@ public class OrganizationDAO {
    public Organization findOrganizationByName(String organizationName) throws Exception
    {
       Organization organization = cache_.get(organizationName);
-      if (organization != null)
-         return organization;
+       if (organization != null) {
+           return organization;
+       }
       Session session = service_.openSession();
       organization = findOrganizationByName(organizationName, session);
       if (organization != null)
@@ -120,8 +122,10 @@ public class OrganizationDAO {
 	public Organization findOrganizationById(String organizationId) throws Exception
 	{
 		Organization organization = cache_.get(organizationId);
-		if (organization != null)
-			return organization;
+		if (organization != null) {
+            return organization;
+        }
+
 		Session session = service_.openSession();
 		organization = findOrganizationById(organizationId, session);
 		if (organization != null)

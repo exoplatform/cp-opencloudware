@@ -72,8 +72,16 @@ $(function () {
         $("#inputProviderCredential").val("${provider.getProviderIAASPassword()}");
         $("#inputProviderTenantName").val("${provider.getProviderTenantName()}");
         $("#inputProviderPublicNetworkName").val("${provider.getProviderPublicNetworkName()}");
+        $("#inputProviderVdcName").val("${provider.getVdcName()}");
+        $("#inputProviderOrganizationName").val("${provider.getProviderOrganizationName()}");
         $("#inputProviderGlanceUrl").val("${provider.getProviderGlanceUrl()}");
         $("#inputVdcName").val("${provider.getVdcName()}");
+        $("#inputProviderCatalogName").val("${provider.getProviderCatalogName()}");
+
+        $("#inputProviderSmaEndpoint").val("${provider.getProviderSmaEndpoint()}");
+        $("#inputProviderSmaLogin").val("${provider.getProviderSmaLogin()}");
+        $("#inputProviderSmaPassword").val("${provider.getProviderSmaPassword()}");
+
 
 
     });

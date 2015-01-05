@@ -96,12 +96,14 @@
 
 	</div>
 </div>
+<div class="clearfix"></div>
 <table class="table table-bordered">
 	<thead>
 		<tr>
 			<th>Project Name</th>
 			<th>Project Description</th>
 			<th>Project Managers</th>
+			<th>Clif Deployed</th>
 			<th>Actions</th>
 		</tr>
 	</thead>
@@ -113,7 +115,21 @@
             <tr>
             	<th>${current.getProjectName()}</th>
                 <th>${current.getDescription()}</th>
+
                 <th id="project-${projectId}"></th>
+
+            <%
+                if (current.isDeployedClif()) {
+            %>
+                    <th id="urlClif-${projectId}">Deployed</th>
+            <%
+                }  else {
+            %>
+                    <th id="urlClif-${projectId}">Not Deployed</th>
+            <%
+                }
+
+            %>
 
             	<th>
             		<div class="actionCell">
@@ -133,6 +149,13 @@
                             current.getManagers().each { currentUsername ->
                     %>
                                 $("#project-${projectId}").jzLoad("ProjectManagement.getManagerFragement()",{"projectId":${projectId}});
+                    <%
+
+                            }
+                            if (current.isDeployedClif()) {
+                    %>
+                                console.log(${projectId});
+                                $("#urlClif-${projectId}").jzLoad("ProjectManagement.getClifUrlFragment()",{"projectId":${projectId}});
                     <%
 
                             }

@@ -31,10 +31,19 @@ public class ProviderIAAS extends DBObject {
 
     private String providerGlanceUrl = null;
 
+    private String providerOrganizationName = null;
+
     private String vdcName = null;
 
+    private String providerCatalogName = null;
 
-	private String id;
+    private String providerSmaEndpoint = null;
+
+    private String providerSmaLogin = null;
+
+    private String providerSmaPassword = null;
+
+    private String id;
 
 
 	public ProviderIAAS() {
@@ -140,5 +149,47 @@ public class ProviderIAAS extends DBObject {
 
     public void setVdcName(String vdcName) {
         this.vdcName = vdcName;
+    }
+
+
+
+    public String getProviderOrganizationName() {
+        return providerOrganizationName;
+    }
+
+    public void setProviderOrganizationName(String providerOrganizationName) {
+        this.providerOrganizationName = providerOrganizationName;
+    }
+
+    public String getProviderCatalogName() {
+        return providerCatalogName;
+    }
+
+    public void setProviderCatalogName(String providerCatalogName) {
+        this.providerCatalogName = providerCatalogName;
+    }
+
+    public String getProviderSmaEndpoint() {
+        return providerSmaEndpoint;
+    }
+
+    public void setProviderSmaEndpoint(String providerSmaEndpoint) {
+        this.providerSmaEndpoint = providerSmaEndpoint;
+    }
+
+    public String getProviderSmaLogin() {
+        return providerSmaLogin;
+    }
+
+    public void setProviderSmaLogin(String providerSmaLogin) {
+        this.providerSmaLogin = providerSmaLogin;
+    }
+
+    public String getProviderSmaPassword() {
+        return providerSmaPassword;
+    }
+
+    public void setProviderSmaPassword(String providerSmaPassword) {
+        this.providerSmaPassword = providerSmaPassword;
     }
 }

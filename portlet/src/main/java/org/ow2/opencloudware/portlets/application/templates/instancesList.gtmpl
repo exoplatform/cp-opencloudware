@@ -1,7 +1,23 @@
 
 <h4 class="opencloudwareTitle">${currentApplicationName}</h4>
 
+<%
+    if (providers.size()>=1) {
+%>
+<div id="costEvaluationDiv">
+    <h5>Cost Evaluation</h5>
+    Evaluate the cost of a deployment of your application :
+    <a class="btn" id="costEvaluationButton" href="@{ApplicationManagement.displayCostEvaluation(cost = null)}">
+        Evaluate
+    </a>
+</div>
+
+<%
+    }
+%>
 <div id="deployDiv">
+    <h5>Deployment</h5>
+
         <%
             if (!isDeployable) {
         %>
@@ -16,7 +32,8 @@
          %>
                 <a class="btn" id="deployButton" href="#">
                        Deploy
-                   </a>
+                </a>
+                <input type="checkbox" name="activateMonitoring" id="activateMonitoring" checked="cheched" disabled="disabled" />Activate Monitoring
 
         <%
             }
@@ -77,10 +94,10 @@
             provider = $("#deploymentTarget option:selected").val();
         } else {
             provider = null;
-
         }
+        var activateMonitoring = $("#activateMonitoring").val();
         $("#deployButton").addClass("disabled");
-        $("#applicationInstanceTable").jzLoad("ApplicationManagement.deploy()",{"provider":provider}, function() {
+        $("#applicationInstanceTable").jzLoad("ApplicationManagement.deploy()",{"provider":provider, "activateMonitoring":activateMonitoring}, function() {
             $("#deployButton").removeClass("disabled");
         });
 
@@ -92,4 +109,5 @@
 	    $("#applicationInstanceTable").jzLoad("ApplicationManagement.getInstancePage()",{"pageToDisplay":"1"});
 
     });
+
 </script>

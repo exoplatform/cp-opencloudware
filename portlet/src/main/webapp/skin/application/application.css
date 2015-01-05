@@ -46,4 +46,29 @@
     margin-right: 5px;
 }
 
+#activateMonitoring {
+    margin-left: 10px;
+    margin-right: 5px;
+}
 
+.costEvaluationResults {
+    padding: 20px 0 20px;
+    font-size: 18px;
+    text-align: center;
+}
+
+.divVm{
+    margin:10px 0px;
+}
+
+.ulVms {
+    margin-left: 10px;
+    
+}
+
+.ulHardware {
+    margin-left: 20px
+}
+.ulHardware li {
+    list-style: disc;
+}

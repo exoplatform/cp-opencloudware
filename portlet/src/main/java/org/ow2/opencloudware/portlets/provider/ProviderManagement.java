@@ -127,6 +127,13 @@ public class ProviderManagement {
 //        publicNetworkName	 name of public organisation name
         parameters.add("PublicNetworkName");
 
+//        organization	 name of public organisation name
+        parameters.add("OrganizationName");
+
+        // catalogName
+        parameters.add("CatalogName");
+
+
 
         providerParameters.put("vcloud",parameters);
 
@@ -166,7 +173,11 @@ public class ProviderManagement {
         parameters.add("Identity");
 //        credential	 password
         parameters.add("Credential");
-        providerParameters.put("Microsoft SPF",parameters);
+
+        parameters.add("SmaEndpoint");
+        parameters.add("SmaLogin");
+        parameters.add("SmaPassword");
+        providerParameters.put("spf",parameters);
 
 
 
@@ -355,7 +366,12 @@ public class ProviderManagement {
 											String inputProviderEndpoint,
                                             String inputProviderGlanceUrl,
                                             String inputProviderTenantName,
-                                            String inputProviderPublicNetworkName, String inputProviderVdcName) {
+                                            String inputProviderPublicNetworkName, String inputProviderVdcName,
+                                            String inputProviderOrganizationName,
+                                            String inputProviderCatalogName,
+                                            String inputProviderSmaEndpoint,
+                                            String inputProviderSmaLogin,
+                                            String inputProviderSmaPassword) {
 
 
 		try {
@@ -372,8 +388,13 @@ public class ProviderManagement {
             provider.setProviderPublicNetworkName(inputProviderPublicNetworkName);
             provider.setProviderTenantName(inputProviderTenantName);
             provider.setProviderGlanceUrl(inputProviderGlanceUrl);
+            provider.setProviderOrganizationName(inputProviderOrganizationName);
+            provider.setProviderCatalogName(inputProviderCatalogName);
 
             provider.setVdcName(inputProviderVdcName);
+            provider.setProviderSmaEndpoint(inputProviderSmaEndpoint);
+            provider.setProviderSmaLogin(inputProviderSmaLogin);
+            provider.setProviderSmaPassword(inputProviderSmaPassword);
 
 
 
@@ -407,7 +428,13 @@ public class ProviderManagement {
                                       String inputProviderEndpoint,
                                       String inputProviderGlanceUrl,
                                       String inputProviderTenantName,
-                                      String inputProviderPublicNetworkName, String inputVdcName) {
+                                      String inputProviderPublicNetworkName,
+                                      String inputProviderVdcName,
+                                      String inputProviderOrganizationName,
+                                      String inputProviderCatalogName,
+                                      String inputProviderSmaEndpoint,
+                                      String inputProviderSmaLogin,
+                                      String inputProviderSmaPassword) {
 
 
 
@@ -431,9 +458,17 @@ public class ProviderManagement {
             oldProvider.setProviderPublicNetworkName(inputProviderPublicNetworkName);
             oldProvider.setProviderTenantName(inputProviderTenantName);
             oldProvider.setProviderGlanceUrl(inputProviderGlanceUrl);
-            oldProvider.setVdcName(inputVdcName);
+            oldProvider.setVdcName(inputProviderVdcName);
+            oldProvider.setProviderOrganizationName(inputProviderOrganizationName);
+            oldProvider.setProviderCatalogName(inputProviderCatalogName);
+
+            oldProvider.setProviderSmaEndpoint(inputProviderSmaEndpoint);
+            oldProvider.setProviderSmaLogin(inputProviderSmaLogin);
+            oldProvider.setProviderSmaPassword(inputProviderSmaPassword);
 
 			providerIAASDAO.saveProviderIAAS(oldProvider);
+
+
 
 			flash.setSuccess("Provider \""+inputProviderName+"\" modified.");
 		} catch (Exception e) {

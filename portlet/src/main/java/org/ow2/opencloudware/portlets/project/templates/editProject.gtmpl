@@ -15,11 +15,11 @@
 			</div>
 		</div>
 		<div class="control-group">
-                			<label for="inputProjectDescription" class="control-label">Project Description (*) : </label>
-                			<div class="controls">
-                				<textarea row="3" id="inputProjectDescription" name="inputProjectDescription" value="${project.getDescription()}">${project.getDescription()}</textarea>
-                			</div>
-                		</div>
+            <label for="inputProjectDescription" class="control-label">Project Description (*) : </label>
+            <div class="controls">
+                <textarea row="3" id="inputProjectDescription" name="inputProjectDescription" value="${project.getDescription()}">${project.getDescription()}</textarea>
+            </div>
+        </div>
 
         <div class="control-group">
             <span class="pull-left span-left">
@@ -75,6 +75,73 @@
 
             </span>
         </div>
+
+        <div class="control-group">
+            <label for="inputProjectDeployClif" class="control-label">Deploy Benchmarking Application : </label>
+            <div class="controls">
+                <% if (isDeployedClif) { %>
+                    <input type="checkbox" name="inputProjectDeployClif" id="inputProjectDeployClif" checked/>
+                    <% } else { %>
+                    <input type="checkbox" name="inputProjectDeployClif" id="inputProjectDeployClif"/>
+                    <% } %>
+            </div>
+        </div>
+
+
+        <%
+            if (providers.size()>1) {
+        %>
+        <div class="control-group hide" id="divSelectClif">
+                    <label for="inputProjectDeployClif" class="control-label">On which provider would  you deploy Clif Service ? </label>
+                    <div class="controls">
+                        <select id="deploymentTarget" name="deploymentTarget">
+                                <option>Automatic</option>
+
+
+                <%
+                        String deploymentTarget = project.getProjectClifProviderId();
+                		providers.each { current ->
+                			String providerId = current.getId();
+                			String providerName = current.getProviderIAASName();
+                			String providerVendor = current.getProviderIAASVendor();
+                            String label = providerName+" ("+providerVendor+")";
+                            if (deploymentTarget.equals(providerId)) {
+                    %>
+                                <option value="${providerId}" selected="selected">${label}</option>
+                    <%
+
+                            } else {
+                    %>
+                                <option value="${providerId}">${label}</option>
+                    <%
+                            }
+
+                 		}
+                %>
+                		</select>
+
+            </div>
+        </div>
+        <%
+            } else if (providers.size()==1) {
+        %>
+            <select class="hide" id="deploymentTarget"  name="deploymentTarget">
+        <%
+                providers.each { current ->
+
+                    String providerId = current.getId();
+                    String providerName = current.getProviderIAASName();
+                    String providerVendor = current.getProviderIAASVendor();
+                    String label = providerName+" ("+providerVendor+")";
+            %>
+                    <option value="${providerId}" selected="selected">${label}</option>
+
+            <%}%>
+            </select>
+
+        <% } %>
+
+
 
 
 		<div class="control-group">
@@ -144,6 +211,23 @@
         $(function () {
             changeSelect("#usersNames","#inputUsersNames");
             changeSelect("#managersNames","#inputManagersNames");
+
+
+            if ($("#inputProjectDeployClif").is (':checked')) {
+                $("#divSelectClif").show();
+            } else {
+                $("#divSelectClif").hide();
+            }
+        });
+
+
+        $("#inputProjectDeployClif").click (function () {
+            var thisCheck = $(this);
+            if (thisCheck.is (':checked')) {
+                $("#divSelectClif").show();
+            } else {
+                $("#divSelectClif").hide();
+            }
         });
     </script>
 

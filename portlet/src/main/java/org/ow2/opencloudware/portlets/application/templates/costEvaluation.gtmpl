@@ -1,0 +1,143 @@
+<div style="margin-right:20px;margin-left:20px">
+    <div class="pull-left"><h3 class="opencloudwareTitle">Cost Evaluation</h3></div>
+    <% if (flash.getError() != "") { %>
+                			<div id="flashMessage" class="alert-error pull-left flash">
+                				${flash.getError()}
+                			</div>
+                		<% } %>
+                		<% if (flash.getSuccess() != "") { %>
+                			<div id="flashMessage" class="alert-success pull-left flash">
+                				<strong>${flash.getSuccess()}</strong>
+                			</div>
+                		<% } %>
+    <div class="pull-right">
+        <h3>
+            <a class="btn" href="@{ApplicationManagement.displayInstances(applicationId = currentApplicationId)}">
+                <i class="icon-backward"></i>Back to Applications Instances list
+            </a>
+        </h3>
+    </div>
+    <div class="clearfix"></div>
+
+
+
+    <div class="costEvaluationInformation">
+        <h4 class="opencloudwareTitle">${currentApplicationName}</h4>
+
+        <form id="costEvaluationForm" class="form-horizontal" enctype="multipart/form-data" action="@{ApplicationManagement.evaluateCost()}" method="post" >
+            <div class="control-group">
+                <div class="controls">
+                    <input type="hidden" id="inputApplicationId" name="inputApplicationId" value="${currentApplicationId}">
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="inputDuration" class="control-label">Duration (in days) (*) : </label>
+                <div class="controls">
+                    <input type="text" id="inputDuration" name="inputDuration">
+                </div>
+            </div>
+<%
+            if (providers.size()==1) {
+%>
+            <div class="control-group hide">
+<%
+            } else {
+%>
+            <div class="control-group">
+<%
+            }
+%>
+                <label for="inputIaas" class="control-label">Iaas to evaluate (*) : </label>
+                <div class="controls">
+                     <%
+                                if (providers.size()>1) {
+                            %>
+                                    <select id="deploymentTarget" name="deploymentTarget">
+                            <%
+                                    providers.each { current ->
+                                        String providerId = current.getId();
+                                        String providerName = current.getProviderIAASName();
+                                        String providerVendor = current.getProviderIAASVendor();
+                                        String label = providerName+" ("+providerVendor+")";
+                            %>
+                                        <option value="${providerId}">${label}</option>
+                            <%
+                                    }
+                            %>
+                                    </select>
+                            <%
+                                } else if (providers.size()==1) {
+                            %>
+                                <select class="hide" id="deploymentTarget" name="deploymentTarget">
+                            <%
+                                    providers.each { current ->
+
+                                        String providerId = current.getId();
+                                        String providerName = current.getProviderIAASName();
+                                        String providerVendor = current.getProviderIAASVendor();
+                                        String label = providerName+" ("+providerVendor+")";
+                                %>
+                                        <option value="${providerId}" selected="selected">${label}</option>
+
+                                <%}%>
+                                </select>
+
+                            <% } %>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="scalabilityConstraints" class="control-label">Scalability Constraints (*) : </label>
+                <div class="controls">
+                    <input type="file" id="scalabilityConstraints" name="scalabilityConstraints" placeholder="Scalability Constraints">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="controls">
+                    <span> (*) are required fields.</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn btn-primary" id="register">Evaluate</button>
+                    <button type="reset" class="btn btn-default" id="reset" onclick='$("#costEvaluationForm").reset()'>Reset</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <%
+        if (cost != null){
+    %>
+        <div id="costEvaluationResults" class="costEvaluationResults">
+            ${cost}
+        </div>
+    <%
+        }
+    %>
+
+</div>
+
+
+<script>
+    validatorCost = $("#costEvaluationForm").validate({
+            rules: {
+                inputDuration: {
+                    required: true,
+                    number:true
+                },
+                deploymentTarget: {
+                    required: true
+                },
+                scalabilityConstraints: {
+                    required: true
+                }
+            },
+            highlight: function(element) {
+                $(element).closest('.control-group').removeClass('success').addClass('error');
+            },
+            success: function(element) {
+                element.text("OK !").addClass('valid').closest('.control-group').removeClass('error').addClass('success');
+            }
+        });
+</script>

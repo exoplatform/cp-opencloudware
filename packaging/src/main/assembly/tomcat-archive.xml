@@ -83,6 +83,7 @@
             <include>com.sun.jersey:jersey-client</include>
 
             <include>com.sun.jersey:jersey-core</include>
+            <include>org.ow2.opencloudware:opencloudware-commons</include>
       </includes>
 
     </dependencySet>    

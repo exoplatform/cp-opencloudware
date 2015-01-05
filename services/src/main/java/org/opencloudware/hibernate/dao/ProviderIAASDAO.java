@@ -197,6 +197,7 @@ public class ProviderIAASDAO {
 			return null;
 
 		session.delete(foundProvider);
+        ocwDataService_.getOrganizationDAO().invalidateCache(foundProvider.getOrganization());
 		session.flush();
 		cache_.remove(providerId);
 		return foundProvider;
@@ -261,8 +262,14 @@ public class ProviderIAASDAO {
                 if (provider.getProviderPublicNetworkName() != null) {
 
                     properties.put("publicNetworkName", provider.getProviderPublicNetworkName());
-                    properties.put("orgName", provider.getOrganization().getOrganizationName());
+                    properties.put("orgName", provider.getProviderOrganizationName());
                     properties.put("vdcName",provider.getVdcName());
+
+                }
+                if (provider.getProviderSmaEndpoint() != null) {
+                    properties.put("smaEndpoint", provider.getProviderSmaEndpoint());
+                    properties.put("smaLogin", provider.getProviderSmaLogin());
+                    properties.put("smaPassword", provider.getProviderSmaPassword());
 
                 }
 

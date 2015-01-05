@@ -1,7 +1,8 @@
 <%  for (String parameter : providerParameters) {
         String type="text";
-        if (parameter.equals("Credential")) { type="password";}
 
+        if (parameter.equals("Credential")) { type="password";}
+        if (parameter.equals("SmaPassword")) { type="password";}
 %>
     <div class="control-group">
         <label for="inputProvider${parameter}" class="control-label">${parameter} (*) : </label>

@@ -9,13 +9,23 @@ import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.json.JSONObject;
 import org.opencloudware.hibernate.OcwDataService;
+import org.opencloudware.hibernate.dao.ApplicationDAO;
+import org.opencloudware.hibernate.dao.ApplicationInstanceDAO;
 import org.opencloudware.hibernate.dao.ProjectDAO;
-import org.opencloudware.hibernate.model.Organization;
-import org.opencloudware.hibernate.model.Project;
+import org.opencloudware.hibernate.model.*;
+import org.opencloudware.hibernate.model.Application;
+import org.opencloudware.rest.OCWUtil;
+import org.ow2.opencloudware.commons.ApplicationDesc;
+import org.ow2.opencloudware.commons.vamp.DeploymentManager;
+import org.ow2.opencloudware.commons.vamp.VampManager;
+import org.ow2.opencloudware.portlets.application.ApplicationManagement_;
 import org.ow2.opencloudware.portlets.common.Flash;
 
 import javax.inject.Inject;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -53,6 +63,9 @@ public class ProjectManagement {
 	@Path("managersFragment.gtmpl")
 	Template managersFragment;
 
+    @Inject
+    @Path("clifUrlFragment.gtmpl")
+    Template clifUrlFragment;
 
 	@Inject
 	Flash flash;
@@ -173,6 +186,11 @@ public class ProjectManagement {
 
 			}
 			Map<String, Object> parameters = new HashMap<String, Object>();
+
+
+            Set<ProviderIAAS> providers = organizationObject.getProviderIAASes();
+            parameters.put("providers", providers);
+
 			parameters.put("usersNames", usersNames);
 			parameters.put("managersNames", managersNames);
 			addProject.render(parameters);
@@ -293,10 +311,16 @@ public class ProjectManagement {
 
 
 				}
-				Map<String, Object> parameters = new HashMap<String, Object>();
+
+                boolean  isDeployedClif = project.isDeployedClif();
+
+                Map<String, Object> parameters = new HashMap<String, Object>();
+
+                Set<ProviderIAAS> providers = organizationObject.getProviderIAASes();
+                parameters.put("providers", providers);
 				parameters.put("usersNames", usersNames);
 				parameters.put("managersNames", managersNames);
-
+                parameters.put("isDeployedClif",isDeployedClif);
 				parameters.put("project", project);
 				editProject.render(parameters);
 			}
@@ -312,7 +336,9 @@ public class ProjectManagement {
 	public Response.View createProject(String inputProjectName,
 											String inputProjectDescription,
 											String inputUsersNames,
-											String inputManagersNames) {
+											String inputManagersNames,
+                                            String inputProjectDeployClif,
+                                            String deploymentTarget) {
 
 
 		try {
@@ -320,7 +346,9 @@ public class ProjectManagement {
 			ProjectDAO projectDAO= ocwDataService_.getProjectDAO();
 
 
-			Project project = projectDAO.createProjectInstance();
+            boolean isDeployedClif = inputProjectDeployClif!= null && inputProjectDeployClif.equals("on");
+
+            Project project = projectDAO.createProjectInstance();
 			project.setProjectName(inputProjectName);
 			project.setDescription(inputProjectDescription);
 
@@ -337,6 +365,10 @@ public class ProjectManagement {
 			project.setOrganization(organization);
 			projectDAO.createProject(project);
 
+            if (isDeployedClif) {
+                deployClif(project, deploymentTarget);
+            }
+
 			flash.setSuccess("Project \""+inputProjectName+"\" added.");
 		} catch (Exception e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -347,12 +379,73 @@ public class ProjectManagement {
 
 	}
 
+    private void deployClif(Project project, String deploymentTarget) {
 
-	@Action
+        try {
+            ApplicationDAO applicationDAO = ocwDataService_.getApplicationDAO();
+            org.opencloudware.hibernate.model.Application application = applicationDAO.createApplicationInstance();
+            application.setApplicationName("Clif for " + project.getProjectName());
+            application.setDescription("The benchmarking application");
+
+
+            InputStream clifModele = ProjectManagement.class.getResourceAsStream("/ovfData/vamp-clifaas.ovf");
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+            int nRead;
+            byte[] data = new byte[16384];
+            while ((nRead = clifModele.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+
+
+
+            application.setModele(buffer.toByteArray());
+
+
+            Set<String> managers = project.getManagers();
+            Set<String> newManagers = new HashSet<String>();
+            newManagers.addAll(managers);
+            application.setManagers(newManagers);
+            application.setProject(ocwDataService_.getProjectDAO().findProjectById(project.getId().toString()));
+            applicationDAO.createApplication(application);
+
+
+            project.setProjectClifApplicationId(application.getId().toString());
+            project.setDeployedClif(true);
+            project.setProjectClifProviderId(deploymentTarget);
+            ocwDataService_.getProjectDAO().saveProject(project);
+
+            try {
+                ApplicationInstanceDAO applicationInstanceDAO = ocwDataService_.getApplicationInstanceDAO();
+                ApplicationInstance applicationInstance = new ApplicationInstance();
+
+                applicationInstance.setProviderIAASId(deploymentTarget);
+                applicationInstance.setApplication(application);
+                if (!applicationInstanceDAO.createInstanceApplication(applicationInstance)) {
+                    flash.setError("Unable to deploy Clif application");
+                } else {
+
+                    flash.setSuccess("Clif Deployment started.");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                flash.setError("Unable to create Provider");
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Action
 	@Route("/editProject")
 	public Response.View editProject(String inputProjectId, String inputProjectName,
 									 String inputProjectDescription,String inputUsersNames,
-									 String inputManagersNames) {
+									 String inputManagersNames,
+                                     String inputProjectDeployClif,
+                                     String deploymentTarget) {
 
 
 
@@ -368,8 +461,9 @@ public class ProjectManagement {
 			}
 
 
+            boolean isDeployedClif = inputProjectDeployClif!= null && inputProjectDeployClif.equals("on");
 
-			project.setProjectName(inputProjectName);
+            project.setProjectName(inputProjectName);
 			project.setDescription(inputProjectDescription);
 
 
@@ -385,6 +479,15 @@ public class ProjectManagement {
 
 			projectDAO.saveProject(project);
 
+            if (project.isDeployedClif() && !isDeployedClif) {
+                //need to undeploy
+                undeployClif(project);
+            } else if (!project.isDeployedClif() && isDeployedClif) {
+                //need to deploy
+                deployClif(project, deploymentTarget);
+            }
+
+
 			flash.setSuccess("Project \""+inputProjectName+"\" modified.");
 		} catch (Exception e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -393,8 +496,42 @@ public class ProjectManagement {
 		return ProjectManagement_.index();
 	}
 
+    private void undeployClif(Project project) {
+        try {
 
-	@Ajax
+            try {
+
+                ApplicationDAO applicationDAO = ocwDataService_.getApplicationDAO();
+                ApplicationInstanceDAO applicationInstanceDAO = ocwDataService_.getApplicationInstanceDAO();
+
+                Application application = applicationDAO.findApplicationById(project.getProjectClifApplicationId());
+                for (ApplicationInstance applicationInstance : application.getApplicationsInstance()) {
+                    applicationInstanceDAO.removeApplicationInstance(applicationInstance);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            String applicationCliffId=project.getProjectClifApplicationId();
+            project.setDeployedClif(false);
+            project.setProjectClifApplicationId(null);
+            project.setProjectClifProviderId(null);
+            ocwDataService_.getProjectDAO().saveProject(project);
+
+            ApplicationDAO applicationDAO = ocwDataService_.getApplicationDAO();
+
+            applicationDAO.removeApplication(applicationCliffId);
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Ajax
 	@Resource
 	@Route("/getManagerFragement")
 	public void getManagerFragement(String projectId) {
@@ -424,6 +561,64 @@ public class ProjectManagement {
 			index();
 		}
 	}
+
+
+    @Ajax
+    @Resource
+    @Route("/getClifUrlFragment")
+    public void getClifUrlFragment(String projectId) {
+        try {
+
+
+
+            String result = "";
+
+            Project project=ocwDataService_.getProjectDAO().findProjectById(projectId);
+            Application clifApplication = ocwDataService_.getApplicationDAO().findApplicationById(project.getProjectClifApplicationId());
+            //TODO add some check for next()
+            ApplicationInstance clifInstance = clifApplication.getApplicationsInstance().iterator().next();
+
+            try {
+                //1) recuperation de la ressource multi-cloud-iaas
+                JSONObject resource = OCWUtil.getResource("deployment");
+                if (resource != null) {
+                    String resourceEndPoint = resource.getString("resourceEndpoint");
+                    VampManager vampManager = new VampManager(resourceEndPoint);
+                    Set<DeploymentManager> deploymentManagers = vampManager.getApplications(clifInstance.getId());
+                    if (deploymentManagers.size() == 1) {
+                        //TODO add some check for next()
+                        DeploymentManager deploymentManager = deploymentManagers.iterator().next();
+                        ApplicationDesc appDescr = deploymentManager.getAppDesc(false);
+                        //TODO add some check for next()
+
+                        String ip = appDescr.getAllVMinfo().iterator().next().getAddress();
+                        if (ip != null) {
+                            result = "<a href='http://" + ip +"' target='_blank'>http://"+ip+"</a>";
+                        } else {
+                            result = "Not yet Deployed";
+                        }
+                    } else {
+                        result = "Not yet deployed";
+                    }
+
+                } else {
+                    result = "Not yet deployed";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                result = "Not yet deployed";
+            }
+            Map<String, Object> parameters = new HashMap<String, Object>();
+            parameters.put("url", result);
+            clifUrlFragment.render(parameters);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            index();
+        }
+    }
+
 
 
 

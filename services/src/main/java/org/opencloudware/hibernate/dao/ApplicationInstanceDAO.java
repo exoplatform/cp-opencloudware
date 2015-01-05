@@ -122,17 +122,29 @@ public class ApplicationInstanceDAO {
     /**
      * {@inheritDoc}
      */
-    public ApplicationInstance removeApplicationInstance(String applicationInstanceId) throws Exception {
-        Session session = service_.openSession();
-        ApplicationInstance foundInstance = findApplicationInstanceById(applicationInstanceId, session);
+    public boolean removeApplicationInstance(ApplicationInstance applicationInstance) throws Exception {
+        final Session session = service_.openSession();
 
-        if (foundInstance == null)
-            return null;
+        //1) recuperation de la ressource deployment
+        JSONObject resource = OCWUtil.getResource("deployment");
+        if (resource == null) return false;
+        String resourceEndPoint = resource.getString("resourceEndpoint");
+        String endPointURI = "/applications/"+applicationInstance.getId();
 
-        session.delete(foundInstance);
+        String username=resource.getString("resourceLogin").equals("null") ? null : resource.getString("resourceLogin");
+        String password=resource.getString("resourcePassword").equals("null") ? null : resource.getString("resourcePassword");
+        Map<String,String> headers= new HashMap<String,String>();
+
+        System.out.println("send  undeploy request");
+        String responseData = OCWUtil.doDelete(resourceEndPoint + endPointURI, username, password,headers,"text/plain; charset=utf8");
+        System.out.println("receive undeploy response");
+        if (responseData == null) return false;
+
+        System.out.println(responseData);
+        session.delete(applicationInstance);
         session.flush();
-        cache_.remove(applicationInstanceId);
-        return foundInstance;
+        cache_.remove(applicationInstance.getId());
+        return true;
     }
 
     /**

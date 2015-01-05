@@ -74,6 +74,11 @@
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.ow2.opencloudware</groupId>
+            <artifactId>opencloudware-commons</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 
 	</dependencies>
 

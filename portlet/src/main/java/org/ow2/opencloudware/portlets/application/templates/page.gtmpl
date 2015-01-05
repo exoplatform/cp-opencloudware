@@ -96,6 +96,7 @@
 
 	</div>
 </div>
+<div class="clearfix"></div>
 <table class="table table-bordered">
 	<thead>
 		<tr>
@@ -118,7 +119,7 @@
 
             	<th>
             		<div class="actionCell">
-            		    <a class="btn" title="Deployement" href="@{ApplicationManagement.displayInstances(applicationId = applicationId)}">
+            		    <a class="btn" title="Deployment" href="@{ApplicationManagement.displayInstances(applicationId = applicationId)}">
             		        <i class="icon-off"></i>
             		    </a>
 						<a class="btn" title="Edit" href="@{ApplicationManagement.displayEditForm(inputApplicationId = applicationId)}">

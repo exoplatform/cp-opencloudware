@@ -81,6 +81,12 @@ public class OCWUtil {
     public static String doPost(String url, String username, String password, String postData, Map<String, String> headers, String contentType) {
 
         try {
+
+            System.out.println(url);
+            System.out.println(postData);
+
+
+
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
             if (username != null) {
                 String encoded = Base64.encode(new String(username + ":" + password).getBytes());
@@ -98,7 +104,6 @@ public class OCWUtil {
 
             DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
             wr.writeBytes(postData);
-            System.out.println(postData);
             wr.flush();
             wr.close();
             connection.disconnect();
@@ -156,4 +161,92 @@ public class OCWUtil {
     }
 
 
+    public static String doDelete(String url, String username, String password, Map<String, String> headers, String contentType) {
+        try {
+
+            System.out.println(url);
+            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+            if (username != null) {
+                String encoded = Base64.encode(new String(username + ":" + password).getBytes());
+                encoded = encoded.replace("\n", "");
+                connection.setRequestProperty("Authorization", "Basic " + encoded);
+            }
+            connection.setRequestMethod("DELETE");
+            connection.setRequestProperty("Content-Type", contentType);
+            for (String key:headers.keySet()) {
+                connection.setRequestProperty(key,headers.get(key));
+            }
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == 200  || responseCode == 201) {
+
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(connection.getInputStream()));
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                return response.toString();
+
+            } else {
+                System.out.println(responseCode);
+                return null;
+            }
+
+        }catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
+    public static String doGet(String url, String username, String password, Map<String, String> headers, String contentType) {
+
+        try {
+
+            System.out.println(url);
+
+            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+            if (username != null) {
+                String encoded = Base64.encode(new String(username + ":" + password).getBytes());
+                encoded = encoded.replace("\n", "");
+                connection.setRequestProperty("Authorization", "Basic " + encoded);
+            }
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-Type", contentType);
+            for (String key:headers.keySet()) {
+                connection.setRequestProperty(key,headers.get(key));
+            }
+
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == 200  || responseCode == 201) {
+
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(connection.getInputStream()));
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                return response.toString();
+
+            } else {
+                System.out.println(responseCode);
+                return null;
+            }
+
+        }catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

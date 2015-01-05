@@ -96,13 +96,13 @@
 
 	</div>
 </div>
+<div class="clearfix"></div>
 <table class="table table-bordered">
 	<thead>
 		<tr>
 			<th>Instance Id</th>
 			<th>Instance EndPoint</th>
 			<th>Instance Status</th>
-
 			<th>Actions</th>
 		</tr>
 	</thead>
@@ -118,18 +118,33 @@
                 <th id="status-${applicationInstanceId}"><img src="/opencloudware-portlet/skin/common/img/spinner.gif" class="deploymentStatus" />${status}</th>
                 <th>
                     <div class="actionCell">
+                        <a class="btn hide" title="Information" id="${applicationInstanceId}-informationButton" href="@{ApplicationManagement.displayApplicationInstanceInformation(applicationInstanceId = applicationInstanceId)}">
+                            <i class="icon-info-sign"></i>
+                        </a>
 
+                        <a class="btn" title="Delete" id="${applicationInstanceId}-deleteButton" href="@{ApplicationManagement.deleteApplicationInstance(inputApplicationInstanceId = applicationInstanceId)}" onclick="if (confirm('Are you sure to delete this instance ?')) {$('#${applicationInstanceId}-deleteButton').disable();return true;} else return false;">
+                            <i class="icon-trash"></i>
+                        </a>
                     </div>
 
                 </th>
             </tr>
             <script type="text/javascript">
-                    setInterval(function() {
+
+                    function refreshInformation() {
                         $("#endPoint-${applicationInstanceId}").jzLoad("ApplicationManagement.getEndPointFragment()",{"applicationInstanceId":"${applicationInstanceId}"});
-                        $("#status-${applicationInstanceId}").jzLoad("ApplicationManagement.getStatusFragment()",{"applicationInstanceId":"${applicationInstanceId}"});
-
-
+                        $("#status-${applicationInstanceId}").jzLoad("ApplicationManagement.getStatusFragment()",{"applicationInstanceId":"${applicationInstanceId}"}, function() {
+                            if ($("#status-${applicationInstanceId}").text() == "Deployed") {
+                                $("#${applicationInstanceId}-informationButton").removeClass("hide");
+                                clearInterval(myTimer);
+                            }
+                        });
+                    }
+                    var myTimer = setInterval(function() {
+                        refreshInformation();
                     }, 20000);
+
+                    refreshInformation();
             </script>
         <%}%>
 	</tbody>

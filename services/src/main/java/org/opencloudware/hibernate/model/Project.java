@@ -26,9 +26,13 @@ public class Project extends DBObject {
 			new HashSet<Application>(0);
 	private Set<String> managers = new HashSet<String>(0);
 
+    private boolean isDeployedClif = false;
 
+    private String projectClifApplicationId = null;
 
-	private Long id;
+    private String projectClifProviderId = null;
+
+    private Long id;
 
 
 	public Project() {
@@ -97,6 +101,31 @@ public class Project extends DBObject {
 	public void setManagers(Set<String> managers) {
 		this.managers = managers;
 	}
+
+    public boolean isDeployedClif() {
+
+        return isDeployedClif;
+    }
+
+    public void setDeployedClif(boolean isDeployedClif) {
+        this.isDeployedClif = isDeployedClif;
+    }
+
+    public String getProjectClifApplicationId() {
+        return projectClifApplicationId;
+    }
+
+    public void setProjectClifApplicationId(String projectClifApplicationId) {
+        this.projectClifApplicationId = projectClifApplicationId;
+    }
+
+    public String getProjectClifProviderId() {
+        return projectClifProviderId;
+    }
+
+    public void setProjectClifProviderId(String projectClifProviderId) {
+        this.projectClifProviderId = projectClifProviderId;
+    }
 }
 
 

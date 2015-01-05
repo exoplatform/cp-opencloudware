@@ -1,8 +1,5 @@
 <div style="margin-right:20px;margin-left:20px">
 <div class="pull-left"><h3 class="opencloudwareTitle">Instances</h3></div>
-
-
-
         	<% if (flash.getError() != "") { %>
             			<div id="flashMessage" class="alert-error pull-left flash">
             				${flash.getError()}

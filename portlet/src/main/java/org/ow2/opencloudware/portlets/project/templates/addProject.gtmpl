@@ -71,6 +71,56 @@
 
             </span>
         </div>
+
+        <div class="control-group">
+            <label for="inputProjectDeployClif" class="control-label">Deploy Benchmarking Application : </label>
+            <div class="controls">
+                <input type="checkbox" name="inputProjectDeployClif" id="inputProjectDeployClif" />
+            </div>
+        </div>
+        <%
+            if (providers.size()>1) {
+        %>
+        <div class="control-group hide" id="divSelectClif">
+                    <label for="inputProjectDeployClif" class="control-label">On which provider would  you deploy Clif Service ? </label>
+                    <div class="controls">
+                        <select id="deploymentTarget"  name="deploymentTarget">
+                                <option>Automatic</option>
+                <%
+                		providers.each { current ->
+                			String providerId = current.getId();
+                			String providerName = current.getProviderIAASName();
+                			String providerVendor = current.getProviderIAASVendor();
+                            String label = providerName+" ("+providerVendor+")";
+                %>
+                		    <option value="${providerId}">${label}</option>
+                <%
+                		}
+                %>
+                		</select>
+
+            </div>
+        </div>
+        <%
+            } else if (providers.size()==1) {
+        %>
+            <select class="hide" id="deploymentTarget" name="deploymentTarget">
+        <%
+                providers.each { current ->
+
+                    String providerId = current.getId();
+                    String providerName = current.getProviderIAASName();
+                    String providerVendor = current.getProviderIAASVendor();
+                    String label = providerName+" ("+providerVendor+")";
+            %>
+                    <option value="${providerId}" selected="selected">${label}</option>
+
+            <%}%>
+            </select>
+
+        <% } %>
+
+
 		<div class="control-group">
 			<div class="controls">
 				<span> (*) are required fields.</span>
@@ -143,6 +193,16 @@
         $(function () {
             changeSelect("#usersNames","#inputUsersNames");
             changeSelect("#managersNames","#inputManagersNames");
+
+        });
+
+        $("#inputProjectDeployClif").click (function () {
+            var thisCheck = $(this);
+            if (thisCheck.is (':checked')) {
+                $("#divSelectClif").show();
+            } else {
+                $("#divSelectClif").hide();
+            }
         });
     </script>
 

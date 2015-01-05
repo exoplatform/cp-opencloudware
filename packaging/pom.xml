@@ -161,6 +161,11 @@
             <artifactId>jersey-core</artifactId>
             <version>1.17.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.ow2.opencloudware</groupId>
+            <artifactId>opencloudware-commons</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>

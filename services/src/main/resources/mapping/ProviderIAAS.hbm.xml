@@ -77,6 +77,44 @@
           <column name="PROVIDERIAAS_TENANTNAME"/>
       </property>
 
+      <property name="providerOrganizationName"
+                type="java.lang.String"
+                access="field"
+                lazy="false"
+                not-null="true">
+          <column name="PROVIDERIAAS_ORGANIZATIONNAME"/>
+      </property>
+
+      <property name="providerCatalogName"
+                type="java.lang.String"
+                access="field"
+                lazy="false"
+                not-null="true">
+          <column name="PROVIDERIAAS_CATALOGNAME"/>
+      </property>
+
+      <property name="providerSmaEndpoint"
+                type="java.lang.String"
+                access="field"
+                lazy="false"
+                not-null="true">
+          <column name="PROVIDERIAAS_SMAENPOINT"/>
+      </property>
+      <property name="providerSmaLogin"
+                type="java.lang.String"
+                access="field"
+                lazy="false"
+                not-null="true">
+          <column name="PROVIDERIAAS_SMALOGIN"/>
+      </property>
+      <property name="providerSmaPassword"
+                type="java.lang.String"
+                access="field"
+                lazy="false"
+                not-null="true">
+          <column name="PROVIDERIAAS_SMAPASSWORD"/>
+      </property>
+
 	  <many-to-one name="organization" class="org.opencloudware.hibernate.model.Organization" fetch="select" lazy="false">
 		  <column name="ORGANIZATION_ID" not-null="true" />
 	  </many-to-one>

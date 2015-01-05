@@ -26,6 +26,15 @@ public class RESTProviderIAAS {
     private String providerTenantName = null;
 
     private String vdcName = null;
+
+    private String providerCatalogName=null;
+
+    private String providerSmaEndpoint = null;
+
+    private String providerSmaLogin = null;
+
+    private String providerSmaPassword = null;
+
     private String id;
 
     public RESTProviderIAAS(ProviderIAAS providerIAAS) {
@@ -39,6 +48,10 @@ public class RESTProviderIAAS {
         this.providerTenantName=providerIAAS.getProviderTenantName();
         this.providerGlanceUrl=providerIAAS.getProviderGlanceUrl();
         this.vdcName=providerIAAS.getVdcName();
+        this.providerCatalogName=providerIAAS.getProviderCatalogName();
+        this.providerSmaEndpoint=providerIAAS.getProviderSmaEndpoint();
+        this.providerSmaLogin=providerIAAS.getProviderSmaLogin();
+        this.providerSmaPassword=providerIAAS.getProviderSmaPassword();
         this.id=providerIAAS.getId();
 
     }
@@ -129,5 +142,37 @@ public class RESTProviderIAAS {
 
     public void setVdcName(String vdcName) {
         this.vdcName = vdcName;
+    }
+
+    public String getProviderCatalogName() {
+        return providerCatalogName;
+    }
+
+    public void setProviderCatalogName(String providerCatalogName) {
+        this.providerCatalogName = providerCatalogName;
+    }
+
+    public String getProviderSmaPassword() {
+        return providerSmaPassword;
+    }
+
+    public void setProviderSmaPassword(String providerSmaPassword) {
+        this.providerSmaPassword = providerSmaPassword;
+    }
+
+    public String getProviderSmaLogin() {
+        return providerSmaLogin;
+    }
+
+    public void setProviderSmaLogin(String providerSmaLogin) {
+        this.providerSmaLogin = providerSmaLogin;
+    }
+
+    public String getProviderSmaEndpoint() {
+        return providerSmaEndpoint;
+    }
+
+    public void setProviderSmaEndpoint(String providerSmaEndpoint) {
+        this.providerSmaEndpoint = providerSmaEndpoint;
     }
 }

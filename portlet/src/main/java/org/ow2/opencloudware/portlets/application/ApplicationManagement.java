@@ -9,7 +9,6 @@ import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
-import org.hibernate.Session;
 import org.json.JSONObject;
 import org.opencloudware.hibernate.OcwDataService;
 import org.opencloudware.hibernate.dao.ApplicationDAO;
@@ -17,11 +16,15 @@ import org.opencloudware.hibernate.dao.ApplicationInstanceDAO;
 import org.opencloudware.hibernate.model.Application;
 import org.opencloudware.hibernate.model.*;
 import org.opencloudware.rest.OCWUtil;
+import org.ow2.opencloudware.commons.ApplicationDesc;
 import org.ow2.opencloudware.commons.vamp.DeploymentManager;
 import org.ow2.opencloudware.commons.vamp.VampManager;
 import org.ow2.opencloudware.portlets.common.Flash;
 
 import javax.inject.Inject;
+import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -79,6 +82,17 @@ public class ApplicationManagement {
     @Path("statusFragment.gtmpl")
     Template statusFragment;
 
+    @Inject
+    @Path("applicationInstanceInformation.gtmpl")
+    Template applicationInstanceInformation;
+
+    @Inject
+    @Path("costEvaluation.gtmpl")
+    Template costEvaluation;
+    @Inject
+    @Path("costResults.gtmpl")
+    Template costResults;
+
 	@Inject
 	Flash flash;
 
@@ -95,6 +109,7 @@ public class ApplicationManagement {
 	String currentOrganizationId;
 	String currentProjectId;
     String currentApplicationId;
+    String currentApplicationInstanceId;
 
 
 	@Inject
@@ -113,10 +128,14 @@ public class ApplicationManagement {
         if (currentApplicationId == null) {
             currentApplicationId="";
         }
+        if (currentApplicationInstanceId == null) {
+            currentApplicationInstanceId="";
+        }
 	}
 
 	@View
 	public void index() {
+
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("flash", flash);
 		global.render(parameters);
@@ -371,10 +390,6 @@ public class ApplicationManagement {
 	public Response.View editApplication(String inputApplicationId, String inputApplicationName,
 										 String inputApplicationDescription,String inputUsersNames,
 										 String inputManagersNames, FileItem inputApplicationModele) {
-
-
-
-
 		try {
 
 			ApplicationDAO applicationDAO= ocwDataService_.getApplicationDAO();
@@ -475,6 +490,15 @@ public class ApplicationManagement {
 		}
 	}
 
+    @View
+    public void displayInstances() {
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("flash", flash);
+        instances.render(parameters);
+        flash.setError("");
+        flash.setSuccess("");
+
+    }
 
     @View
     public void displayInstances(String applicationId) {
@@ -486,6 +510,41 @@ public class ApplicationManagement {
         flash.setSuccess("");
 
     }
+
+    @View
+    public void displayApplicationInstanceInformation(String applicationInstanceId) {
+        this.currentApplicationInstanceId=applicationInstanceId;
+        try {
+            //1) recuperation de la ressource multi-cloud-iaas
+            JSONObject resource = OCWUtil.getResource("deployment");
+            if (resource != null) {
+                String resourceEndPoint = resource.getString("resourceEndpoint");
+                ApplicationInstance applicationInstance = ocwDataService_.getApplicationInstanceDAO().findApplicationInstanceById(applicationInstanceId);
+                VampManager vampManager = new VampManager(resourceEndPoint);
+                Set<DeploymentManager> deploymentManagers = vampManager.getApplications(applicationInstanceId);
+                if (deploymentManagers.size() == 1) {
+                    DeploymentManager deploymentManager = deploymentManagers.iterator().next();
+                    ApplicationDesc appDescr = deploymentManager.getAppDesc(false);
+                    System.out.println(appDescr);
+                    Map<String, Object> parameters = new HashMap<String, Object>();
+                    parameters.put("appDescr", appDescr);
+                    parameters.put("currentApplicationId", currentApplicationId);
+                    applicationInstanceInformation.render(parameters);
+                } else {
+                    ApplicationManagement_.displayInstances(currentApplicationId);
+
+                }
+
+            } else {
+                ApplicationManagement_.displayInstances(currentApplicationId);
+
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            ApplicationManagement_.displayInstances(currentApplicationId);
+        }
+    }
+
 
     @Ajax
     @Resource
@@ -502,7 +561,10 @@ public class ApplicationManagement {
             parameters.put("currentApplicationName",application.getApplicationName());
             parameters.put("isDeployable", application.getModele()!=null);
             Project project = application.getProject();
+            //refresh from cache
+            project=ocwDataService_.getProjectDAO().findProjectById(project.getId().toString());
             Organization organization = project.getOrganization();
+            organization=ocwDataService_.getOrganizationDAO().findOrganizationById(organization.getId());
             Set<ProviderIAAS> providers = organization.getProviderIAASes();
             parameters.put("providers",providers);
 
@@ -559,8 +621,8 @@ public class ApplicationManagement {
     @Ajax
     @Resource
     @Route("/deploy/{provider}")
-    public void deploy(String provider) {
-        System.out.println("Deploy function : provider="+provider);
+    public void deploy(String provider, String activateMonitoring) {
+        System.out.println("Deploy function : provider="+provider+", activateMonitoring = "+activateMonitoring);
 
         try {
             ApplicationInstanceDAO applicationInstanceDAO = ocwDataService_.getApplicationInstanceDAO();
@@ -586,12 +648,16 @@ public class ApplicationManagement {
     @Resource
     @Route("/getEndPointFragement")
     public void getEndPointFragment(String applicationInstanceId) {
-        String endPoint = "notKnown";
-        if (isDeployed(applicationInstanceId)) {
-            endPoint="endPointToBeDisplayed";
+        String creationDate = getCreationDate(applicationInstanceId);
+        String formattedDate = "Not Deployed";
+        if (creationDate!=null) {
+            Timestamp tm = new Timestamp(new Long(creationDate).longValue());
+            Date date = new Date(tm.getTime());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd '-' HH:mm:ss");
+            formattedDate = dateFormat.format(date);
         }
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("endPoint",endPoint);
+        parameters.put("creationDate",formattedDate);
         endPointFragment.render(parameters);
 
     }
@@ -602,7 +668,6 @@ public class ApplicationManagement {
     public void getStatusFragment(String applicationInstanceId) {
 
         boolean deployed = isDeployed(applicationInstanceId);
-        System.out.println(deployed);
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("deployed",deployed);
         statusFragment.render(parameters);
@@ -623,12 +688,170 @@ public class ApplicationManagement {
             String resourceEndPoint=resource.getString("resourceEndpoint");
             ApplicationInstance applicationInstance = ocwDataService_.getApplicationInstanceDAO().findApplicationInstanceById(applicationInstanceId);
             VampManager vampManager = new VampManager(resourceEndPoint);
-            DeploymentManager deploymentManager = new DeploymentManager(vampManager, applicationInstance.getApplication().getApplicationName(), applicationInstanceId, null);
-            return deploymentManager.isDeployed();
+            Set<DeploymentManager> deploymentManagers = vampManager.getApplications(applicationInstanceId);
+            if (deploymentManagers.size()==1) {
+                DeploymentManager deploymentManager = deploymentManagers.iterator().next();
+                boolean result=deploymentManager.isDeployed();
+                return result;
+            }
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Ajax
+    @Resource
+    @Route("/getCreationDate/{applicationId}")
+    public String getCreationDate(String applicationInstanceId) {
+        try {
+
+            //1) recuperation de la ressource multi-cloud-iaas
+            JSONObject resource = OCWUtil.getResource("deployment");
+            if (resource==null) return null;
+            String resourceEndPoint=resource.getString("resourceEndpoint");
+            ApplicationInstance applicationInstance = ocwDataService_.getApplicationInstanceDAO().findApplicationInstanceById(applicationInstanceId);
+            VampManager vampManager = new VampManager(resourceEndPoint);
+            Set<DeploymentManager> deploymentManagers = vampManager.getApplications(applicationInstanceId);
+            if (deploymentManagers.size()==1) {
+                DeploymentManager deploymentManager = deploymentManagers.iterator().next();
+                String result=deploymentManager.getCreationDate();
+                return result;
+            }
+            return null;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
+    @Action
+    @Route("/deleteApplicationInstance/{inputApplicationInstanceId}")
+    public Response.View deleteApplicationInstance(String inputApplicationInstanceId) {
+        try {
+
+            ApplicationInstanceDAO applicationInstanceDAO = ocwDataService_.getApplicationInstanceDAO();
+            ApplicationInstance applicationInstance = applicationInstanceDAO.findApplicationInstanceById(inputApplicationInstanceId);
+            if (applicationInstance == null) {
+                flash.setError("This instance doesn't exist.");
+                flash.setSuccess("");
+                return ApplicationManagement_.index();
+            }
+
+            if (applicationInstanceDAO.removeApplicationInstance(applicationInstance)) {
+                flash.setSuccess("Application Instance undeployed.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // a voir pour réafficher la liste des instance plutot
+        return ApplicationManagement_.displayInstances(currentApplicationId);
+
+    }
+
+    @View
+    public void displayCostEvaluation(String cost) {
+        try {
+
+            Map<String, Object> parameters = new HashMap<String, Object>();
+            Application application = ocwDataService_.getApplicationDAO().findApplicationById(currentApplicationId);
+            List<ApplicationInstance> instances= new ArrayList<ApplicationInstance>();
+            if (application!=null) {
+                instances.addAll(application.getApplicationsInstance());
+                parameters.put("currentApplicationName", application.getApplicationName());
+                parameters.put("currentApplicationId", application.getId().toString());
+
+                if (!parameters.containsKey("cost")) {
+                    parameters.put("cost", null);
+                }
+                if (cost!=null) {
+                    parameters.put("cost",cost);
+                    parameters.put("flash",flash);
+                }  else {
+                    flash.setError("");
+                    flash.setSuccess("");
+                    parameters.put("flash",flash);
+                }
+
+                Project project = application.getProject();
+                Organization organization = project.getOrganization();
+                Set<ProviderIAAS> providers = organization.getProviderIAASes();
+                parameters.put("providers", providers);
+
+                costEvaluation.render(parameters);
+                flash.setError("");
+                flash.setSuccess("");
+            } else {
+                ApplicationManagement_.index();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ApplicationManagement_.index();
+        }
+
+    }
+
+    @Action
+    @Route("/evaluateCost")
+    public Response.View evaluateCost(String inputApplicationId, String inputDuration, String deploymentTarget, FileItem scalabilityConstraints) {
+
+
+        
+        String cost="";
+
+
+        //1) recuperation de la ressource boucle decision
+        JSONObject resource = OCWUtil.getResource("orchestrator");
+        if (resource == null) {
+            flash.setError("Error when evaluating cost");
+            flash.setSuccess("");
+        } else {
+            try {
+                String resourceEndPoint = resource.getString("resourceEndpoint");
+                String endPointURI = "/business/cost";
+
+                ProviderIAAS provider = ocwDataService_.getProviderIAASDAO().findProviderById(deploymentTarget);
+
+                String constraints = new String(scalabilityConstraints.get());
+                String postData = "duration=" + inputDuration + "&iaasId=" + provider.getProviderIAASVendor()+"&scalabilityConstraints="+constraints+"&placementConstraints=&sla=";
+
+                String username = resource.getString("resourceLogin").equals("null") ? null : resource.getString("resourceLogin");
+                String password = resource.getString("resourcePassword").equals("null") ? null : resource.getString("resourcePassword");
+                Map<String, String> headers = new HashMap<String, String>();
+
+                System.out.println("send  cost request");
+                String responseData = OCWUtil.doPost(resourceEndPoint + endPointURI, username, password, postData,headers,"text/plain; charset=utf8");
+                System.out.println("receive cost response");
+                if (responseData == null) {
+                    flash.setError("Error when evaluating cost");
+                    flash.setSuccess("");
+                } else {
+                    JSONObject costJson = new JSONObject(responseData);
+                    Double min = costJson.getJSONObject("ok").getJSONObject("cost").getDouble("min");
+                    Double max = costJson.getJSONObject("ok").getJSONObject("cost").getDouble("max");
+                    Double avg = costJson.getJSONObject("ok").getJSONObject("cost").getDouble("avg");
+
+
+                    DecimalFormat df = new DecimalFormat("###.##");
+                    String minStr = df.format(min);
+                    String maxStr = df.format(max);
+                    String avgStr = df.format(avg);
+                    cost = "<h4 class=\"opencloudwareTitle\">Cost Evaluation Results</h4>\nDeploying this application on IAAS "+provider.getProviderIAASName()+" during "+inputDuration+" days will cost between <strong>"+minStr+"$</strong> and <strong>"+maxStr+"$</strong> with an average of <strong>"+avgStr+"$</strong>";
+
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                flash.setError("Error when evaluating cost");
+                flash.setSuccess("");
+            }
+        }
+        return ApplicationManagement_.displayCostEvaluation(cost);
     }
 
 }

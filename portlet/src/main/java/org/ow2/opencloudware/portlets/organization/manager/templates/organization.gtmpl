@@ -36,7 +36,11 @@ $("#organizationLogo").jzLoad("MyOrganization.getUploadLogoFragment()");
 </div>
 
 <div id="organizationUsersRequests" class="infoDiv">
-    <a class="btn" href="#" id="usersRequests"> ${organization.getUsersRequest().size()} Users Requests to validate</a>
+<%
+    int nbUsersRequests=organization.getUsersRequest()== null ? 0 : organization.getUsersRequest().size();
+
+%>
+    <a class="btn" href="#" id="usersRequests"> ${nbUsersRequests} Users Requests to validate</a>
 
 </div>
 <script type="text/javascript">
