@@ -3,7 +3,14 @@
 
 <span>Organization Managers : ${managersString}</span>
 <div class="uiAction">
-	<span class="btn btn-primary" id="editInformationButton">Edit Information</span>
+    <%
+        if (isManager) {
+    %>
+	        <span class="btn btn-primary" id="editInformationButton">Edit Information</span>
+    <%
+        }
+    %>
+
 </div>
 
 	<script>

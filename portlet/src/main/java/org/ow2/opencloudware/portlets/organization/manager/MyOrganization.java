@@ -11,6 +11,7 @@ import org.exoplatform.services.cms.impl.Utils;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.mail.MailService;
 import org.exoplatform.services.organization.*;
+import org.exoplatform.services.security.ConversationState;
 import org.opencloudware.hibernate.OcwDataService;
 import org.opencloudware.hibernate.dao.OrganizationDAO;
 import org.opencloudware.hibernate.model.Organization;
@@ -163,11 +164,17 @@ public class MyOrganization {
 	@Route("/getOrganizationInformationFragment")
 	public void getOrganizationInformationFragment() {
 		try {
+            ConversationState conversationState = ConversationState.getCurrent();
+            org.exoplatform.services.security.Identity identity = conversationState.getIdentity();
+            String userId = identity.getUserId();
+            boolean isManager=false;
+
 			Organization organizationObject = ocwDataService_.getOrganizationDAO().findOrganizationById(currentOrganizationId);
 
 			String managers = "";
 			for (String manager : organizationObject.getManagers()) {
 				User user = organizationService_.getUserHandler().findUserByName(manager);
+                if (user.getUserName().equals(userId)) isManager=true;
 				if (user.getFirstName() == null || user.getLastName() == null) {
 					managers += manager;
 				} else {
@@ -182,6 +189,7 @@ public class MyOrganization {
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("organization",organizationObject);
 			parameters.put("managersString",managers);
+            parameters.put("isManager",isManager);
 
 			organizationInformation.render(parameters);
 		} catch	(Exception e) {
