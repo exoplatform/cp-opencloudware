@@ -567,11 +567,12 @@ public class ProjectManagement {
     @Resource
     @Route("/getClifUrlFragment")
     public void getClifUrlFragment(String projectId) {
+        String result = "";
+
         try {
 
 
 
-            String result = "";
 
             Project project=ocwDataService_.getProjectDAO().findProjectById(projectId);
             Application clifApplication = ocwDataService_.getApplicationDAO().findApplicationById(project.getProjectClifApplicationId());
@@ -593,7 +594,7 @@ public class ProjectManagement {
 
                         String ip = appDescr.getAllVMinfo().iterator().next().getAddress();
                         if (ip != null) {
-                            result = "<a href='http://" + ip +"' target='_blank'>http://"+ip+"</a>";
+                            result = "<a href='http://" + ip +":8080' target='_blank'>http://"+ip+":8080</a>";
                         } else {
                             result = "Not yet Deployed";
                         }
@@ -608,15 +609,17 @@ public class ProjectManagement {
                 e.printStackTrace();
                 result = "Not yet deployed";
             }
-            Map<String, Object> parameters = new HashMap<String, Object>();
-            parameters.put("url", result);
-            clifUrlFragment.render(parameters);
+
 
         } catch (Exception e) {
 
             e.printStackTrace();
-            index();
+            result = "Not yet deployed";
         }
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("url", result);
+        clifUrlFragment.render(parameters);
     }
 
 
