@@ -101,8 +101,12 @@ public class ProjectDAO {
       if (foundProject == null)
          return null;
 
+
       session.delete(foundProject);
-      session.flush();
+
+       ocwDataService_.getOrganizationDAO().invalidateCache(foundProject.getOrganization());
+
+       session.flush();
       cache_.remove(projectId);
       return foundProject;
    }
