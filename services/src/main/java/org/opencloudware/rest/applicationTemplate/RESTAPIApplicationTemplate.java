@@ -6,13 +6,11 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.opencloudware.hibernate.OcwDataService;
 import org.opencloudware.hibernate.model.Application;
+import org.opencloudware.hibernate.model.ApplicationInstance;
 import org.opencloudware.rest.OCWUtil;
 import org.opencloudware.rest.resources.RESTAPIResources;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
 /**
@@ -35,6 +33,31 @@ public class RESTAPIApplicationTemplate implements ResourceContainer {
     }
 
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getApplicationTemplateByInstanceId(@QueryParam("applicationInstanceId") String applicationInstanceId, @Context SecurityContext sc, @Context UriInfo uriInfo) {
+
+        if (!restApiResources_.isAuthorizedUser(sc, uriInfo)) {
+            return Response.status(HTTPStatus.FORBIDDEN).build();
+        }
+        try {
+            ApplicationInstance applicationInstance = ocwDataService_.getApplicationInstanceDAO().findApplicationInstanceById(applicationInstanceId);
+            if (applicationInstance!=null) {
+                Application applicationTemplate = ocwDataService_.getApplicationDAO().findApplicationById(applicationInstance.getApplication().getId().toString());
+                return OCWUtil.renderJSON(new RESTApplicationTemplate(applicationTemplate));
+            } else {
+                return Response.status(HTTPStatus.NOT_FOUND).build();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(HTTPStatus.INTERNAL_ERROR).build();
+
+        }
+    }
+
+
+
+    @GET
     @Path("{applicationTemplateId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getApplicationTemplateById(@PathParam("applicationTemplateId") String applicationTemplateId, @Context SecurityContext sc, @Context UriInfo uriInfo) {
@@ -51,6 +74,8 @@ public class RESTAPIApplicationTemplate implements ResourceContainer {
 
         }
     }
+
+
 
 
 }

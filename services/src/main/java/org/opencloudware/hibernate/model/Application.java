@@ -24,7 +24,14 @@ public class Application extends DBObject {
 	private Long id;
 
 
+
+
     private byte[] modele;
+    private byte[] rules;
+
+
+    private Set<byte[]> alternativeModeles = new HashSet<byte[]>(0);
+
 
     private Set<ApplicationInstance> applicationsInstance =
             new HashSet<ApplicationInstance>(0);
@@ -100,6 +107,22 @@ public class Application extends DBObject {
 
     public void setModele(byte[] modele) {
         this.modele = modele;
+    }
+
+    public byte[] getRules() {
+        return rules;
+    }
+
+    public void setRules(byte[] rules) {
+        this.rules = rules;
+    }
+
+    public Set<byte[]> getAlternativeModeles() {
+        return alternativeModeles;
+    }
+
+    public void setAlternativeModeles(Set<byte[]> alternativeModeles) {
+        this.alternativeModeles = alternativeModeles;
     }
 }
 

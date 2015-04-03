@@ -348,7 +348,8 @@ public class ApplicationManagement {
 	public Response.View createApplication(String inputApplicationName,
 										   String inputApplicationDescription,
 										   String inputUsersNames,
-										   String inputManagersNames, FileItem inputApplicationModele) {
+										   String inputManagersNames, FileItem inputApplicationModele,
+                                           FileItem inputScalabilityRules, FileItem inputAlternativeModele1) {
 
 
 		try {
@@ -361,7 +362,13 @@ public class ApplicationManagement {
 			application.setDescription(inputApplicationDescription);
 
             application.setModele(inputApplicationModele.get());
-            
+
+            Set<byte[]> alternativesModeles = new HashSet<byte[]>();
+            alternativesModeles.add(inputAlternativeModele1.get());
+            application.setAlternativeModeles(alternativesModeles);
+
+            application.setRules(inputScalabilityRules.get());
+
             String[] managers = inputManagersNames.split(",");
 
 			Set<String> managersSet = new HashSet<String>();
@@ -372,7 +379,13 @@ public class ApplicationManagement {
 			application.setManagers(managersSet);
 
 			application.setProject(ocwDataService_.getProjectDAO().findProjectById(currentProjectId));
-			applicationDAO.createApplication(application);
+
+
+            //actually, I have a problem to get multiple alternative files.
+            //So I test with one but work as we have a list
+            List<FileItem> alternativeModeles = new ArrayList<FileItem>();
+            alternativeModeles.add(inputAlternativeModele1);
+			applicationDAO.createApplication(application, inputApplicationModele, inputScalabilityRules, alternativeModeles);
 
 			flash.setSuccess("Application \""+inputApplicationName+"\" added.");
 		} catch (Exception e) {

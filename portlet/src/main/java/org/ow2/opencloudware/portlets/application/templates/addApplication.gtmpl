@@ -71,12 +71,26 @@
         </div>
         
         <div class="control-group">
-			<label for="inputApplicationModele" class="control-label">Application Modele (*) : </label>
+			<label for="inputApplicationModele" class="control-label">Initial Application Modele (*) : </label>
 			<div class="controls">
 				<input type="file" id="inputApplicationModele" name="inputApplicationModele" placeholder="Application Modele">
 			</div>
 		</div>
 
+
+        <div class="control-group">
+			<label for="inputScalabilityRules" class="control-label">Scalability rules : </label>
+			<div class="controls">
+				<input type="file" id="inputScalabilityRules" name="inputScalabilityRules" placeholder="Scalability Rules File">
+			</div>
+		</div>
+
+        <div class="control-group">
+        			<label for="inputAlternativeModele1" class="control-label">Alternative Application Modele : </label>
+        			<div class="controls">
+        				<input type="file" id="inputAlternativeModele1" name="inputAlternativeModele1" placeholder="Alternative Application sModele">
+        			</div>
+        </div>
 
 		<div class="control-group">
 			<div class="controls">

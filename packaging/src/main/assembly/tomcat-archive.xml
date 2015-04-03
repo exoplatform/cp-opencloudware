@@ -84,6 +84,8 @@
 
             <include>com.sun.jersey:jersey-core</include>
             <include>org.ow2.opencloudware:opencloudware-commons</include>
+
+            <include>org.apache.httpcomponents:httpmime</include>
       </includes>
 
     </dependencySet>    

@@ -20,7 +20,6 @@ import org.opencloudware.rest.OCWUtil;
 import org.ow2.opencloudware.commons.ApplicationDesc;
 import org.ow2.opencloudware.commons.vamp.DeploymentManager;
 import org.ow2.opencloudware.commons.vamp.VampManager;
-import org.ow2.opencloudware.portlets.application.ApplicationManagement_;
 import org.ow2.opencloudware.portlets.common.Flash;
 
 import javax.inject.Inject;
@@ -407,7 +406,7 @@ public class ProjectManagement {
             newManagers.addAll(managers);
             application.setManagers(newManagers);
             application.setProject(ocwDataService_.getProjectDAO().findProjectById(project.getId().toString()));
-            applicationDAO.createApplication(application);
+            applicationDAO.createApplication(application, null, null, null);
 
 
             project.setProjectClifApplicationId(application.getId().toString());

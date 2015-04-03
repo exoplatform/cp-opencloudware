@@ -162,6 +162,18 @@
         </init-params>
     </component>
 
+    <component>
+        <key>org.opencloudware.utils.FileUploadService</key>
+        <type>org.opencloudware.utils.FileUploadService</type>
+        <init-params>
+            <value-param>
+                <name>urlString</name>
+                <value>http://10.197.176.104:8080/depot/FileUploader</value>
+            </value-param>
+        </init-params>
+    </component>
+
+
     <external-component-plugins>
         <!-- The full qualified name of the ExtensibleFilter -->
         <target-component>org.exoplatform.web.filter.ExtensibleFilter</target-component>

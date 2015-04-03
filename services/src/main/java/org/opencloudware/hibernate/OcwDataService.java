@@ -3,6 +3,7 @@ package org.opencloudware.hibernate;
 import org.exoplatform.services.cache.CacheService;
 import org.exoplatform.services.database.HibernateService;
 import org.opencloudware.hibernate.dao.*;
+import org.opencloudware.utils.FileUploadService;
 import org.picocontainer.Startable;
 
 /**
@@ -21,11 +22,12 @@ public class OcwDataService  implements Startable {
 	private ApplicationInstanceDAO applicationInstanceDAO;
     private ApplicationDAO applicationDAO;
 
-	public OcwDataService(HibernateService hibernateService, CacheService cacheService) {
+
+	public OcwDataService(HibernateService hibernateService, CacheService cacheService, FileUploadService fileUploadService) {
 
 		organizationDAO = new OrganizationDAO(hibernateService, cacheService);
 		providerIAASDAO = new ProviderIAASDAO(hibernateService, cacheService, this);
-		applicationDAO = new ApplicationDAO(hibernateService, cacheService, this);
+		applicationDAO = new ApplicationDAO(hibernateService, cacheService, this, fileUploadService);
 		projectDAO = new ProjectDAO(hibernateService,cacheService, this);
         applicationInstanceDAO = new ApplicationInstanceDAO(hibernateService,cacheService, this);
 

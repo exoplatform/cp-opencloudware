@@ -242,7 +242,7 @@
     <orderEntry type="library" name="Maven: xerces:xmlParserAPIs:2.6.2" level="project" />
     <orderEntry type="library" name="Maven: net.oauth.core:oauth-httpclient4:20090913" level="project" />
     <orderEntry type="library" name="Maven: net.oauth.core:oauth-consumer:20090617" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.4" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.1.2" level="project" />
     <orderEntry type="library" name="Maven: net.oauth.core:oauth-provider:20100527" level="project" />
     <orderEntry type="library" name="Maven: com.google.inject.extensions:guice-multibindings:3.0" level="project" />
@@ -264,7 +264,7 @@
     <orderEntry type="library" name="Maven: com.sun.jersey:jersey-core:1.17.1" level="project" />
     <orderEntry type="library" name="Maven: javax.json:javax.json-api:1.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.glassfish:javax.json:1.0.4" level="project" />
-    <orderEntry type="module" module-name="opencloudware-commons" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.httpcomponents:httpmime:4.4" level="project" />
   </component>
 </module>
 

@@ -18,6 +18,8 @@
  */
 package org.opencloudware.hibernate.dao;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.cache.CacheService;
@@ -27,6 +29,12 @@ import org.exoplatform.services.organization.hibernate.HibernateListAccess;
 import org.hibernate.Session;
 import org.opencloudware.hibernate.OcwDataService;
 import org.opencloudware.hibernate.model.Application;
+import org.opencloudware.utils.FileUploadService;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.List;
 
 public class ApplicationDAO {
    public static final String queryFindApplicationById =
@@ -38,12 +46,15 @@ public class ApplicationDAO {
 
     private OcwDataService ocwDataService_;
 
+    private FileUploadService fileUploadService_;
 
-    public ApplicationDAO(HibernateService service, CacheService cservice,  OcwDataService ocwDataService)
+
+    public ApplicationDAO(HibernateService service, CacheService cservice,  OcwDataService ocwDataService, FileUploadService fileUploadService)
    {
       service_ = service;
       cache_ = cservice.getCacheInstance(Application.class.getName());
        ocwDataService_=ocwDataService;
+       fileUploadService_=fileUploadService;
 
    }
 
@@ -66,12 +77,60 @@ public class ApplicationDAO {
    /**
     * {@inheritDoc}
     */
-   public void createApplication(Application application) throws Exception
+   public void createApplication(Application application,FileItem initialModele, FileItem inputScalabilityRules, List<FileItem> alternativeModeles) throws Exception
    {
       final Session session = service_.openSession();
       session.save(application);
-       ocwDataService_.getProjectDAO().invalidateCache(application.getProject());
+       //send scalability rules and alternative ovf to repository
+       if (inputScalabilityRules!=null) {
 
+           if (initialModele instanceof DiskFileItem) {
+               File realFile = ((DiskFileItem)initialModele).getStoreLocation();
+               String realName = initialModele.getName();
+               String path = realFile.getAbsolutePath();
+               path = path.substring(0,path.lastIndexOf("/"));
+               path = path+"/"+realName;
+
+               File fileToRead = new File(path);
+               initialModele.write(fileToRead);
+
+               fileUploadService_.uploadFile(fileToRead, fileToRead.getName(), "File " + fileToRead.getName() + " description.");
+           }
+
+
+           if (inputScalabilityRules instanceof DiskFileItem) {
+               //File rules = new File(inputScalabilityRules.);
+               File realFile = ((DiskFileItem)inputScalabilityRules).getStoreLocation();
+               String realName = inputScalabilityRules.getName();
+               String path = realFile.getAbsolutePath();
+               path = path.substring(0,path.lastIndexOf("/"));
+               path = path+"/"+realName;
+
+               File fileToRead = new File(path);
+               inputScalabilityRules.write(fileToRead);
+
+               fileUploadService_.uploadFile(fileToRead, fileToRead.getName(), "File " + fileToRead.getName() + " description.");
+           }
+
+
+           for (FileItem file : alternativeModeles) {
+               if (file instanceof DiskFileItem) {
+                   File realFile = ((DiskFileItem)file).getStoreLocation();
+                   String realName = file.getName();
+                   String path = realFile.getAbsolutePath();
+                   path = path.substring(0,path.lastIndexOf("/"));
+                   path = path+"/"+realName;
+
+                   File fileToRead = new File(path);
+                   file.write(fileToRead);
+
+                   fileUploadService_.uploadFile(fileToRead, fileToRead.getName(), "File " + fileToRead.getName() + " description.");
+               }
+           }
+       }
+
+
+      ocwDataService_.getProjectDAO().invalidateCache(application.getProject());
        session.flush();
    }
 

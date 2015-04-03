@@ -18,6 +18,13 @@ public class RESTApplicationTemplate {
 
     private Long id;
 
+    private byte[] modele;
+    private byte[] rules;
+
+    private List<byte[]> alternativeModeles=
+            new ArrayList<byte[]>(0);
+
+
 
     private List<String> applicationsInstanceId =
             new ArrayList<String>(0);
@@ -27,6 +34,9 @@ public class RESTApplicationTemplate {
         this.description=applicationTemplate.getDescription();
         this.projectId=applicationTemplate.getProject().getId();
         this.id=applicationTemplate.getId();
+        this.modele=applicationTemplate.getModele();
+        this.rules=applicationTemplate.getRules();
+        this.alternativeModeles.addAll(applicationTemplate.getAlternativeModeles());
 
         //TODO get les ids des instances
         for (ApplicationInstance applicationInstance : applicationTemplate.getApplicationsInstance()) {
@@ -73,5 +83,29 @@ public class RESTApplicationTemplate {
 
     public void setApplicationsInstanceId(List<String> applicationsInstanceId) {
         this.applicationsInstanceId = applicationsInstanceId;
+    }
+
+    public byte[] getModele() {
+        return modele;
+    }
+
+    public void setModele(byte[] modele) {
+        this.modele = modele;
+    }
+
+    public List<byte[]> getAlternativeModeles() {
+        return alternativeModeles;
+    }
+
+    public void setAlternativeModeles(List<byte[]> alternativeModeles) {
+        this.alternativeModeles = alternativeModeles;
+    }
+
+    public byte[] getRules() {
+        return rules;
+    }
+
+    public void setRules(byte[] rules) {
+        this.rules = rules;
     }
 }
