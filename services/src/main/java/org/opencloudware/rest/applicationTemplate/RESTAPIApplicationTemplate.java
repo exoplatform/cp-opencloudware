@@ -55,6 +55,36 @@ public class RESTAPIApplicationTemplate implements ResourceContainer {
         }
     }
 
+    @GET
+    @Path("getOvfByName")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOVFFileByInstanceId(@QueryParam("applicationInstanceId") String applicationInstanceId, @QueryParam("ovfFile") String ovfFile, @Context SecurityContext sc, @Context UriInfo uriInfo) {
+
+        if (!restApiResources_.isAuthorizedUser(sc, uriInfo)) {
+            return Response.status(HTTPStatus.FORBIDDEN).build();
+        }
+        try {
+            ApplicationInstance applicationInstance = ocwDataService_.getApplicationInstanceDAO().findApplicationInstanceById(applicationInstanceId);
+            if (applicationInstance!=null) {
+                Application applicationTemplate = ocwDataService_.getApplicationDAO().findApplicationById(applicationInstance.getApplication().getId().toString());
+                byte[] ovf = applicationTemplate.getAlternativeModeles().get(ovfFile);
+
+                CacheControl cacheControl = new CacheControl();
+                cacheControl.setNoCache(true);
+                cacheControl.setNoStore(true);
+                
+                return Response.ok(ovf, MediaType.TEXT_XML).cacheControl(cacheControl).build();
+            } else {
+                return Response.status(HTTPStatus.NOT_FOUND).build();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(HTTPStatus.INTERNAL_ERROR).build();
+
+        }
+    }
+
 
 
     @GET
@@ -74,6 +104,8 @@ public class RESTAPIApplicationTemplate implements ResourceContainer {
 
         }
     }
+
+
 
 
 

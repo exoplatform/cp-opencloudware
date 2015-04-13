@@ -47,10 +47,11 @@
           <one-to-many class="org.opencloudware.hibernate.model.ApplicationInstance" />
       </set>
 
-      <set name="alternativeModeles" table="ocw_application_alternative_modeles" lazy="false">
+      <map name="alternativeModeles" table="ocw_application_alternative_modeles" lazy="false">
           <key column="APPLICATION_ID"/>
+          <index column="modele_name" type="string"/>
           <element type="binary" length="65535"/>
-      </set>
+      </map>
 
       <property name="rules" column="RULES" length="65535"/>
 

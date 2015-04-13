@@ -4,7 +4,9 @@ import org.opencloudware.hibernate.model.Application;
 import org.opencloudware.hibernate.model.ApplicationInstance;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Romain Dénarié (romain.denarie@exoplatform.com) on 04/06/14.
@@ -21,10 +23,8 @@ public class RESTApplicationTemplate {
     private byte[] modele;
     private byte[] rules;
 
-    private List<byte[]> alternativeModeles=
-            new ArrayList<byte[]>(0);
-
-
+    private Map<String, byte[]> alternativeModeles=
+            new HashMap<String, byte[]>(0);
 
     private List<String> applicationsInstanceId =
             new ArrayList<String>(0);
@@ -36,7 +36,7 @@ public class RESTApplicationTemplate {
         this.id=applicationTemplate.getId();
         this.modele=applicationTemplate.getModele();
         this.rules=applicationTemplate.getRules();
-        this.alternativeModeles.addAll(applicationTemplate.getAlternativeModeles());
+        this.alternativeModeles.putAll(applicationTemplate.getAlternativeModeles());
 
         //TODO get les ids des instances
         for (ApplicationInstance applicationInstance : applicationTemplate.getApplicationsInstance()) {
@@ -93,11 +93,11 @@ public class RESTApplicationTemplate {
         this.modele = modele;
     }
 
-    public List<byte[]> getAlternativeModeles() {
+    public Map<String, byte[]> getAlternativeModeles() {
         return alternativeModeles;
     }
 
-    public void setAlternativeModeles(List<byte[]> alternativeModeles) {
+    public void setAlternativeModeles(Map<String, byte[]> alternativeModeles) {
         this.alternativeModeles = alternativeModeles;
     }
 

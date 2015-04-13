@@ -363,8 +363,9 @@ public class ApplicationManagement {
 
             application.setModele(inputApplicationModele.get());
 
-            Set<byte[]> alternativesModeles = new HashSet<byte[]>();
-            alternativesModeles.add(inputAlternativeModele1.get());
+            Map<String,byte[]> alternativesModeles = new HashMap<String,byte[]>();
+            alternativesModeles.put(inputApplicationModele.getName(),inputApplicationModele.get());
+            alternativesModeles.put(inputAlternativeModele1.getName(),inputAlternativeModele1.get());
             application.setAlternativeModeles(alternativesModeles);
 
             application.setRules(inputScalabilityRules.get());

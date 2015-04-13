@@ -3,7 +3,9 @@ package org.opencloudware.hibernate.model;
 
 import org.exoplatform.services.database.DBObject;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 /**
  * Created with IntelliJ IDEA.
@@ -24,13 +26,11 @@ public class Application extends DBObject {
 	private Long id;
 
 
-
-
     private byte[] modele;
     private byte[] rules;
 
 
-    private Set<byte[]> alternativeModeles = new HashSet<byte[]>(0);
+    private Map<String,byte[]> alternativeModeles = new HashMap<String,byte[]>(0);
 
 
     private Set<ApplicationInstance> applicationsInstance =
@@ -117,11 +117,11 @@ public class Application extends DBObject {
         this.rules = rules;
     }
 
-    public Set<byte[]> getAlternativeModeles() {
+    public Map<String,byte[]> getAlternativeModeles() {
         return alternativeModeles;
     }
 
-    public void setAlternativeModeles(Set<byte[]> alternativeModeles) {
+    public void setAlternativeModeles(Map<String,byte[]> alternativeModeles) {
         this.alternativeModeles = alternativeModeles;
     }
 }
