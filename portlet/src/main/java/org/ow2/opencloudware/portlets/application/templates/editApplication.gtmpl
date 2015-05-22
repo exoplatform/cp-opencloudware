@@ -78,11 +78,29 @@
         </div>
 
         <div class="control-group">
-            <label for="inputApplicationModele" class="control-label">Application Modele (*) : </label>
+            <label for="inputInitialApplicationModele" class="control-label">Initial Application Modele (*) : </label>
             <div class="controls">
         	    <button  type="button"  class="btn btn-default" id="buttonChangeModele">Change Modele</button>
-				<input type="file" id="inputApplicationModele" name="inputApplicationModele" placeholder="Application Modele" class="hide">
+				<input type="file" id="inputInitialApplicationModele" name="inputInitialApplicationModele" placeholder="Initial Application Modele" class="hide">
         	</div>
+        </div>
+
+        <div class="control-group">
+            <label for="inputScalabilityRules" class="control-label">Scalability Rules : </label>
+            <div class="controls">
+                <button  type="button"  class="btn btn-default" id="buttonChangeScalabilityRules">Change Rules</button>
+                <input type="file" id="inputScalabilityRules" name="inputScalabilityRules" placeholder="Scalability Rules" class="hide">
+            </div>
+        </div>
+
+
+
+        <div class="control-group">
+            <label for="inputAlternativeModele" class="control-label">Alternative Modele : </label>
+            <div class="controls">
+                <button  type="button"  class="btn btn-default" id="buttonChangeAlternativeModele">Change Alternative Modele</button>
+                <input type="file" id="inputAlternativeModele" name="inputAlternativeModele" placeholder="Alternative Modele" class="hide">
+            </div>
         </div>
 
 
@@ -106,9 +124,24 @@
         $("#buttonChangeModele").click(function(e) {
 
             $("#buttonChangeModele").hide();
-            $("#inputApplicationModele").show();
+            $("#inputInitialApplicationModele").show();
 
         });
+
+        $("#buttonChangeScalabilityRules").click(function(e) {
+
+                    $("#buttonChangeScalabilityRules").hide();
+                    $("#inputScalabilityRules").show();
+
+                });
+
+        $("#buttonChangeAlternativeModele").click(function(e) {
+
+                    $("#buttonChangeAlternativeModele").hide();
+                    $("#inputAlternativeModele").show();
+
+                });
+
 
         $("#addRole").click(function() {
             $("#usersNames option:selected" ).each(function() {

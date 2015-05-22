@@ -403,7 +403,8 @@ public class ApplicationManagement {
 	@Route("/editApplication")
 	public Response.View editApplication(String inputApplicationId, String inputApplicationName,
 										 String inputApplicationDescription,String inputUsersNames,
-										 String inputManagersNames, FileItem inputApplicationModele) {
+										 String inputManagersNames, FileItem inputInitialApplicationModele,
+										 FileItem inputScalabilityRules, FileItem inputAlternativeModele) {
 		try {
 
 			ApplicationDAO applicationDAO= ocwDataService_.getApplicationDAO();
@@ -418,9 +419,23 @@ public class ApplicationManagement {
 
 			application.setApplicationName(inputApplicationName);
 			application.setDescription(inputApplicationDescription);
-            if (inputApplicationModele.getSize()!=0) {
-                application.setModele(inputApplicationModele.get());
+            if (inputInitialApplicationModele.getSize()!=0) {
+                application.setModele(inputInitialApplicationModele.get());
+
+				Map<String,byte[]> alternativesModeles = application.getAlternativeModeles();
+				alternativesModeles.put(inputInitialApplicationModele.getName(),inputInitialApplicationModele.get());
+				application.setAlternativeModeles(alternativesModeles);
             }
+
+			if (inputScalabilityRules.getSize()!=0) {
+				application.setRules(inputScalabilityRules.get());
+			}
+
+			if (inputAlternativeModele.getSize()!=0) {
+				Map<String,byte[]> alternativesModeles = application.getAlternativeModeles();
+				alternativesModeles.put(inputAlternativeModele.getName(), inputAlternativeModele.get());
+				application.setAlternativeModeles(alternativesModeles);
+			}
 
 			String[] managers = inputManagersNames.split(",");
 

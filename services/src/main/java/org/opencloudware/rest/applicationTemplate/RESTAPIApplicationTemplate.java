@@ -56,9 +56,9 @@ public class RESTAPIApplicationTemplate implements ResourceContainer {
     }
 
     @GET
-    @Path("getOvfByName")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getOVFFileByInstanceId(@QueryParam("applicationInstanceId") String applicationInstanceId, @QueryParam("ovfFile") String ovfFile, @Context SecurityContext sc, @Context UriInfo uriInfo) {
+     @Path("getOvfByName")
+     @Produces(MediaType.TEXT_XML)
+     public Response getOVFFileByInstanceId(@QueryParam("applicationInstanceId") String applicationInstanceId, @QueryParam("ovfFile") String ovfFile, @Context SecurityContext sc, @Context UriInfo uriInfo) {
 
         if (!restApiResources_.isAuthorizedUser(sc, uriInfo)) {
             return Response.status(HTTPStatus.FORBIDDEN).build();
@@ -72,8 +72,42 @@ public class RESTAPIApplicationTemplate implements ResourceContainer {
                 CacheControl cacheControl = new CacheControl();
                 cacheControl.setNoCache(true);
                 cacheControl.setNoStore(true);
-                
+
+                //String result = new String(ovf);
+
                 return Response.ok(ovf, MediaType.TEXT_XML).cacheControl(cacheControl).build();
+            } else {
+                return Response.status(HTTPStatus.NOT_FOUND).build();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(HTTPStatus.INTERNAL_ERROR).build();
+
+        }
+    }
+
+    @GET
+    @Path("getRulesByName")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response getRulesFileByInstanceId(@QueryParam("applicationInstanceId") String applicationInstanceId, @Context SecurityContext sc, @Context UriInfo uriInfo) {
+
+        if (!restApiResources_.isAuthorizedUser(sc, uriInfo)) {
+            return Response.status(HTTPStatus.FORBIDDEN).build();
+        }
+        try {
+            ApplicationInstance applicationInstance = ocwDataService_.getApplicationInstanceDAO().findApplicationInstanceById(applicationInstanceId);
+            if (applicationInstance!=null) {
+                Application applicationTemplate = ocwDataService_.getApplicationDAO().findApplicationById(applicationInstance.getApplication().getId().toString());
+                byte[] rules = applicationTemplate.getRules();
+
+                CacheControl cacheControl = new CacheControl();
+                cacheControl.setNoCache(true);
+                cacheControl.setNoStore(true);
+
+                //String result = new String(rules);
+
+                return Response.ok(rules, MediaType.TEXT_PLAIN).cacheControl(cacheControl).build();
             } else {
                 return Response.status(HTTPStatus.NOT_FOUND).build();
             }
@@ -98,6 +132,40 @@ public class RESTAPIApplicationTemplate implements ResourceContainer {
         try {
             Application applicationTemplate = ocwDataService_.getApplicationDAO().findApplicationById(applicationTemplateId);
             return OCWUtil.renderJSON(new RESTApplicationTemplate(applicationTemplate));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(HTTPStatus.INTERNAL_ERROR).build();
+
+        }
+    }
+
+
+    @GET
+    @Path("getRulesByTemplateId")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response getRulesFileByTemplateId(@QueryParam("applicationTemplateId") String applicationTemplateId, @Context SecurityContext sc, @Context UriInfo uriInfo) {
+
+        if (!restApiResources_.isAuthorizedUser(sc, uriInfo)) {
+            return Response.status(HTTPStatus.FORBIDDEN).build();
+        }
+        try {
+            Application applicationTemplate = ocwDataService_.getApplicationDAO().findApplicationById(applicationTemplateId);
+            byte[] rules = applicationTemplate.getRules();
+
+            CacheControl cacheControl = new CacheControl();
+            cacheControl.setNoCache(true);
+            cacheControl.setNoStore(true);
+
+            String result = new String(rules);
+            System.out.println(result);
+            if (result.contains("\n")) {
+                System.out.println("Retour chariots trouvés");
+            } else {
+
+                System.out.println("Retour chariots NON trouvés");
+            }
+
+            return Response.ok(result, MediaType.TEXT_PLAIN).cacheControl(cacheControl).build();
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(HTTPStatus.INTERNAL_ERROR).build();
