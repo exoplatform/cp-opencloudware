@@ -1,0 +1,943 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns1:Envelope xml:lang="en-US" xmlns:ocw="http://ocw" xmlns:ns2="http://nonamespace" xmlns:ns1="http://schemas.dmtf.org/ovf/envelope/1" xmlns:ns4="http://schemas.dmtf.org/wbem/wscim/1/common" xmlns:ns3="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData" xmlns:ns5="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">
+    <ns1:References>
+        <ns1:File ns1:id="appDisk1" stackRef="vamp-springoo-template25"/>
+        <ns1:File ns1:id="appDisk2" stackRef="vamp-springoo-template25"/>
+        <ns1:File ns1:id="appDisk3" stackRef="vamp-springoo-template25"/>        
+        <ns1:File ns1:id="appDisk4" stackRef="vamp-springoo-template25"/>
+        <ns1:File ns1:id="appDisk5" stackRef="vamp-springoo-template25"/>
+<!--
+        <ns1:File ns1:id="appDisk1" ns1:href="alainvamp" stackRef="vamp-springoo-template25"/>
+        <ns1:File ns1:id="appDisk2" ns1:href="alainvamp" stackRef="vamp-springoo-template25"/>
+        <ns1:File ns1:id="appDisk3" ns1:href="alainvamp" stackRef="vamp-springoo-template25"/>        
+        <ns1:File ns1:id="appDisk4" ns1:href="alainvamp" stackRef="vamp-springoo-template25"/>
+        <ns1:File ns1:id="appDisk5" ns1:href="alainvamp" stackRef="vamp-springoo-template25"/>
+-->
+        
+        
+	<!--4Scalability:File<ns1:File ns1:id="appDisk3" ns1:href="vamp-springoo" stackRef="vamp-springoo-template25"/>-->
+        <stack>
+            <bundles>
+                <bundle>
+                    <files>
+                        <file>
+                            <extract>false</extract>
+                            <install>true</install>
+                            <name>springoo-appserver-2.0~SNAPSHOT.deb</name>
+                            <recursive>false</recursive>
+                            <source>http://10.197.176.82/legacy/springoo/springoo-appserver-2.0~SNAPSHOT.deb</source>
+                        </file>
+                        <file>
+                            <extract>false</extract>
+                            <install>true</install>
+                            <name>springoo-db-2.0~SNAPSHOT.deb</name>
+                            <recursive>false</recursive>
+                            <source>http://10.197.176.82/legacy/springoo/springoo-db-2.0~SNAPSHOT.deb</source>
+                        </file>
+                        <file>
+                            <extract>false</extract>
+                            <install>true</install>
+                            <name>springoo-frontal-2.0~SNAPSHOT.deb</name>
+                            <recursive>false</recursive>
+                            <source>http://10.197.176.82/legacy/springoo/springoo-frontal-2.0~SNAPSHOT.deb</source>
+                        </file>
+                        <file>
+                            <extract>false</extract>
+                            <install>true</install>
+                            <name>vamp-configurator_2.0~SNAPSHOT_all.deb</name>
+                            <recursive>false</recursive>
+                            <source>http://10.197.176.82/infrastructure/vamp/vamp-configurator_2.0~SNAPSHOT_all.deb</source>
+                        </file>
+                        <file>
+                            <extract>false</extract>
+                            <install>true</install>
+                            <name>vamp-wrappers.deb</name>
+                            <recursive>false</recursive>
+                            <source>http://10.197.176.82/infrastructure/vamp/vamp-wrappers.deb</source>
+                        </file>
+                        <file>
+                            <extract>false</extract>
+                            <install>false</install>
+                            <name>vamp-scalability-wrappers.jar</name>
+                            <recursive>false</recursive>
+                            <source>http://10.197.176.82/infrastructure/vamp/vamp-scalability-wrappers.jar</source>
+                            <destination>/home/vamp/wrappers</destination>
+                        </file>
+                    </files>
+                    <name>springoo ocw bundle</name>
+                    <version>1.0</version>
+                </bundle>
+            </bundles>
+            <!--
+            <scripts/>
+            -->
+            <config>
+                <configItem>
+                    <name>postinst.db</name>
+                    <frequency>firstboot</frequency>
+                    <type>bootScript</type>
+                    <source>http://10.197.176.82/legacy/springoo/install/postinst.db</source>
+                </configItem>
+                <configItem>
+                    <name>postinst.appserver</name>
+                    <frequency>firstboot</frequency>
+                    <type>bootScript</type>
+                    <source>http://10.197.176.82/legacy/springoo/install/postinst.appserver</source>
+                </configItem>
+                <configItem>
+                    <name>postinst.frontal</name>
+                    <frequency>firstboot</frequency>
+                    <type>bootScript</type>
+                    <source>http://10.197.176.82/legacy/springoo/install/postinst.frontal</source>
+                </configItem>
+            </config>
+            <description>Virtual image for the Springoo application</description>
+            <name>vamp-springoo-template25</name>
+            <os>
+                <arch>x86_64</arch>
+                <name>Debian</name>
+                <pkgs>
+                    <pkg>
+                        <name>bash</name>
+                    </pkg>
+                </pkgs>
+                <profile>Minimal</profile>
+                <version>7</version>
+            </os>
+            <version>1.0</version>
+        </stack>
+    </ns1:References>
+    <ns1:DiskSection>
+        <ns1:Info>Virtual disk information</ns1:Info>
+        <ns1:Disk ns1:diskId="ovf:/disk/appDiskId1" ns1:fileRef="appDisk1" ns1:capacity="2048" ns1:capacityAllocationUnits="byte * 2^20" ns1:format="http://kvm"/>
+        <ns1:Disk ns1:diskId="ovf:/disk/appDiskId2" ns1:fileRef="appDisk2" ns1:capacity="2048" ns1:capacityAllocationUnits="byte * 2^20" ns1:format="http://kvm"/>
+        <ns1:Disk ns1:diskId="ovf:/disk/appDiskId3" ns1:fileRef="appDisk3" ns1:capacity="2048" ns1:capacityAllocationUnits="byte * 2^20" ns1:format="http://kvm"/>        
+        <ns1:Disk ns1:diskId="ovf:/disk/appDiskId4" ns1:fileRef="appDisk4" ns1:capacity="2048" ns1:capacityAllocationUnits="byte * 2^20" ns1:format="http://kvm"/>
+        <ns1:Disk ns1:diskId="ovf:/disk/appDiskId5" ns1:fileRef="appDisk5" ns1:capacity="2048" ns1:capacityAllocationUnits="byte * 2^20" ns1:format="http://kvm"/>              
+	<!--4Scalability:Disk<ns1:Disk ns1:diskId="ovf:/disk/appDiskId3" ns1:fileRef="appDisk3" ns1:capacity="2048" ns1:capacityAllocationUnits="byte * 2^20" ns1:format="http://kvm"/>-->
+    </ns1:DiskSection>
+    <!-- Describes all networks used in the package -->
+    <ns1:NetworkSection>
+        <ns1:Info>List of logical networks used in the package</ns1:Info>
+        <!-- Additional section content -->
+        <ns1:Network ns1:name="publicNetwork" ocw:type="floating"/>
+        <ns1:Network ns1:name="ocwnetwork" ocw:type="fixed"/>
+    </ns1:NetworkSection>
+    <ns2:AppArchitectureSection>
+        <ns2:definition name="org.ow2.sirocco.vamp.example.springoo.Springoo">
+        
+        
+            <ns2:component name="scalability-controller">
+                <ns2:interface name="agregationOfProbes" role="client" signature="org.ow2.sirocco.vamp.wrappers.probes.ProbeAgregatorItf" cardinality="collection"/>
+                <ns2:content class="org.ow2.ocw.scalability.ScalabilityController"/>
+                <ns2:attributes signature="org.ow2.ocw.scalability.ScalabilityControllerAttributes">
+                    <ns2:attribute name="pollingInterval" value="5"/>
+                    <ns2:attribute name="rulesFile" value="http://10.197.176.104/ocw-springoo.drl"/>
+                    <ns2:attribute name="ovfFilesLocaton" value="http://10.197.176.104/"/>    
+                    <ns2:attribute name="ovfInitial" value="scalable-springoo-with-probe.ovf.original"/>  
+					<ns2:attribute name="calm" value="60"/>      
+					<ns2:attribute name="applicationName" value="scalable-springoo-with-probes"/>	
+					<ns2:attribute name="iaasId" value="1268f2da-0a18-4983-a44e-33dd4f2ddb6f"/>	
+					<ns2:attribute name="vampmgrwsEndPoint" value="http://10.197.176.82:8080/vampmgrws/applications"/>					
+					<ns2:attribute name="opencloudwareEndPoint" value="http://10.197.180.204:8080/rest/private/opencloudware"/>	
+					<ns2:attribute name="opencloudwareUser" value="wsadminocw"/>	
+					<ns2:attribute name="opencloudwarePW" value="!wsadminocw!"/>														                          
+                </ns2:attributes>
+                <ns2:controller desc="primitive"/>
+                <ns2:virtual-node name="scalability_controller"/>
+            </ns2:component>                
+            <ns2:component name="probe-agregator-mysqlStage">
+                <ns2:interface name="agregationOfProbes" role="server" signature="org.ow2.sirocco.vamp.wrappers.probes.ProbeAgregatorItf"/>
+                <ns2:interface name="probe" role="client" signature="org.ow2.ocw.scalability.probes.ProbeItf" cardinality="collection"/>                
+                <ns2:content class="org.ow2.ocw.scalability.probes.ProbeAgregator"/>
+                <ns2:attributes signature="org.ow2.ocw.scalability.probes.ProbeAgregatorAttributes">
+                    <ns2:attribute name="paPort" value="3000"/>
+                    <ns2:attribute name="pollingInterval" value="5"/>  
+                    <ns2:attribute name="poolingStage" value="mysql"/>                                                        
+                </ns2:attributes>
+                <ns2:controller desc="primitive"/>
+                <ns2:virtual-node name="probe_agregator"/>
+            </ns2:component>         
+            <ns2:component name="probe-agregator-jonasStage">
+                <ns2:interface name="agregationOfProbes" role="server" signature="org.ow2.sirocco.vamp.wrappers.probes.ProbeAgregatorItf"/>
+                <ns2:interface name="probe" role="client" signature="org.ow2.ocw.scalability.probes.ProbeItf" cardinality="collection"/>                                
+                <ns2:content class="org.ow2.ocw.scalability.probes.ProbeAgregator"/>
+                <ns2:attributes signature="org.ow2.ocw.scalability.probes.ProbeAgregatorAttributes">
+                    <ns2:attribute name="paPort" value="3001"/>
+                    <ns2:attribute name="pollingInterval" value="5"/>  
+					<ns2:attribute name="poolingStage" value="jonas"/>                                                                                                                 
+                </ns2:attributes>
+                <ns2:controller desc="primitive"/>
+                <ns2:virtual-node name="probe_agregator"/>
+            </ns2:component>         
+            <ns2:component name="probe-agregator-apacheStage">
+                <ns2:interface name="agregationOfProbes" role="server" signature="org.ow2.sirocco.vamp.wrappers.probes.ProbeAgregatorItf"/>
+                <ns2:interface name="probe" role="client" signature="org.ow2.ocw.scalability.probes.ProbeItf" cardinality="collection"/>                                
+                <ns2:content class="org.ow2.ocw.scalability.probes.ProbeAgregator"/>
+                <ns2:attributes signature="org.ow2.ocw.scalability.probes.ProbeAgregatorAttributes">
+                    <ns2:attribute name="paPort" value="3002"/>
+                    <ns2:attribute name="pollingInterval" value="5"/>  
+					<ns2:attribute name="poolingStage" value="apache"/>
+                </ns2:attributes>
+                <ns2:controller desc="primitive"/>
+                <ns2:virtual-node name="probe_agregator"/>
+            </ns2:component>         
+        
+        
+            <ns2:component name="springoo-mysql">
+                <ns2:interface name="dbinfo" role="server" signature="org.ow2.sirocco.vamp.example.springoo.MysqlConfiguration"/>
+                <ns2:content class="org.ow2.sirocco.vamp.example.springoo.MysqlWrapper"/>
+                <ns2:attributes signature="org.ow2.sirocco.vamp.example.springoo.MysqlAttributes">
+                    <ns2:attribute name="dbUser" value="springoo"/>
+                    <ns2:attribute name="dbPasswd" value="springoo"/>
+                    <ns2:attribute name="dbName" value="springoodb"/>
+                </ns2:attributes>
+                <ns2:controller desc="primitive"/>
+                <ns2:virtual-node name="scalable_springoo_mysql"/>
+            </ns2:component>
+            <ns2:component name="probe-mysql">
+                <ns2:interface name="probe" role="server" signature="org.ow2.ocw.scalability.probes.ProbeItf"/>
+                <ns2:content class="org.ow2.ocw.scalability.probes.Probe"/>
+                <ns2:attributes signature="org.ow2.ocw.scalability.probes.ProbeAttributes">
+                    <ns2:attribute name="pPort" value="3000"/>
+                </ns2:attributes>
+                <ns2:controller desc="primitive"/>
+                <ns2:virtual-node name="scalable_springoo_mysql"/>
+            </ns2:component>                         
+            <ns2:component name="springoo-rar">
+                <ns2:interface name="dbinfo" role="client" signature="org.ow2.sirocco.vamp.example.springoo.MysqlConfiguration"/>
+                <ns2:interface name="jeeinfo" role="client" signature="org.ow2.sirocco.vamp.example.springoo.JonasConfiguration"/>
+                <ns2:interface name="rarinfo" role="server" signature="org.ow2.sirocco.vamp.deploy.common.wrapper.VampLegacyConfiguration"/>
+                <ns2:content class="org.ow2.sirocco.vamp.example.springoo.ResourceAdapterWrapper"/>
+                <ns2:virtual-node name="scalable_springoo_jonas"/>
+            </ns2:component>
+            <ns2:component name="springoo-jonas">
+                <ns2:interface name="jeeinfo" role="server" signature="org.ow2.sirocco.vamp.example.springoo.JonasConfiguration"/>
+                <ns2:interface name="ajpinfo" role="server" signature="org.ow2.sirocco.vamp.example.springoo.AjpServerConfiguration"/>
+                <ns2:content class="org.ow2.sirocco.vamp.example.springoo.JonasWrapper"/>
+                <ns2:attributes signature="org.ow2.sirocco.vamp.example.springoo.JonasAttributes">
+                    <ns2:attribute name="jonasRoot" value="/root/jonas-full-5.2.1"/>
+                    <ns2:attribute name="jonasBase" value="/root/jonas/base"/>
+                    <ns2:attribute name="jonasName" value="jonas1"/>
+                    <ns2:attribute name="jonasDomain" value="domain1"/>
+                    <ns2:attribute name="javaHome" value="/usr/lib/jvm/java-6-openjdk-amd64/jre/"/>
+                    <ns2:attribute name="ajpPort" value="9009"/>
+                    <ns2:attribute name="jvmRoute" value="jonas1"/>
+                </ns2:attributes>
+                <ns2:controller desc="primitive"/>
+                <ns2:virtual-node name="scalable_springoo_jonas"/>
+            </ns2:component>
+            <ns2:component name="springoo-ear">
+                <ns2:interface name="jeeinfo" role="client" signature="org.ow2.sirocco.vamp.example.springoo.JonasConfiguration"/>
+                <ns2:interface name="rarinfo" role="client" signature="org.ow2.sirocco.vamp.deploy.common.wrapper.VampLegacyConfiguration"/>
+                <ns2:content class="org.ow2.sirocco.vamp.example.springoo.EnterpriseApplicationWrapper"/>
+                <ns2:virtual-node name="scalable_springoo_jonas"/>
+            </ns2:component>
+            <ns2:component name="probe-jonas">
+                <ns2:interface name="probe" role="server" signature="org.ow2.ocw.scalability.probes.ProbeItf"/>
+                <ns2:content class="org.ow2.ocw.scalability.probes.Probe"/>
+                <ns2:attributes signature="org.ow2.ocw.scalability.probes.ProbeAttributes">
+                    <ns2:attribute name="pPort" value="3000"/>
+                </ns2:attributes>
+                <ns2:controller desc="primitive"/>
+                <ns2:virtual-node name="scalable_springoo_jonas"/>
+            </ns2:component>            
+            <ns2:component name="springoo-apache-lb">
+		<ns2:interface name="ajpinfo" role="client" signature="org.ow2.sirocco.vamp.example.springoo.AjpServerConfiguration" cardinality="collection"/>
+                <ns2:content class="org.ow2.sirocco.vamp.example.springoo.LoadBalancerWrapper"/>
+                <ns2:virtual-node name="scalable_springoo_apache"/>
+            </ns2:component>
+            <ns2:component name="probe-apache">
+                <ns2:interface name="probe" role="server" signature="org.ow2.ocw.scalability.probes.ProbeItf"/>
+                <ns2:content class="org.ow2.ocw.scalability.probes.Probe"/>
+                <ns2:attributes signature="org.ow2.ocw.scalability.probes.ProbeAttributes">
+                    <ns2:attribute name="pPort" value="3000"/>
+                </ns2:attributes>
+                <ns2:controller desc="primitive"/>
+                <ns2:virtual-node name="scalable_springoo_apache"/>
+            </ns2:component>
+            
+            <ns2:binding client="springoo-rar.dbinfo" server="springoo-mysql.dbinfo"/>
+            <ns2:binding client="springoo-rar.jeeinfo" server="springoo-jonas.jeeinfo"/>
+            <ns2:binding client="springoo-ear.jeeinfo" server="springoo-jonas.jeeinfo"/>
+            <ns2:binding client="springoo-ear.rarinfo" server="springoo-rar.rarinfo"/>
+            <ns2:binding client="springoo-apache-lb.ajpinfo1" server="springoo-jonas.ajpinfo"/>
+            
+                                    
+            <ns2:binding client="scalability-controller.agregationOfProbes1" server="probe-agregator-mysqlStage.agregationOfProbes"/>
+            <ns2:binding client="scalability-controller.agregationOfProbes2" server="probe-agregator-jonasStage.agregationOfProbes"/>
+            <ns2:binding client="scalability-controller.agregationOfProbes3" server="probe-agregator-apacheStage.agregationOfProbes"/>
+            <ns2:binding client="probe-agregator-mysqlStage.probe1" server="probe-mysql.probe"/>
+            <ns2:binding client="probe-agregator-jonasStage.probe1" server="probe-jonas.probe"/>
+            <ns2:binding client="probe-agregator-apacheStage.probe1" server="probe-apache.probe"/>
+            
+            
+        </ns2:definition>
+    </ns2:AppArchitectureSection>
+    <ns1:VirtualSystemCollection ns1:id="springoo">
+        <ns1:Info>Springoo is a n-tiers web application for managing product references. It is made up with a MySql database (VM3), a JOnAS application server (VM1) and an HTTP Apache load-balancer (VM2).
+        </ns1:Info>
+        <ns1:Name>Springoo</ns1:Name>
+        <ns1:StartupSection>
+            <ns1:Info>Startup Section Description</ns1:Info>
+        </ns1:StartupSection>
+        
+        <ns1:VirtualSystem ns1:id="scalability_controller" rsrvr:initial="1" rsrvr:min="1" rsrvr:max="1" xmlns:rsrvr="http://schemas.telefonica.com/claudia/ovf">
+            <ns1:Info></ns1:Info>
+            <ns1:Name>scalability_controller</ns1:Name>
+            <ns1:ProductSection>
+                <ns1:Info>Product Section Description</ns1:Info>
+            </ns1:ProductSection>
+            <ns1:VirtualHardwareSection>
+                <ns1:Info>Virtual Hardware Section Description</ns1:Info>
+                <ns1:System>
+                    <ns3:AutomaticRecoveryAction xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticShutdownAction xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticStartupAction xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticStartupActionDelay xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticStartupActionSequenceNumber xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ConfigurationDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ConfigurationFile xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ConfigurationID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:CreationTime xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:Description xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ElementName>Virtual Hardware Family</ns3:ElementName>
+                    <ns3:InstanceID>0</ns3:InstanceID>
+                    <ns3:LogDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:RecoveryFile xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:SnapshotDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:SuspendDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:SwapFileDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:VirtualSystemIdentifier xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:VirtualSystemType>xen</ns3:VirtualSystemType>
+                </ns1:System>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits></ns5:AllocationUnits>
+                    <ns5:AutomaticAllocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description>Number of virtual CPUs</ns5:Description>
+                    <ns5:ElementName>1 virtual CPU</ns5:ElementName>
+                    <ns5:InstanceID>1</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>3</ns5:ResourceType>
+                    <ns5:VirtualQuantity>1</ns5:VirtualQuantity>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits>MegaBytes</ns5:AllocationUnits>
+                    <ns5:AutomaticAllocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description>Memory Size</ns5:Description>
+                    <ns5:ElementName>1024 MB of memory</ns5:ElementName>
+                    <ns5:InstanceID>2</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>4</ns5:ResourceType>
+                    <ns5:VirtualQuantity>1024</ns5:VirtualQuantity>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticAllocation>true</ns5:AutomaticAllocation>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Connection>ocwnetwork</ns5:Connection>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ElementName>Ethernet adapter on ocwnetwork network</ns5:ElementName>
+                    <ns5:InstanceID>5</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>10</ns5:ResourceType>
+                    <ns5:VirtualQuantity xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticAllocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ElementName>Harddisk 1</ns5:ElementName>
+                    <ns5:HostResource>ovf:/disk/appDiskId4</ns5:HostResource>
+                    <ns5:InstanceID>7</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent>4</ns5:Parent>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>17</ns5:ResourceType>
+                    <ns5:VirtualQuantity xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+            </ns1:VirtualHardwareSection>
+        </ns1:VirtualSystem>
+           <ns1:VirtualSystem ns1:id="probe_agregator" rsrvr:initial="1" rsrvr:min="1" rsrvr:max="1" xmlns:rsrvr="http://schemas.telefonica.com/claudia/ovf">
+            <ns1:Info></ns1:Info>
+            <ns1:Name>probe_agregator</ns1:Name>
+            <ns1:ProductSection>
+                <ns1:Info>Product Section Description</ns1:Info>
+            </ns1:ProductSection>
+            <ns1:VirtualHardwareSection>
+                <ns1:Info>Virtual Hardware Section Description</ns1:Info>
+                <ns1:System>
+                    <ns3:AutomaticRecoveryAction xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticShutdownAction xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticStartupAction xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticStartupActionDelay xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticStartupActionSequenceNumber xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ConfigurationDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ConfigurationFile xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ConfigurationID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:CreationTime xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:Description xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ElementName>Virtual Hardware Family</ns3:ElementName>
+                    <ns3:InstanceID>0</ns3:InstanceID>
+                    <ns3:LogDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:RecoveryFile xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:SnapshotDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:SuspendDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:SwapFileDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:VirtualSystemIdentifier xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:VirtualSystemType>xen</ns3:VirtualSystemType>
+                </ns1:System>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits></ns5:AllocationUnits>
+                    <ns5:AutomaticAllocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description>Number of virtual CPUs</ns5:Description>
+                    <ns5:ElementName>1 virtual CPU</ns5:ElementName>
+                    <ns5:InstanceID>1</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>3</ns5:ResourceType>
+                    <ns5:VirtualQuantity>1</ns5:VirtualQuantity>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits>MegaBytes</ns5:AllocationUnits>
+                    <ns5:AutomaticAllocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description>Memory Size</ns5:Description>
+                    <ns5:ElementName>1024 MB of memory</ns5:ElementName>
+                    <ns5:InstanceID>2</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>4</ns5:ResourceType>
+                    <ns5:VirtualQuantity>1024</ns5:VirtualQuantity>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticAllocation>true</ns5:AutomaticAllocation>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Connection>ocwnetwork</ns5:Connection>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ElementName>Ethernet adapter on ocwnetwork network</ns5:ElementName>
+                    <ns5:InstanceID>5</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>10</ns5:ResourceType>
+                    <ns5:VirtualQuantity xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticAllocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ElementName>Harddisk 1</ns5:ElementName>
+                    <ns5:HostResource>ovf:/disk/appDiskId5</ns5:HostResource>
+                    <ns5:InstanceID>7</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent>4</ns5:Parent>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>17</ns5:ResourceType>
+                    <ns5:VirtualQuantity xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+            </ns1:VirtualHardwareSection>
+        </ns1:VirtualSystem>
+   
+        
+        
+        <ns1:VirtualSystem ns1:id="scalable_springoo_jonas" rsrvr:initial="1" rsrvr:min="1" rsrvr:max="1" xmlns:rsrvr="http://schemas.telefonica.com/claudia/ovf">
+            <ns1:Info></ns1:Info>
+            <ns1:Name>scalable_springoo_jonas</ns1:Name>
+            <ns1:ProductSection>
+                <ns1:Info>Product Section Description</ns1:Info>
+            </ns1:ProductSection>
+            <ns1:VirtualHardwareSection>
+                <ns1:Info>Virtual Hardware Section Description</ns1:Info>
+                <ns1:System>
+                    <ns3:AutomaticRecoveryAction xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticShutdownAction xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticStartupAction xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticStartupActionDelay xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticStartupActionSequenceNumber xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ConfigurationDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ConfigurationFile xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ConfigurationID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:CreationTime xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:Description xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ElementName>Virtual Hardware Family</ns3:ElementName>
+                    <ns3:InstanceID>0</ns3:InstanceID>
+                    <ns3:LogDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:RecoveryFile xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:SnapshotDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:SuspendDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:SwapFileDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:VirtualSystemIdentifier xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:VirtualSystemType>xen</ns3:VirtualSystemType>
+                </ns1:System>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits></ns5:AllocationUnits>
+                    <ns5:AutomaticAllocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description>Number of virtual CPUs</ns5:Description>
+                    <ns5:ElementName>1 virtual CPU</ns5:ElementName>
+                    <ns5:InstanceID>1</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>3</ns5:ResourceType>
+                    <ns5:VirtualQuantity>1</ns5:VirtualQuantity>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits>MegaBytes</ns5:AllocationUnits>
+                    <ns5:AutomaticAllocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description>Memory Size</ns5:Description>
+                    <ns5:ElementName>1024 MB of memory</ns5:ElementName>
+                    <ns5:InstanceID>2</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>4</ns5:ResourceType>
+                    <ns5:VirtualQuantity>1024</ns5:VirtualQuantity>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticAllocation>true</ns5:AutomaticAllocation>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Connection>ocwnetwork</ns5:Connection>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ElementName>Ethernet adapter on ocwnetwork network</ns5:ElementName>
+                    <ns5:InstanceID>5</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>10</ns5:ResourceType>
+                    <ns5:VirtualQuantity xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticAllocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ElementName>Harddisk 1</ns5:ElementName>
+                    <ns5:HostResource>ovf:/disk/appDiskId1</ns5:HostResource>
+                    <ns5:InstanceID>7</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent>4</ns5:Parent>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>17</ns5:ResourceType>
+                    <ns5:VirtualQuantity xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+            </ns1:VirtualHardwareSection>
+        </ns1:VirtualSystem>        
+        <ns1:VirtualSystem ns1:id="scalable_springoo_apache" rsrvr:initial="1" rsrvr:min="1" rsrvr:max="1" xmlns:rsrvr="http://schemas.telefonica.com/claudia/ovf">
+            <ns1:Info></ns1:Info>
+            <ns1:Name>scalable_springoo_apache</ns1:Name>
+            <ns1:ProductSection>
+                <ns1:Info>Product Section Description</ns1:Info>
+            </ns1:ProductSection>
+            <ns1:VirtualHardwareSection>
+                <ns1:Info>Virtual Hardware Section Description</ns1:Info>
+                <ns1:System>
+                    <ns3:AutomaticRecoveryAction xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticShutdownAction xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticStartupAction xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticStartupActionDelay xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticStartupActionSequenceNumber xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ConfigurationDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ConfigurationFile xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ConfigurationID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:CreationTime xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:Description xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ElementName>Virtual Hardware Family</ns3:ElementName>
+                    <ns3:InstanceID>0</ns3:InstanceID>
+                    <ns3:LogDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:RecoveryFile xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:SnapshotDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:SuspendDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:SwapFileDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:VirtualSystemIdentifier xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:VirtualSystemType>xen</ns3:VirtualSystemType>
+                </ns1:System>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits></ns5:AllocationUnits>
+                    <ns5:AutomaticAllocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description>Number of virtual CPUs</ns5:Description>
+                    <ns5:ElementName>1 virtual CPU</ns5:ElementName>
+                    <ns5:InstanceID>1</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>3</ns5:ResourceType>
+                    <ns5:VirtualQuantity>1</ns5:VirtualQuantity>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits>MegaBytes</ns5:AllocationUnits>
+                    <ns5:AutomaticAllocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description>Memory Size</ns5:Description>
+                    <ns5:ElementName>1024 MB of memory</ns5:ElementName>
+                    <ns5:InstanceID>2</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>4</ns5:ResourceType>
+                    <ns5:VirtualQuantity>1024</ns5:VirtualQuantity>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticAllocation>true</ns5:AutomaticAllocation>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Connection>ocwnetwork</ns5:Connection>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ElementName>Ethernet adapter on ocwnetwork network</ns5:ElementName>
+                    <ns5:InstanceID>5</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>10</ns5:ResourceType>
+                    <ns5:VirtualQuantity xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticAllocation>true</ns5:AutomaticAllocation>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Connection>publicNetwork</ns5:Connection>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ElementName>Ethernet adapter on publicNetwork network</ns5:ElementName>
+                    <ns5:InstanceID>5</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>10</ns5:ResourceType>
+                    <ns5:VirtualQuantity xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticAllocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ElementName>Harddisk 1</ns5:ElementName>
+                    <ns5:HostResource>ovf:/disk/appDiskId2</ns5:HostResource>
+                    <ns5:InstanceID>7</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent>4</ns5:Parent>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>17</ns5:ResourceType>
+                    <ns5:VirtualQuantity xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+            </ns1:VirtualHardwareSection>
+        </ns1:VirtualSystem>
+        <ns1:VirtualSystem ns1:id="scalable_springoo_mysql" rsrvr:initial="1" rsrvr:min="1" rsrvr:max="1" xmlns:rsrvr="http://schemas.telefonica.com/claudia/ovf">
+            <ns1:Info></ns1:Info>
+            <ns1:Name>scalable_springoo_mysql</ns1:Name>
+            <ns1:ProductSection>
+                <ns1:Info>Product Section Description</ns1:Info>
+            </ns1:ProductSection>
+            <ns1:VirtualHardwareSection>
+                <ns1:Info>Virtual Hardware Section Description</ns1:Info>
+                <ns1:System>
+                    <ns3:AutomaticRecoveryAction xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticShutdownAction xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticStartupAction xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticStartupActionDelay xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:AutomaticStartupActionSequenceNumber xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ConfigurationDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ConfigurationFile xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ConfigurationID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:CreationTime xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:Description xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:ElementName>Virtual Hardware Family</ns3:ElementName>
+                    <ns3:InstanceID>0</ns3:InstanceID>
+                    <ns3:LogDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:RecoveryFile xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:SnapshotDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:SuspendDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:SwapFileDataRoot xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:VirtualSystemIdentifier xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns3:VirtualSystemType>xen</ns3:VirtualSystemType>
+                </ns1:System>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits></ns5:AllocationUnits>
+                    <ns5:AutomaticAllocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description>Number of virtual CPUs</ns5:Description>
+                    <ns5:ElementName>1 virtual CPU</ns5:ElementName>
+                    <ns5:InstanceID>1</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>3</ns5:ResourceType>
+                    <ns5:VirtualQuantity>1</ns5:VirtualQuantity>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits>MegaBytes</ns5:AllocationUnits>
+                    <ns5:AutomaticAllocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description>Memory Size</ns5:Description>
+                    <ns5:ElementName>1024 MB of memory</ns5:ElementName>
+                    <ns5:InstanceID>2</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>4</ns5:ResourceType>
+                    <ns5:VirtualQuantity>1024</ns5:VirtualQuantity>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticAllocation>true</ns5:AutomaticAllocation>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Connection>ocwnetwork</ns5:Connection>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ElementName>Ethernet adapter on ocwnetwork network</ns5:ElementName>
+                    <ns5:InstanceID>5</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>10</ns5:ResourceType>
+                    <ns5:VirtualQuantity xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+                <ns1:Item>
+                    <ns5:Address xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AddressOnParent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AllocationUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticAllocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:AutomaticDeallocation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Caption xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ConsumerVisibility xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Description xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ElementName>Harddisk 1</ns5:ElementName>
+                    <ns5:HostResource>ovf:/disk/appDiskId3</ns5:HostResource>
+                    <ns5:InstanceID>7</ns5:InstanceID>
+                    <ns5:Limit xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:MappingBehavior xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:OtherResourceType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Parent>4</ns5:Parent>
+                    <ns5:PoolID xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Reservation xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceSubType xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:ResourceType>17</ns5:ResourceType>
+                    <ns5:VirtualQuantity xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:VirtualQuantityUnits xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                    <ns5:Weight xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                </ns1:Item>
+            </ns1:VirtualHardwareSection>
+        </ns1:VirtualSystem>
+    </ns1:VirtualSystemCollection>
+</ns1:Envelope>

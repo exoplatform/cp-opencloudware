@@ -69,8 +69,19 @@
 
             </span>
         </div>
-        
+
         <div class="control-group">
+            <label for="inputSelectApplicationType" class="control-label">Create your application from : </label>
+            <div class="controls">
+                <select name="inputSelectApplicationType" class="ocwSelect" id="inputSelectApplicationType">
+                    <option value="ovf" selected="selected">OVF File</option>
+                    <option value="build">Build result file (war)</option>
+                </select>
+            </div>
+        </div>
+
+        
+        <div class="control-group" id="controlGroupInitialApplicationModele">
 			<label for="inputApplicationModele" class="control-label">Initial Application Modele (*) : </label>
 			<div class="controls">
 				<input type="file" id="inputApplicationModele" name="inputApplicationModele" placeholder="Application Modele">
@@ -78,19 +89,52 @@
 		</div>
 
 
-        <div class="control-group">
+        <div class="control-group" id="controlGroupScalabilityRules">
 			<label for="inputScalabilityRules" class="control-label">Scalability rules : </label>
 			<div class="controls">
 				<input type="file" id="inputScalabilityRules" name="inputScalabilityRules" placeholder="Scalability Rules File">
 			</div>
 		</div>
 
-        <div class="control-group">
+        <div class="control-group" id="controlGroupAlternativeApplicationModele">
         			<label for="inputAlternativeModele1" class="control-label">Alternative Application Modele : </label>
         			<div class="controls">
         				<input type="file" id="inputAlternativeModele1" name="inputAlternativeModele1" placeholder="Alternative Application sModele">
         			</div>
         </div>
+
+        <div class="control-group hide" id="controlGroupBuildResult">
+            <label for="inputBuildFile" class="control-label">Build Result : </label>
+            <div class="controls">
+                <input type="file" id="inputBuildFile" name="inputBuildFile" placeholder="Build Result">
+            </div>
+        </div>
+
+        <div class="control-group hide" id="controlGroupConfigurationScript">
+            <label for="inputConfigurationScript" class="control-label">Configuration Script : </label>
+            <div class="controls">
+                <input type="file" id="inputConfigurationScript" name="inputConfigurationScript" placeholder="Configuration Script">
+            </div>
+        </div>
+
+        <div class="control-group hide" id="controlGroupSelectAppliance">
+            <label for="inputSelectAppliance" class="control-label">Appliance : </label>
+            <div class="controls">
+                <select name="inputSelectAppliance" class="ocwSelect" id="inputSelectAppliance">
+                     <%
+
+                        appliances.keySet().each { current ->
+                    %>
+                        <option value="${appliances.get(current)}">${current}</option>
+                    <%
+                        }
+
+
+                    %>
+                </select>
+            </div>
+        </div>
+
 
 		<div class="control-group">
 			<div class="controls">
@@ -156,6 +200,32 @@
 
             changeSelect("#usersNames","#inputUsersNames");
             changeSelect("#managersNames","#inputManagersNames");
+
+
+
+        });
+
+
+        $("#inputSelectApplicationType").change(function() {
+            if ($("#inputSelectApplicationType option:selected").val()=="ovf") {
+                $("#controlGroupInitialApplicationModele").show();
+                $("#controlGroupAlternativeApplicationModele").show();
+                $("#controlGroupScalabilityRules").show();
+                $("#controlGroupSelectAppliance").hide();
+                $("#controlGroupBuildResult").hide();
+                $("#controlGroupConfigurationScript").hide();
+
+            } else {
+
+                $("#controlGroupInitialApplicationModele").hide();
+                $("#controlGroupAlternativeApplicationModele").hide();
+                $("#controlGroupScalabilityRules").hide();
+                $("#controlGroupBuildResult").show();
+                $("#controlGroupConfigurationScript").show();
+                $("#controlGroupSelectAppliance").show();
+
+
+            }
 
 
 

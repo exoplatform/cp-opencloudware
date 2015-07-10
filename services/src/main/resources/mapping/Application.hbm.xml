@@ -30,6 +30,14 @@
 		  <column name="DESCRIPTION"/>
 	  </property>
 
+      <property name="applianceUri"
+                type="java.lang.String"
+                access="field"
+                lazy="false"
+                not-null="true">
+          <column name="APPLIANCE_URI"/>
+      </property>
+
 	  <many-to-one name="project" class="org.opencloudware.hibernate.model.Project" fetch="select" lazy="false">
 		  <column name="PROJECT_ID" not-null="true" />
 	  </many-to-one>
@@ -55,6 +63,8 @@
 
       <property name="rules" column="RULES" length="65535"/>
 
+      <property name="configurationScript" column="CONFIGURATION_SCRIPT" length="65535"/>
+      <property name="buildResult" column="BUILD_RESULT" length="65535"/>
 
   </class>
 </hibernate-mapping>

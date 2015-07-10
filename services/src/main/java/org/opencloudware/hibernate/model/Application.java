@@ -20,6 +20,8 @@ public class Application extends DBObject {
 	private String applicationName = null;
 
 	private String description = null;
+	private String applianceUri = null;
+
 	private Project project = null;
 
 	private Set<String> managers = new HashSet<String>(0);
@@ -27,7 +29,10 @@ public class Application extends DBObject {
 
 
     private byte[] modele;
-    private byte[] rules;
+	private byte[] buildResult;
+	private byte[] configurationScript;
+
+	private byte[] rules;
 
 
     private Map<String,byte[]> alternativeModeles = new HashMap<String,byte[]>(0);
@@ -124,6 +129,30 @@ public class Application extends DBObject {
     public void setAlternativeModeles(Map<String,byte[]> alternativeModeles) {
         this.alternativeModeles = alternativeModeles;
     }
+
+	public byte[] getConfigurationScript() {
+		return configurationScript;
+	}
+
+	public void setConfigurationScript(byte[] configurationScript) {
+		this.configurationScript = configurationScript;
+	}
+
+	public byte[] getBuildResult() {
+		return buildResult;
+	}
+
+	public void setBuildResult(byte[] buildResult) {
+		this.buildResult = buildResult;
+	}
+
+	public String getApplianceUri() {
+		return applianceUri;
+	}
+
+	public void setApplianceUri(String applianceUri) {
+		this.applianceUri = applianceUri;
+	}
 }
 
 

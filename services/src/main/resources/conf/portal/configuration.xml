@@ -5,6 +5,11 @@
         xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
 
+
+    <component>
+        <key>org.opencloudware.mock.MockApplicationCreationService</key>
+        <type>org.opencloudware.mock.MockApplicationCreationService</type>
+    </component>
     <component>
         <key>org.opencloudware.hibernate.OcwDataService</key>
         <type>org.opencloudware.hibernate.OcwDataService</type>
@@ -117,6 +122,30 @@
                                     </field>
                                     <field name="resourceDescription">
                                         <string>Service de generation/publication SP2 </string>
+                                    </field>
+                                </object>
+                            </value>
+
+                            <value>
+                                <object type="org.opencloudware.rest.resources.OCWResource">
+                                    <field name="resourceType">
+                                        <string>sp2-service</string>
+                                    </field>
+                                    <field name="resourceImplType">
+                                        <string>uforge</string>
+                                    </field>
+                                    <field name="resourceEndpoint">
+                                        <string>http://10.197.185.10/api</string>
+                                    </field>
+                                    <field name="resourceDescription">
+                                        <string>WebServices SP2 </string>
+                                    </field>
+
+                                    <field name="resourceLogin">
+                                        <string>root</string>
+                                    </field>
+                                    <field name="resourcePassword">
+                                        <string>uforgedemo</string>
                                     </field>
                                 </object>
                             </value>

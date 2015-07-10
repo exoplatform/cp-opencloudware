@@ -77,59 +77,10 @@ public class ApplicationDAO {
    /**
     * {@inheritDoc}
     */
-   public void createApplication(Application application,FileItem initialModele, FileItem inputScalabilityRules, List<FileItem> alternativeModeles) throws Exception
+   public void createApplication(Application application) throws Exception
    {
       final Session session = service_.openSession();
       session.save(application);
-       //send scalability rules and alternative ovf to repository
-       if (inputScalabilityRules!=null) {
-
-           if (initialModele instanceof DiskFileItem) {
-               File realFile = ((DiskFileItem)initialModele).getStoreLocation();
-               String realName = initialModele.getName();
-               String path = realFile.getAbsolutePath();
-               path = path.substring(0,path.lastIndexOf("/"));
-               path = path+"/"+realName;
-
-               File fileToRead = new File(path);
-               initialModele.write(fileToRead);
-
-               fileUploadService_.uploadFile(fileToRead, fileToRead.getName(), "File " + fileToRead.getName() + " description.");
-           }
-
-
-           if (inputScalabilityRules instanceof DiskFileItem) {
-               //File rules = new File(inputScalabilityRules.);
-               File realFile = ((DiskFileItem)inputScalabilityRules).getStoreLocation();
-               String realName = inputScalabilityRules.getName();
-               String path = realFile.getAbsolutePath();
-               path = path.substring(0,path.lastIndexOf("/"));
-               path = path+"/"+realName;
-
-               File fileToRead = new File(path);
-               inputScalabilityRules.write(fileToRead);
-
-               fileUploadService_.uploadFile(fileToRead, fileToRead.getName(), "File " + fileToRead.getName() + " description.");
-           }
-
-
-           for (FileItem file : alternativeModeles) {
-               if (file instanceof DiskFileItem) {
-                   File realFile = ((DiskFileItem)file).getStoreLocation();
-                   String realName = file.getName();
-                   String path = realFile.getAbsolutePath();
-                   path = path.substring(0,path.lastIndexOf("/"));
-                   path = path+"/"+realName;
-
-                   File fileToRead = new File(path);
-                   file.write(fileToRead);
-
-                   fileUploadService_.uploadFile(fileToRead, fileToRead.getName(), "File " + fileToRead.getName() + " description.");
-               }
-           }
-       }
-
-
       ocwDataService_.getProjectDAO().invalidateCache(application.getProject());
        session.flush();
    }

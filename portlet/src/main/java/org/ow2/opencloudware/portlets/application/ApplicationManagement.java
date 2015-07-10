@@ -9,6 +9,7 @@ import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.opencloudware.hibernate.OcwDataService;
 import org.opencloudware.hibernate.dao.ApplicationDAO;
@@ -20,8 +21,17 @@ import org.ow2.opencloudware.commons.ApplicationDesc;
 import org.ow2.opencloudware.commons.vamp.DeploymentManager;
 import org.ow2.opencloudware.commons.vamp.VampManager;
 import org.ow2.opencloudware.portlets.common.Flash;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import javax.inject.Inject;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -277,15 +287,89 @@ public class ApplicationManagement {
 
 
 			}
+
+
+
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("usersNames", usersNames);
 			parameters.put("managersNames", managersNames);
+			parameters.put("appliances", getAppliances());
 			addApplication.render(parameters);
 		} catch (Exception e) {
 			e.printStackTrace();
 			index();
 		}
 
+	}
+
+	private Map<String,String> getAppliances() {
+		Map<String,String> appliances = new HashMap<String,String>();
+
+		try {
+		//1) recuperation de la ressource sp2-service
+		JSONObject resource = OCWUtil.getResource("sp2-service");
+		if (resource != null) {
+            String resourceEndPoint = resource.getString("resourceEndpoint");
+            String endPointURI = "/users/root/appliances";
+
+            String username = resource.getString("resourceLogin").equals("null") ? null : resource.getString("resourceLogin");
+            String password = resource.getString("resourcePassword").equals("null") ? null : resource.getString("resourcePassword");
+            Map<String, String> headers = new HashMap<String, String>();
+
+
+            System.out.println("send  getAppliance request");
+            String responseData = OCWUtil.doGet(resourceEndPoint + endPointURI, username, password, headers, "application/xml; charset=utf8");
+            System.out.println("receive getAppliance response");
+            System.out.println(responseData);
+
+            //get the factory
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+
+                //Using factory get an instance of document builder
+                DocumentBuilder db = dbf.newDocumentBuilder();
+
+                //parse using builder to get DOM representation of the XML file
+                InputStream stream = new ByteArrayInputStream(responseData.getBytes());
+
+                Document doc = db.parse(stream);
+                Element docEle = doc.getDocumentElement();
+
+                //get a nodelist of  elements
+                NodeList nl = docEle.getElementsByTagName("appliance");
+                if(nl != null && nl.getLength() > 0) {
+                    for(int i = 0 ; i < nl.getLength();i++) {
+
+                        //get the appliance element
+                        Element el = (Element)nl.item(i);
+                        String name = getTextValue(el, "name");
+						//attention actuellement on recupere l'uri du logo. Ya du test a rajouter.
+                        String uri = getTextValue(el,"uri");
+                        appliances.put(name,uri);
+
+                    }
+                }
+
+
+
+        }
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+
+		return appliances;
+	}
+
+	private String getTextValue(Element ele, String tagName) {
+		String textVal = null;
+		NodeList nl = ele.getElementsByTagName(tagName);
+		if(nl != null && nl.getLength() > 0) {
+			Element el = (Element)nl.item(0);
+			textVal = el.getFirstChild().getNodeValue();
+		}
+
+		return textVal;
 	}
 
 	@View
@@ -334,6 +418,8 @@ public class ApplicationManagement {
 				parameters.put("usersNames", usersNames);
 				parameters.put("managersNames", managersNames);
 				parameters.put("application", application);
+				parameters.put("appliances", getAppliances());
+
 				editApplication.render(parameters);
 			}
 		} catch (Exception e) {
@@ -348,8 +434,9 @@ public class ApplicationManagement {
 	public Response.View createApplication(String inputApplicationName,
 										   String inputApplicationDescription,
 										   String inputUsersNames,
-										   String inputManagersNames, FileItem inputApplicationModele,
-                                           FileItem inputScalabilityRules, FileItem inputAlternativeModele1) {
+										   String inputManagersNames, String inputSelectAppliance, FileItem inputApplicationModele,
+                                           FileItem inputScalabilityRules, FileItem inputAlternativeModele1,
+										   FileItem inputBuildFile, FileItem inputConfigurationScript) {
 
 
 		try {
@@ -361,16 +448,61 @@ public class ApplicationManagement {
 			application.setApplicationName(inputApplicationName);
 			application.setDescription(inputApplicationDescription);
 
-            application.setModele(inputApplicationModele.get());
 
-            Map<String,byte[]> alternativesModeles = new HashMap<String,byte[]>();
-            alternativesModeles.put(inputApplicationModele.getName(),inputApplicationModele.get());
-            alternativesModeles.put(inputAlternativeModele1.getName(),inputAlternativeModele1.get());
-            application.setAlternativeModeles(alternativesModeles);
 
-            application.setRules(inputScalabilityRules.get());
+			//appel au web service UShare si on a un result de build :
+			// ce web service va générer un ovf, qu'on va ajouter à l'app.
 
-            String[] managers = inputManagersNames.split(",");
+			if (inputBuildFile!=null) {
+				if (inputConfigurationScript.getSize()>0) {
+					application.setConfigurationScript(inputConfigurationScript.get());
+				}
+				if (inputBuildFile.getSize()>0) {
+					application.setBuildResult(inputBuildFile.get());
+				}
+
+				application.setApplianceUri(inputSelectAppliance);
+
+				String postData = "buildResult=" + inputBuildFile.getString() + "&" +
+						"configFile=" + inputConfigurationScript.getString() + "&" +
+						"applianceId=" + inputSelectAppliance.getBytes().toString();
+
+				String endpoint = "http://localhost:8080/rest/opencloudware/createAppFromBuildFile/";
+
+				String result = OCWUtil.doPost(endpoint,"","",postData,new HashMap<String,String>(),"text/plain; charset=utf8");
+				System.out.println("Result : "+result);
+				if (result!=null && !result.equals("")) {
+					application.setModele(result.getBytes());
+					Map<String, byte[]> alternativesModeles = new HashMap<String, byte[]>();
+					alternativesModeles.put("generatedOvf.ovf", result.getBytes());
+					application.setAlternativeModeles(alternativesModeles);
+				}
+
+
+			} else {
+				if (inputApplicationModele.getSize() > 0) {
+					application.setModele(inputApplicationModele.get());
+				}
+
+				Map<String, byte[]> alternativesModeles = new HashMap<String, byte[]>();
+				if (inputApplicationModele.getSize() > 0) {
+					alternativesModeles.put(inputApplicationModele.getName(), inputApplicationModele.get());
+				}
+				if (inputAlternativeModele1.getSize() > 0) {
+					alternativesModeles.put(inputAlternativeModele1.getName(), inputAlternativeModele1.get());
+
+				}
+				application.setAlternativeModeles(alternativesModeles);
+				if (inputScalabilityRules.getSize()>0) {
+					application.setRules(inputScalabilityRules.get());
+				}
+
+			}
+
+
+
+
+			String[] managers = inputManagersNames.split(",");
 
 			Set<String> managersSet = new HashSet<String>();
 
@@ -380,13 +512,7 @@ public class ApplicationManagement {
 			application.setManagers(managersSet);
 
 			application.setProject(ocwDataService_.getProjectDAO().findProjectById(currentProjectId));
-
-
-            //actually, I have a problem to get multiple alternative files.
-            //So I test with one but work as we have a list
-            List<FileItem> alternativeModeles = new ArrayList<FileItem>();
-            alternativeModeles.add(inputAlternativeModele1);
-			applicationDAO.createApplication(application, inputApplicationModele, inputScalabilityRules, alternativeModeles);
+			applicationDAO.createApplication(application);
 
 			flash.setSuccess("Application \""+inputApplicationName+"\" added.");
 		} catch (Exception e) {

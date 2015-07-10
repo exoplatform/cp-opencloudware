@@ -406,7 +406,7 @@ public class ProjectManagement {
             newManagers.addAll(managers);
             application.setManagers(newManagers);
             application.setProject(ocwDataService_.getProjectDAO().findProjectById(project.getId().toString()));
-            applicationDAO.createApplication(application, null, null, null);
+            applicationDAO.createApplication(application);
 
 
             project.setProjectClifApplicationId(application.getId().toString());

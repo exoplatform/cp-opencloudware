@@ -16,12 +16,18 @@ public class RESTApplicationTemplate {
     private String applicationName = null;
 
     private String description = null;
+    private String applianceUri = null;
+
     private Long projectId;
 
     private Long id;
 
     private byte[] modele;
     private byte[] rules;
+    private byte[] configurationScript;
+    private byte[] buildResult;
+
+
 
     private Map<String, byte[]> alternativeModeles=
             new HashMap<String, byte[]>(0);
@@ -37,6 +43,9 @@ public class RESTApplicationTemplate {
         this.modele=applicationTemplate.getModele();
         this.rules=applicationTemplate.getRules();
         this.alternativeModeles.putAll(applicationTemplate.getAlternativeModeles());
+        this.buildResult = applicationTemplate.getBuildResult();
+        this.configurationScript = applicationTemplate.getConfigurationScript();
+        this.applianceUri = applicationTemplate.getApplianceUri();
 
         //TODO get les ids des instances
         for (ApplicationInstance applicationInstance : applicationTemplate.getApplicationsInstance()) {
@@ -107,5 +116,29 @@ public class RESTApplicationTemplate {
 
     public void setRules(byte[] rules) {
         this.rules = rules;
+    }
+
+    public byte[] getBuildResult() {
+        return buildResult;
+    }
+
+    public void setBuildResult(byte[] buildResult) {
+        this.buildResult = buildResult;
+    }
+
+    public byte[] getConfigurationScript() {
+        return configurationScript;
+    }
+
+    public void setConfigurationScript(byte[] configurationScript) {
+        this.configurationScript = configurationScript;
+    }
+
+    public String getApplianceUri() {
+        return applianceUri;
+    }
+
+    public void setApplianceUri(String applianceUri) {
+        this.applianceUri = applianceUri;
     }
 }
