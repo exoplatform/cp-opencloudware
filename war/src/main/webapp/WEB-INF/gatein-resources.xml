@@ -53,4 +53,12 @@
 			</depends>
 		</module>
 	</portlet>
+
+    <module>
+        <name>jszip</name>
+        <script>
+            <path>/jsZip/jszip.js</path>
+        </script>
+
+    </module>
 </gatein-resources>

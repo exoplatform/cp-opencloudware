@@ -96,10 +96,11 @@
 
 
         <div class="control-group">
-            <label for="inputAlternativeModele" class="control-label">Alternative Modele : </label>
+            <label for="inputAlternativeModeles" class="control-label">Alternative Modele : </label>
             <div class="controls">
-                <button  type="button"  class="btn btn-default" id="buttonChangeAlternativeModele">Change Alternative Modele</button>
-                <input type="file" id="inputAlternativeModele" name="inputAlternativeModele" placeholder="Alternative Modele" class="hide">
+                <button  type="button"  class="btn btn-default" id="buttonChangeAlternativeModele">Change Alternatives Modeles</button>
+                    <input class="hide" type="file" id="inputAlternativeModeles" name="inputAlternativeModeles" placeholder="Alternatives Applications Modeles" multiple="multiple">
+        		    <input type="file" id="inputAlternativeModele" name="inputAlternativeModele" style="display:none">
             </div>
         </div>
 
@@ -112,7 +113,7 @@
 
 		<div class="control-group">
 			<div class="controls">
-				<button type="submit" class="btn btn-primary" id="register">Save modification</button>
+				<button type="button" class="btn btn-primary" id="register">Save modification</button>
 				<button type="button" class="btn btn-default" id="cancel" onclick="javascript:window.location='@{ApplicationManagement.index()}'">Cancel</button>
 				<button type="reset" class="btn btn-default" id="reset" onclick="javascript:window.location='@{ApplicationManagement.displayEditForm(inputApplicationId = applicationId)}'">Reset</button>
 			</div>
@@ -121,78 +122,133 @@
 
 	</form>
     <script>
-        $("#buttonChangeModele").click(function(e) {
 
-            $("#buttonChangeModele").hide();
-            $("#inputInitialApplicationModele").show();
+        require(['SHARED/jszip'], function(jsZip){
 
-        });
+            var content;
+            $("#buttonChangeModele").click(function(e) {
 
-        $("#buttonChangeScalabilityRules").click(function(e) {
+                $("#buttonChangeModele").hide();
+                $("#inputInitialApplicationModele").show();
 
-                    $("#buttonChangeScalabilityRules").hide();
-                    $("#inputScalabilityRules").show();
+            });
 
+            $("#buttonChangeScalabilityRules").click(function(e) {
+
+                        $("#buttonChangeScalabilityRules").hide();
+                        $("#inputScalabilityRules").show();
+
+                    });
+
+            $("#buttonChangeAlternativeModele").click(function(e) {
+
+                        $("#buttonChangeAlternativeModele").hide();
+                        $("#inputAlternativeModeles").show();
+
+                    });
+
+
+            $("#addRole").click(function() {
+                $("#usersNames option:selected" ).each(function() {
+                    var currentVal = $(this).val();
+                    var currentText = $(this).text();
+
+                    $("#managersNames").append('<option value="'+currentVal+'">'+currentText+'</option>');
                 });
 
-        $("#buttonChangeAlternativeModele").click(function(e) {
+                $("#usersNames option:selected").remove();
 
-                    $("#buttonChangeAlternativeModele").hide();
-                    $("#inputAlternativeModele").show();
+                changeSelect("#usersNames","#inputUsersNames");
+                changeSelect("#managersNames","#inputManagersNames");
 
+
+            });
+
+            function changeSelect(selectName, inputName){
+
+                var inputString = "";
+                var select = selectName + " option";
+
+                $(select).each(function() {
+                    var currentVal = $(this).val();
+                    inputString+= currentVal+",";
                 });
 
+                $(inputName).val(inputString.substring(0,inputString.length-1));
 
-        $("#addRole").click(function() {
-            $("#usersNames option:selected" ).each(function() {
-                var currentVal = $(this).val();
-                var currentText = $(this).text();
 
-                $("#managersNames").append('<option value="'+currentVal+'">'+currentText+'</option>');
+            }
+
+
+            $("#removeRole").click(function() {
+                $("#managersNames option:selected" ).each(function() {
+                    var currentVal = $(this).val();
+                    var currentText = $(this).text();
+                    $("#usersNames").append('<option value="'+currentVal+'">'+currentText+'</option>');
+                });
+                $("#managersNames option:selected").remove();
+
+                changeSelect("#usersNames","#inputUsersNames");
+                changeSelect("#managersNames","#inputManagersNames");
+
+
+
             });
 
-            $("#usersNames option:selected").remove();
-
-            changeSelect("#usersNames","#inputUsersNames");
-            changeSelect("#managersNames","#inputManagersNames");
-
-
-        });
-
-        function changeSelect(selectName, inputName){
-
-            var inputString = "";
-            var select = selectName + " option";
-
-            $(select).each(function() {
-                var currentVal = $(this).val();
-                inputString+= currentVal+",";
+            $(function () {
+                changeSelect("#usersNames","#inputUsersNames");
+                changeSelect("#managersNames","#inputManagersNames");
             });
 
-            $(inputName).val(inputString.substring(0,inputString.length-1));
+            $("#register").click(function () {
+                var zip = new JSZip();
+                var nbFileToRead = 0;
+                var nbFileRead = 0;
+                if ($("#inputAlternativeModeles").get(0).files.length == 0) {
+                    $("#editApplicationForm").submit();
+                }
 
 
-        }
+                for (var i = 0; i < $("#inputAlternativeModeles").get(0).files.length; ++i) {
+                    var filename =$("#inputAlternativeModeles").get(0).files[i].name;
+
+                    var reader = new FileReader();
+                    reader.fileName = filename // file came from a input file element. file = el.files[0];
+                    reader.onload = function(readerEvt) {
+                        console.log("file "+ readerEvt.target.fileName+" readed");
+                        zip.file(readerEvt.target.fileName, reader.result);
+                        nbFileRead++;
+                        console.log(nbFileRead);
+                        if (nbFileRead==nbFileToRead) {
+                            generateZip();
+                        }
+                    };
+
+                    nbFileToRead++;
+                    reader.readAsBinaryString($("#inputAlternativeModeles").get(0).files[i]);
+                }
+
+                function ajaxSuccess () {
+                    var response = this.responseText;
+                    window.location='@{ApplicationManagement.index()}';
+                  }
 
 
-        $("#removeRole").click(function() {
-            $("#managersNames option:selected" ).each(function() {
-                var currentVal = $(this).val();
-                var currentText = $(this).text();
-                $("#usersNames").append('<option value="'+currentVal+'">'+currentText+'</option>');
+                function generateZip () {
+                    console.log("in generate zip");
+                    content = zip.generate({type:"blob"});
+
+                    var fd = new FormData(document.getElementById("editApplicationForm"));
+                    fd.append("inputAlternativeModeleZip", content, "modeles.zip");
+
+                    var request = new XMLHttpRequest();
+                    request.onload = ajaxSuccess;
+                    request.open("POST", "@{editApplication()}");
+                    request.send(fd);
+
+                }
+
             });
-            $("#managersNames option:selected").remove();
-
-            changeSelect("#usersNames","#inputUsersNames");
-            changeSelect("#managersNames","#inputManagersNames");
-
-
-
-        });
-
-        $(function () {
-            changeSelect("#usersNames","#inputUsersNames");
-            changeSelect("#managersNames","#inputManagersNames");
         });
     </script>
 </div>

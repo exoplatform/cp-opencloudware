@@ -1,9 +1,16 @@
 package org.ow2.opencloudware.portlets.application;
 
 import juzu.*;
+import juzu.impl.request.ContextualParameter;
+import juzu.impl.request.Parameter;
+import juzu.impl.request.PhaseParameter;
 import juzu.plugin.ajax.Ajax;
+import juzu.request.*;
 import juzu.template.Template;
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUpload;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.services.organization.Group;
@@ -30,12 +37,17 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Created with IntelliJ IDEA.
@@ -154,6 +166,12 @@ public class ApplicationManagement {
 
 	}
 
+	@View
+	public void indexWithoutResetFlash() {
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("flash", flash);
+		global.render(parameters);
+	}
 
 
 	@Ajax
@@ -317,39 +335,36 @@ public class ApplicationManagement {
             Map<String, String> headers = new HashMap<String, String>();
 
 
-            System.out.println("send  getAppliance request");
-            String responseData = OCWUtil.doGet(resourceEndPoint + endPointURI, username, password, headers, "application/xml; charset=utf8");
-            System.out.println("receive getAppliance response");
-            System.out.println(responseData);
-
-            //get the factory
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-
-
-                //Using factory get an instance of document builder
-                DocumentBuilder db = dbf.newDocumentBuilder();
-
-                //parse using builder to get DOM representation of the XML file
-                InputStream stream = new ByteArrayInputStream(responseData.getBytes());
-
-                Document doc = db.parse(stream);
-                Element docEle = doc.getDocumentElement();
-
-                //get a nodelist of  elements
-                NodeList nl = docEle.getElementsByTagName("appliance");
-                if(nl != null && nl.getLength() > 0) {
-                    for(int i = 0 ; i < nl.getLength();i++) {
-
-                        //get the appliance element
-                        Element el = (Element)nl.item(i);
-                        String name = getTextValue(el, "name");
-						//attention actuellement on recupere l'uri du logo. Ya du test a rajouter.
-                        String uri = getTextValue(el,"uri");
-                        appliances.put(name,uri);
-
-                    }
-                }
-
+//            String responseData = OCWUtil.doGet(resourceEndPoint + endPointURI, username, password, headers, "application/xml; charset=utf8");
+//
+//            //get the factory
+//            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+//
+//
+//                //Using factory get an instance of document builder
+//                DocumentBuilder db = dbf.newDocumentBuilder();
+//
+//                //parse using builder to get DOM representation of the XML file
+//                InputStream stream = new ByteArrayInputStream(responseData.getBytes());
+//
+//                Document doc = db.parse(stream);
+//                Element docEle = doc.getDocumentElement();
+//
+//                //get a nodelist of  elements
+//                NodeList nl = docEle.getElementsByTagName("appliance");
+//                if(nl != null && nl.getLength() > 0) {
+//                    for(int i = 0 ; i < nl.getLength();i++) {
+//
+//                        //get the appliance element
+//                        Element el = (Element)nl.item(i);
+//                        String name = getTextValue(el, "name");
+//						//attention actuellement on recupere l'uri du logo. Ya du test a rajouter.
+//                        String uri = getTextValue(el,"uri");
+//                        appliances.put(name,uri);
+//
+//                    }
+//                }
+//
 
 
         }
@@ -435,11 +450,12 @@ public class ApplicationManagement {
 										   String inputApplicationDescription,
 										   String inputUsersNames,
 										   String inputManagersNames, String inputSelectAppliance, FileItem inputApplicationModele,
-                                           FileItem inputScalabilityRules, FileItem inputAlternativeModele1,
-										   FileItem inputBuildFile, FileItem inputConfigurationScript) {
+										   FileItem inputScalabilityRules,
+										   FileItem inputBuildFile, FileItem inputConfigurationScript,FileItem inputAlternativeModeleZip) {
 
 
 		try {
+
 
 			ApplicationDAO applicationDAO= ocwDataService_.getApplicationDAO();
 
@@ -453,7 +469,9 @@ public class ApplicationManagement {
 			//appel au web service UShare si on a un result de build :
 			// ce web service va générer un ovf, qu'on va ajouter à l'app.
 
-			if (inputBuildFile!=null) {
+			//cest un mock pour le moment.
+
+			if (inputBuildFile!=null && inputBuildFile.getSize()>0) {
 				if (inputConfigurationScript.getSize()>0) {
 					application.setConfigurationScript(inputConfigurationScript.get());
 				}
@@ -480,18 +498,39 @@ public class ApplicationManagement {
 
 
 			} else {
+
+				Map<String, byte[]> alternativesModeles = new HashMap<String, byte[]>();
 				if (inputApplicationModele.getSize() > 0) {
 					application.setModele(inputApplicationModele.get());
 				}
 
-				Map<String, byte[]> alternativesModeles = new HashMap<String, byte[]>();
 				if (inputApplicationModele.getSize() > 0) {
 					alternativesModeles.put(inputApplicationModele.getName(), inputApplicationModele.get());
 				}
-				if (inputAlternativeModele1.getSize() > 0) {
-					alternativesModeles.put(inputAlternativeModele1.getName(), inputAlternativeModele1.get());
-
+				if (inputAlternativeModeleZip!= null && inputAlternativeModeleZip.getSize() > 0) {
+					ByteArrayInputStream byteInputStream = new ByteArrayInputStream(inputAlternativeModeleZip.get());
+					ZipInputStream zip = new ZipInputStream(byteInputStream);
+					ZipEntry entry = zip.getNextEntry();
+					byte[] buffer = new byte[2048];
+					while (entry != null) {
+						String entryName = entry.getName();
+						ByteArrayOutputStream output = null;
+						try {
+							output = new ByteArrayOutputStream();
+							int len = 0;
+							while ((len = zip.read(buffer)) > 0) {
+								output.write(buffer, 0, len);
+							}
+						} finally {
+							// we must always close the output file
+							if (output != null) output.close();
+						}
+						alternativesModeles.put(entryName, output.toByteArray());
+						entry = zip.getNextEntry();
+					}
 				}
+
+
 				application.setAlternativeModeles(alternativesModeles);
 				if (inputScalabilityRules.getSize()>0) {
 					application.setRules(inputScalabilityRules.get());
@@ -520,7 +559,7 @@ public class ApplicationManagement {
 		}
 
 
-		return ApplicationManagement_.index();
+		return ApplicationManagement_.indexWithoutResetFlash();
 
 	}
 
@@ -530,7 +569,7 @@ public class ApplicationManagement {
 	public Response.View editApplication(String inputApplicationId, String inputApplicationName,
 										 String inputApplicationDescription,String inputUsersNames,
 										 String inputManagersNames, FileItem inputInitialApplicationModele,
-										 FileItem inputScalabilityRules, FileItem inputAlternativeModele) {
+										 FileItem inputScalabilityRules,FileItem inputAlternativeModeleZip) {
 		try {
 
 			ApplicationDAO applicationDAO= ocwDataService_.getApplicationDAO();
@@ -541,25 +580,45 @@ public class ApplicationManagement {
 				return ApplicationManagement_.index();
 			}
 
-
-
 			application.setApplicationName(inputApplicationName);
 			application.setDescription(inputApplicationDescription);
-            if (inputInitialApplicationModele.getSize()!=0) {
-                application.setModele(inputInitialApplicationModele.get());
+			if (inputInitialApplicationModele.getSize()!=0) {
+				application.setModele(inputInitialApplicationModele.get());
 
 				Map<String,byte[]> alternativesModeles = application.getAlternativeModeles();
 				alternativesModeles.put(inputInitialApplicationModele.getName(),inputInitialApplicationModele.get());
 				application.setAlternativeModeles(alternativesModeles);
-            }
+			}
 
 			if (inputScalabilityRules.getSize()!=0) {
 				application.setRules(inputScalabilityRules.get());
 			}
 
-			if (inputAlternativeModele.getSize()!=0) {
+			if (inputAlternativeModeleZip!= null && inputAlternativeModeleZip.getSize()!=0) {
 				Map<String,byte[]> alternativesModeles = application.getAlternativeModeles();
-				alternativesModeles.put(inputAlternativeModele.getName(), inputAlternativeModele.get());
+
+				ByteArrayInputStream byteInputStream = new ByteArrayInputStream(inputAlternativeModeleZip.get());
+				ZipInputStream zip = new ZipInputStream(byteInputStream);
+				ZipEntry entry = zip.getNextEntry();
+				byte[] buffer = new byte[2048];
+				while (entry != null) {
+					String entryName = entry.getName();
+					ByteArrayOutputStream output = null;
+					try {
+						output = new ByteArrayOutputStream();
+						int len = 0;
+						while ((len = zip.read(buffer)) > 0) {
+							output.write(buffer, 0, len);
+						}
+					} finally {
+						// we must always close the output file
+						if (output != null) output.close();
+					}
+					alternativesModeles.put(entryName, output.toByteArray());
+					entry = zip.getNextEntry();
+				}
+
+
 				application.setAlternativeModeles(alternativesModeles);
 			}
 
@@ -579,7 +638,7 @@ public class ApplicationManagement {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
 
-		return ApplicationManagement_.index();
+		return ApplicationManagement_.indexWithoutResetFlash();
 	}
 
 
