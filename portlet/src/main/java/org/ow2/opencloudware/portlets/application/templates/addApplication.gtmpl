@@ -75,7 +75,7 @@
             <div class="controls">
                 <select name="inputSelectApplicationType" class="ocwSelect" id="inputSelectApplicationType">
                     <option value="ovf" selected="selected">OVF File</option>
-                    <option value="build">Build result file (war)</option>
+                    <option value="build">Build result file (jar, war, zip, ...)</option>
                 </select>
             </div>
         </div>
@@ -213,7 +213,7 @@
             $("#inputSelectApplicationType").change(function() {
                 if ($("#inputSelectApplicationType option:selected").val()=="ovf") {
                     $("#controlGroupInitialApplicationModele").show();
-                    $("#controlGroupAlternativeApplicationModele1").show();
+                    $("#controlGroupAlternativeApplicationModele").show();
                     $("#controlGroupScalabilityRules").show();
                     $("#controlGroupSelectAppliance").hide();
                     $("#controlGroupBuildResult").hide();
@@ -222,7 +222,7 @@
                 } else {
 
                     $("#controlGroupInitialApplicationModele").hide();
-                    $("#controlGroupAlternativeApplicationModele1").hide();
+                    $("#controlGroupAlternativeApplicationModele").hide();
                     $("#controlGroupScalabilityRules").hide();
                     $("#controlGroupBuildResult").show();
                     $("#controlGroupConfigurationScript").show();
