@@ -25,6 +25,10 @@
         <type>org.opencloudware.rest.users.RESTAPIUsers</type>
     </component>
 
+    <component>
+        <key>org.opencloudware.rest.vm.RESTAPIVm</key>
+        <type>org.opencloudware.rest.vm.RESTAPIVm</type>
+    </component>
 
     <component>
         <key>org.opencloudware.rest.applicationInstances.RESTAPIApplicationInstance</key>
@@ -181,6 +185,23 @@
                                     </field>
                                     <field name="resourceDescription">
                                         <string>Monitoring and metering service</string>
+                                    </field>
+                                </object>
+                            </value>
+
+                            <value>
+                                <object type="org.opencloudware.rest.resources.OCWResource">
+                                    <field name="resourceType">
+                                        <string>billing</string>
+                                    </field>
+                                    <field name="resourceImplType">
+                                        <string>billing-server</string>
+                                    </field>
+                                    <field name="resourceEndpoint">
+                                        <string>http://10.197.180.216:8080</string>
+                                    </field>
+                                    <field name="resourceDescription">
+                                        <string>Billing service</string>
                                     </field>
                                 </object>
                             </value>

@@ -1,5 +1,6 @@
 package org.opencloudware.rest;
 
+import org.apache.http.HttpEntity;
 import org.apache.ws.commons.util.Base64;
 import org.json.JSONObject;
 
@@ -9,6 +10,7 @@ import javax.ws.rs.core.Response;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
@@ -83,7 +85,7 @@ public class OCWUtil {
         try {
 
             System.out.println(url);
-            System.out.println(postData);
+//            System.out.println(postData);
 
 
 
@@ -132,6 +134,65 @@ public class OCWUtil {
             e.printStackTrace();
             return null;
         }
+    }
+
+
+    public static String multipost(String urlString, String username, String password,  HttpEntity reqEntity) {
+        try {
+
+            System.out.println(urlString);
+            URL url = new URL(urlString);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("POST");
+            conn.setUseCaches(false);
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+
+            if (username != null) {
+                String encoded = Base64.encode(new String(username + ":" + password).getBytes());
+                encoded = encoded.replace("\n", "");
+                conn.setRequestProperty("Authorization", "Basic " + encoded);
+            }
+
+
+            conn.setRequestProperty("Connection", "Keep-Alive");
+            conn.addRequestProperty("Content-length", reqEntity.getContentLength() + "");
+            conn.addRequestProperty(reqEntity.getContentType().getName(), reqEntity.getContentType().getValue());
+
+
+            OutputStream os = conn.getOutputStream();
+            reqEntity.writeTo(conn.getOutputStream());
+            os.close();
+            conn.connect();
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200  || responseCode == 201) {
+
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(conn.getInputStream()));
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                return response.toString();
+
+            } else {
+                System.out.println(responseCode);
+                System.out.println(conn.getResponseMessage());
+                //System.out.println(conn.getErrorStream());
+                return null;
+            }
+        } catch (Exception e) {
+           e.printStackTrace();
+        }
+        return null;
     }
 
     public static String doPostCreateProvider(String url, String username, String password, String postData, Map<String,String> headers, String contentType) {

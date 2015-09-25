@@ -1,22 +1,18 @@
 package org.ow2.opencloudware.portlets.application;
 
 import juzu.*;
-import juzu.impl.request.ContextualParameter;
-import juzu.impl.request.Parameter;
-import juzu.impl.request.PhaseParameter;
 import juzu.plugin.ajax.Ajax;
-import juzu.request.*;
 import juzu.template.Template;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUpload;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.opencloudware.hibernate.OcwDataService;
 import org.opencloudware.hibernate.dao.ApplicationDAO;
@@ -35,13 +31,7 @@ import org.w3c.dom.NodeList;
 import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.nio.charset.StandardCharsets;
+import java.io.*;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -114,6 +104,9 @@ public class ApplicationManagement {
     @Inject
     @Path("costResults.gtmpl")
     Template costResults;
+	@Inject
+	@Path("vmInformation.gtmpl")
+	Template vmInformation;
 
 	@Inject
 	Flash flash;
@@ -158,6 +151,7 @@ public class ApplicationManagement {
 	@View
 	public void index() {
 
+		System.out.println("in index");
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("flash", flash);
 		global.render(parameters);
@@ -335,36 +329,37 @@ public class ApplicationManagement {
             Map<String, String> headers = new HashMap<String, String>();
 
 
-//            String responseData = OCWUtil.doGet(resourceEndPoint + endPointURI, username, password, headers, "application/xml; charset=utf8");
-//
-//            //get the factory
-//            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-//
-//
-//                //Using factory get an instance of document builder
-//                DocumentBuilder db = dbf.newDocumentBuilder();
-//
-//                //parse using builder to get DOM representation of the XML file
-//                InputStream stream = new ByteArrayInputStream(responseData.getBytes());
-//
-//                Document doc = db.parse(stream);
-//                Element docEle = doc.getDocumentElement();
-//
-//                //get a nodelist of  elements
-//                NodeList nl = docEle.getElementsByTagName("appliance");
-//                if(nl != null && nl.getLength() > 0) {
-//                    for(int i = 0 ; i < nl.getLength();i++) {
-//
-//                        //get the appliance element
-//                        Element el = (Element)nl.item(i);
-//                        String name = getTextValue(el, "name");
-//						//attention actuellement on recupere l'uri du logo. Ya du test a rajouter.
-//                        String uri = getTextValue(el,"uri");
-//                        appliances.put(name,uri);
-//
-//                    }
-//                }
-//
+            String responseData = OCWUtil.doGet(resourceEndPoint + endPointURI, username, password, headers, "application/xml; charset=utf8");
+
+            //get the factory
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+
+                //Using factory get an instance of document builder
+                DocumentBuilder db = dbf.newDocumentBuilder();
+
+                //parse using builder to get DOM representation of the XML file
+                InputStream stream = new ByteArrayInputStream(responseData.getBytes());
+
+                Document doc = db.parse(stream);
+                Element docEle = doc.getDocumentElement();
+
+                //get a nodelist of  elements
+                NodeList nl = docEle.getElementsByTagName("appliance");
+                if(nl != null && nl.getLength() > 0) {
+                    for(int i = 0 ; i < nl.getLength();i++) {
+
+                        //get the appliance element
+                        Element el = (Element)nl.item(i);
+                        String name = getTextValue(el, "name");
+						//attention actuellement on recupere l'uri du logo. Ya du test a rajouter.
+                        String uri = getTextValue(el,"uri");
+						String version = getTextValue(el,"version");
+                        appliances.put(name+" (version : "+version+")",name+"#"+uri+"#"+version);
+
+                    }
+                }
+
 
 
         }
@@ -443,6 +438,62 @@ public class ApplicationManagement {
 		}
 	}
 
+	private String getOvfFromSP2(FileItem buildFile, FileItem script, String applianceName, String applianceVersion) {
+
+		String result = null;
+		try {
+			//1) recuperation de la ressource sp2-service
+			JSONObject resource = OCWUtil.getResource("forging");
+			if (resource != null) {
+				String resourceEndPoint = resource.getString("resourceEndpoint");
+				String endPointURI = "/applications/root/build";
+
+				String username = resource.getString("resourceLogin").equals("null") ? null : resource.getString("resourceLogin");
+				String password = resource.getString("resourcePassword").equals("null") ? null : resource.getString("resourcePassword");
+
+//				String buildFileString = new String(buildFile.get());
+//				String scriptString = new String(script.get());
+//				String postData = "appName=" + applianceName+ "&appVersion=" + applianceVersion+"&artifact="+buildFileString+"&config="+scriptString;
+
+//				Map<String,byte[]> parameters = new HashMap<String,byte[]> ();
+//				parameters.put("artifact",buildFile.get());
+//				parameters.put("config", script.get());
+
+
+				System.out.println("send post request for creating ovf");
+				//String responseData = OCWUtil.doPost(resourceEndPoint + endPointURI, username, password, postData,headers,"multipart/form-data");
+
+				File tmpDir = new File(System.getProperty("java.io.tmpdir"));
+
+				MultipartEntity httpEnt = new MultipartEntity();
+				httpEnt.addPart("name", new StringBody(applianceName));
+				httpEnt.addPart("version", new StringBody(applianceVersion));
+				File tempFile = new File(tmpDir,buildFile.getName());
+				//System.out.println(tempFile.getAbsolutePath());
+				FileOutputStream fos = new FileOutputStream(tempFile);
+				fos.write(buildFile.get());
+				fos.close();
+				httpEnt.addPart("artifact", new FileBody(tempFile));
+
+				tempFile = File.createTempFile(script.getName(), null);
+				fos = new FileOutputStream(tempFile);
+				fos.write(script.get());
+				fos.close();
+				httpEnt.addPart("config", new FileBody(tempFile));
+
+				String responseData = OCWUtil.multipost(resourceEndPoint + endPointURI, username, password, httpEnt);
+				System.out.println("Build app result : " + responseData);
+				if (responseData!=null) {
+					result = responseData;
+				}
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+
 
 	@Action
 	@Route("/createApplication")
@@ -479,23 +530,25 @@ public class ApplicationManagement {
 					application.setBuildResult(inputBuildFile.get());
 				}
 
-				application.setApplianceUri(inputSelectAppliance);
 
-				String postData = "buildResult=" + inputBuildFile.getString() + "&" +
-						"configFile=" + inputConfigurationScript.getString() + "&" +
-						"applianceId=" + inputSelectAppliance.getBytes().toString();
+				String applianceName = inputSelectAppliance.split("#")[0];
+				String applianceUri =  inputSelectAppliance.split("#")[1];
+				String applianceVersion = inputSelectAppliance.split("#")[2];
 
-				String endpoint = "http://localhost:8080/rest/opencloudware/createAppFromBuildFile/";
 
-				String result = OCWUtil.doPost(endpoint,"","",postData,new HashMap<String,String>(),"text/plain; charset=utf8");
-				System.out.println("Result : "+result);
-				if (result!=null && !result.equals("")) {
-					application.setModele(result.getBytes());
+				application.setApplianceUri(applianceUri);
+
+				String ovfFile = getOvfFromSP2(inputBuildFile,inputConfigurationScript,applianceName,applianceVersion);
+				if (ovfFile!=null && !ovfFile.equals("")) {
+					application.setModele(ovfFile.getBytes());
 					Map<String, byte[]> alternativesModeles = new HashMap<String, byte[]>();
-					alternativesModeles.put("generatedOvf.ovf", result.getBytes());
+					alternativesModeles.put("generatedOvf.ovf", ovfFile.getBytes());
 					application.setAlternativeModeles(alternativesModeles);
-				}
+				} else {
+					flash.setError("Error when creating application. OVF was not generated.");
 
+					return ApplicationManagement_.indexWithoutResetFlash();
+				}
 
 			} else {
 
@@ -727,36 +780,43 @@ public class ApplicationManagement {
 
     @View
     public void displayApplicationInstanceInformation(String applicationInstanceId) {
-        this.currentApplicationInstanceId=applicationInstanceId;
-        try {
-            //1) recuperation de la ressource multi-cloud-iaas
-            JSONObject resource = OCWUtil.getResource("deployment");
-            if (resource != null) {
-                String resourceEndPoint = resource.getString("resourceEndpoint");
-                ApplicationInstance applicationInstance = ocwDataService_.getApplicationInstanceDAO().findApplicationInstanceById(applicationInstanceId);
-                VampManager vampManager = new VampManager(resourceEndPoint);
-                Set<DeploymentManager> deploymentManagers = vampManager.getApplications(applicationInstanceId);
-                if (deploymentManagers.size() == 1) {
-                    DeploymentManager deploymentManager = deploymentManagers.iterator().next();
-                    ApplicationDesc appDescr = deploymentManager.getAppDesc(false);
-                    System.out.println(appDescr);
-                    Map<String, Object> parameters = new HashMap<String, Object>();
-                    parameters.put("appDescr", appDescr);
-                    parameters.put("currentApplicationId", currentApplicationId);
-                    applicationInstanceInformation.render(parameters);
-                } else {
-                    ApplicationManagement_.displayInstances(currentApplicationId);
+		if (applicationInstanceId!=null) {
+			this.currentApplicationInstanceId=applicationInstanceId;
+		}
 
-                }
+		if (this.currentApplicationInstanceId == null ||this.currentApplicationInstanceId.equals("")) {
+			ApplicationManagement_.index();
+		} else {
+			try {
+				//1) recuperation de la ressource multi-cloud-iaas
+				JSONObject resource = OCWUtil.getResource("deployment");
+				if (resource != null) {
+					String resourceEndPoint = resource.getString("resourceEndpoint");
+					ApplicationInstance applicationInstance = ocwDataService_.getApplicationInstanceDAO().findApplicationInstanceById(this.currentApplicationInstanceId);
+					VampManager vampManager = new VampManager(resourceEndPoint);
+					Set<DeploymentManager> deploymentManagers = vampManager.getApplications(this.currentApplicationInstanceId);
+					if (deploymentManagers.size() == 1) {
+						DeploymentManager deploymentManager = deploymentManagers.iterator().next();
+						ApplicationDesc appDescr = deploymentManager.getAppDesc(false);
+						System.out.println(appDescr);
+						Map<String, Object> parameters = new HashMap<String, Object>();
+						parameters.put("appDescr", appDescr);
+						parameters.put("currentApplicationId", currentApplicationId);
+						applicationInstanceInformation.render(parameters);
+					} else {
+						ApplicationManagement_.displayInstances(currentApplicationId);
 
-            } else {
-                ApplicationManagement_.displayInstances(currentApplicationId);
+					}
 
-            }
-        }catch (Exception e) {
-            e.printStackTrace();
-            ApplicationManagement_.displayInstances(currentApplicationId);
-        }
+				} else {
+					ApplicationManagement_.displayInstances(currentApplicationId);
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				ApplicationManagement_.displayInstances(currentApplicationId);
+			}
+		}
     }
 
 
@@ -836,7 +896,7 @@ public class ApplicationManagement {
     @Resource
     @Route("/deploy/{provider}")
     public void deploy(String provider, String activateMonitoring) {
-        System.out.println("Deploy function : provider="+provider+", activateMonitoring = "+activateMonitoring);
+        System.out.println("Deploy function : provider=" + provider + ", activateMonitoring = " + activateMonitoring);
 
         try {
             ApplicationInstanceDAO applicationInstanceDAO = ocwDataService_.getApplicationInstanceDAO();
@@ -855,7 +915,7 @@ public class ApplicationManagement {
                 flash.setError("Unable to create Provider");
         }
 
-        getInstancePage(""+currentPage);
+        getInstancePage("" + currentPage);
     }
 
     @Ajax
@@ -871,7 +931,7 @@ public class ApplicationManagement {
             formattedDate = dateFormat.format(date);
         }
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("creationDate",formattedDate);
+        parameters.put("creationDate", formattedDate);
         endPointFragment.render(parameters);
 
     }
@@ -1014,8 +1074,6 @@ public class ApplicationManagement {
     @Route("/evaluateCost")
     public Response.View evaluateCost(String inputApplicationId, String inputDuration, String deploymentTarget, FileItem scalabilityConstraints) {
 
-
-        
         String cost="";
 
 
@@ -1067,5 +1125,15 @@ public class ApplicationManagement {
         }
         return ApplicationManagement_.displayCostEvaluation(cost);
     }
+
+
+	@View
+	public void displayBilling(String vmId) {
+
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("vmId", vmId);
+		parameters.put("applicationInstanceId", this.currentApplicationInstanceId);
+		vmInformation.render(parameters);
+	}
 
 }

@@ -61,4 +61,90 @@
         </script>
 
     </module>
+
+    <module>
+        <name>flotcolor</name>
+        <script>
+            <path>/jsFlot/jquery.colorhelpers.min.js</path>
+        </script>
+        <depends>
+            <module>jquery</module>
+            <as>jQuery</as>
+        </depends>
+    </module>
+    <module>
+        <name>flot</name>
+        <script>
+            <path>/jsFlot/jquery.flot.min.js</path>
+        </script>
+        <depends>
+            <module>flotcolor</module>
+        </depends>
+        <depends>
+            <module>jquery</module>
+            <as>jQuery</as>
+        </depends>
+
+    </module>
+
+
+    <module>
+        <name>flottime</name>
+        <script>
+            <path>/jsFlot/jquery.flot.time.min.js</path>
+        </script>
+        <depends>
+            <module>jquery</module>
+            <as>jQuery</as>
+        </depends>
+
+        <depends>
+            <module>flot</module>
+        </depends>
+    </module>
+
+    <module>
+        <name>flotselection</name>
+        <script>
+            <path>/jsFlot/jquery.flot.selection.min.js</path>
+        </script>
+        <depends>
+            <module>jquery</module>
+            <as>jQuery</as>
+        </depends>
+
+        <depends>
+            <module>flot</module>
+        </depends>
+    </module>
+
+    <module>
+        <name>flotstack</name>
+        <script>
+            <path>/jsFlot/jquery.flot.stack.min.js</path>
+        </script>
+        <depends>
+            <module>jquery</module>
+            <as>jQuery</as>
+        </depends>
+
+        <depends>
+            <module>flot</module>
+        </depends>
+    </module>
+    <module>
+        <name>flotsnap</name>
+        <script>
+            <path>/jsFlot/jquery.flot.snap.js</path>
+        </script>
+        <depends>
+            <module>jquery</module>
+            <as>jQuery</as>
+        </depends>
+
+        <depends>
+            <module>flot</module>
+        </depends>
+    </module>
+
 </gatein-resources>

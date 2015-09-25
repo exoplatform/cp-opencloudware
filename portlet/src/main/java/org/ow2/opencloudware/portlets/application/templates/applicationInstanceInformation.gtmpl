@@ -1,155 +1,163 @@
 <div style="margin-right:20px;margin-left:20px">
     <div class="pull-right">
-            <h3>
-                <a class="btn" href="@{ApplicationManagement.displayInstances()}">
-                        <i class="icon-backward"></i>Back to Application Instance list
-                    </a>
+        <h3>
+            <a class="btn" href="@{ApplicationManagement.displayInstances()}">
+                <i class="icon-backward"></i>Back to Application Instance list
+            </a>
 
 
-            </h3>
-        </div>
-        <div class="clearfix"></div>
-
-<div>
-
-
-	<h3 class="opencloudwareTitle">Application Instance Information</h3><br/>
-	<div id="generalInformation">
-        <h4>${appDescr.getName()}</h4>
+        </h3>
     </div>
-    <div id="vmInformation">
-        <h5>VMs Information</h5>
+    <div class="clearfix"></div>
 
-        <ul class="ulVms">
-         <%
-            int i=1;
-            appDescr.getAllVMinfo().each { current ->
+    <div>
 
-         %>
+
+	    <h3 class="opencloudwareTitle">Application Instance Information</h3><br/>
+        <div id="generalInformation">
+            <h4>${appDescr.getName()}</h4>
+        </div>
+        <div id="vmInformation">
+            <h5>VMs Information</h5>
+
+            <ul class="ulVms">
+                <%
+                    int i=1;
+                    appDescr.getAllVMinfo().each { current ->
+                	    String vmId = current.getId();
+
+                %>
                 <li>
                     <div class="divVm">
                         <table class="table table-bordered">
                             <thead>
-                            		<tr>
-                            			<th style="width:30%;"><b>VM n°${i} :</b></th>
-                            			<th>Hardware</th>
-                            			<th style="width:30%;">Monitoring</th>
-                            		</tr>
-                            	</thead>
+                                <tr>
+                            	    <th style="width:30%;"><b>VM n°${i} :</b></th>
+                            		<th>Hardware</th>
+                            		<th style="width:30%;">Monitoring</th>
+                                    <th style="width:10%;">Action</th>
+                                </tr>
+                            </thead>
                             <tboby>
                                 <tr>
                                     <td>
-                        Name : ${current.getName().substring(current.getName().indexOf(".")+1)}<br/>
-                        IP : ${current.getAddress()}<br/>
+                                        Name : ${current.getName().substring(current.getName().indexOf(".")+1)}<br/>
+                                        IP : ${current.getAddress()}<br/>
                                     </td>
                                     <td>
-         <%
-                        current.getHardware().each { currentHardware ->
-         %>
-         <%
-                            Map parameters = currentHardware.getParameters();
-                            String description = parameters.get("Description") != null ? parameters.get("Description") : "";
-                            String virtualQuantity = parameters.get("VirtualQuantity") != null ? parameters.get("VirtualQuantity") : "";
-                            String allocationUnits = parameters.get("AllocationUnits") != null ? parameters.get("AllocationUnits") : "";
+                                        <%
+                                            current.getHardware().each { currentHardware ->
+                                                Map parameters = currentHardware.getParameters();
+                                                String description = parameters.get("Description") != null ? parameters.get("Description") : "";
+                                                String virtualQuantity = parameters.get("VirtualQuantity") != null ? parameters.get("VirtualQuantity") : "";
+                                                String allocationUnits = parameters.get("AllocationUnits") != null ? parameters.get("AllocationUnits") : "";
 
-                            if (!description.equals("") && !virtualQuantity.equals("")) {
-         %>
+                                                if (!description.equals("") && !virtualQuantity.equals("")) {
+                                            %>
 
-                                ${description} : ${virtualQuantity} ${allocationUnits}<br/>
+                                            ${description} : ${virtualQuantity} ${allocationUnits}<br/>
 
-         <%
+                                            <%
 
-                            }
-                         }
+                                                }
+                                            }
 
-
-
-         %>
+                                        %>
                                     </td>
                                     <td>
-                            CPU Usage : <span id="${current.getId()}-cpu-usage">0</span>%
-                            <script>
-                                jQuery(function() {
-                                        getCPUMetric("${current.getId()}","cpu.usage");
-                                    });
-                            </script>
-                            <br/>
-                            Memory Usage : <span id="${current.getId()}-memory-usage">0</span>%
-                            <script>
-                                jQuery(function() {
-                                        getMemoryMetric("${current.getId()}");
-                                    });
-                            </script>
+                                        CPU Usage : <span id="${current.getId()}-cpu-usage">0</span>%
+                                        <script>
+                                            jQuery(function() {
+                                                //console.log("start get metrics.");
+                                                getCPUMetric("${current.getId()}","cpu.usage");
+                                            });
+                                        </script>
+                                        <br/>
+                                        Memory Usage : <span id="${current.getId()}-memory-usage">0</span>%
+                                        <script>
+                                            jQuery(function() {
+
+                                                //console.log("start get memory metrics.");
+                                                getMemoryMetric("${current.getId()}");
+                                            });
+                                        </script>
                                     </td>
+                                    <td>
+
+                                         <a class="btn" title="Billing" href="@{ApplicationManagement.displayBilling(vmId = vmId)}">
+                                                <i class="icon-envelope"></i>
+                                         </a>
+
+                                    </td>
+                                <tr>
                             </tbody>
                         </table>
 
                     </div>
                 </li>
-         <%
-                i++;
-            }
-         %>
-         </ul>
-    </div>
-</div>
-<script type="text/javascript">
-    getCPUMetric = function(resourceIdParam,keyParam) {
-
-            jQuery.ajax({
-                url:"/rest/opencloudware/monitoring/"+resourceIdParam+"/"+keyParam,
-                dataType: "text",
-                mimeType: "textPlain",
-                success:updateValueWithContext,
-                context: {
-                    resourceId: resourceIdParam,
-                    key: keyParam
+                <%
+                    i++;
                 }
-            });
+                %>
+            </ul>
+        </div>
+    </div>
+    <script type="text/javascript">
+        getCPUMetric = function(resourceIdParam,keyParam) {
+
+                jQuery.ajax({
+                    url:"/rest/opencloudware/monitoring/"+resourceIdParam+"/"+keyParam,
+                    dataType: "text",
+                    mimeType: "textPlain",
+                    success:updateValueWithContext,
+                    context: {
+                        resourceId: resourceIdParam,
+                        key: keyParam
+                    }
+                });
 
 
-        setTimeout(function() {
-            getCPUMetric(resourceIdParam,keyParam);
-        }, 60000);
-    }
-
-    updateValueWithContext = function (data) {
-        jQuery("#"+this.resourceId+"-"+this.key.replace(".","-")).text(Math.round(parseFloat(data)*100));
-    }
-
-    getMemoryMetric= function(resourceIdParam) {
-           jQuery.ajax({
-               url:"/rest/opencloudware/monitoring/"+resourceIdParam+"/memory.total",
-               dataType: "text",
-               mimeType: "textPlain",
-               success:function(data) {
-                    var totalMemory = parseInt(data);
-                    jQuery.ajax({
-                        url:"/rest/opencloudware/monitoring/"+resourceIdParam+"/memory.free",
-                        dataType: "text",
-                        mimeType: "textPlain",
-                        success:function(data) {
-                             var freeMemory = parseInt(data);
-                             var percentUsed = Math.round((1 - freeMemory/totalMemory)*100);
-                             updateValue(resourceIdParam,"memory-usage", percentUsed);
-
-                        }
-                    });
-               }
-           });
-
-           setTimeout(function() {
-            getMemoryMetric(resourceIdParam);
-           }, 60000);
-    }
-    updateValue = function (resourceId, key, data) {
-            jQuery("#"+resourceId+"-"+key.replace(".","-")).text(data);
+            setTimeout(function() {
+                getCPUMetric(resourceIdParam,keyParam);
+            }, 60000);
         }
 
+        updateValueWithContext = function (data) {
+            jQuery("#"+this.resourceId+"-"+this.key.replace(".","-")).text(Math.round(parseFloat(data)*100));
+        }
+
+        getMemoryMetric= function(resourceIdParam) {
+               jQuery.ajax({
+                   url:"/rest/opencloudware/monitoring/"+resourceIdParam+"/memory.total",
+                   dataType: "text",
+                   mimeType: "textPlain",
+                   success:function(data) {
+                        var totalMemory = parseInt(data);
+                        jQuery.ajax({
+                            url:"/rest/opencloudware/monitoring/"+resourceIdParam+"/memory.free",
+                            dataType: "text",
+                            mimeType: "textPlain",
+                            success:function(data) {
+                                 var freeMemory = parseInt(data);
+                                 var percentUsed = Math.round((1 - freeMemory/totalMemory)*100);
+                                 updateValue(resourceIdParam,"memory-usage", percentUsed);
+
+                            }
+                        });
+                   }
+               });
+
+               setTimeout(function() {
+                getMemoryMetric(resourceIdParam);
+               }, 60000);
+        }
+        updateValue = function (resourceId, key, data) {
+                jQuery("#"+resourceId+"-"+key.replace(".","-")).text(data);
+            }
 
 
-</script>
+
+    </script>
 
 </div>
-
 
